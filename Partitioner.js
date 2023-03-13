@@ -3,12 +3,13 @@ let matrix = {
     columns:  3,
     entries: [1,4,7,2,5,8,3,6,9]
 };
+const start = Date.now();
 
 const A = Array(100000) // array size is 10
 				.fill()
 				.map(() => 50 * Math.random()); // numbers from 0-50 (exclusive)
 
-const B = Array(100000) // array size is 10
+const B = Array(500000) // array size is 10
 				.fill()
 				.map(() => 50 * Math.random()); // numbers from 0-50 (exclusive)
 let count = 0;
@@ -18,6 +19,9 @@ for (let index = 0; index < A.length; index++) {
         A[index]*B[j]+A[index]*B[j];
         
     }
-    console.log(count);
+    
 }
+console.log(count);
 
+const end = Date.now();
+console.log(`Execution time: ${end - start} ms`);
