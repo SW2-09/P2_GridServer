@@ -1,77 +1,119 @@
-/*
-let matrix = {
-    rows: 3,
-    columns:  3,
-    entries: [1,4,7,2,5,8,3,6,9]
-};
-const start = Date.now();
 
-const A = Array(100000) // array size is 10
-				.fill()
-				.map(() => 50 * Math.random()); // numbers from 0-50 (exclusive)
-
-const B = Array(500000) // array size is 10
-				.fill()
-				.map(() => 50 * Math.random()); // numbers from 0-50 (exclusive)
-let count = 0;
-for (let index = 0; index < A.length; index++) {
-    for (let j = 0; j < B.length; j++) {
-        count += 1;
-        A[index]*B[j]+A[index]*B[j];
-        
-    }
+// let matrix_B = {
+    //     entries: [[1,2,3],
+    //               [4,5,6],
+    //               [7,8,9]],
+    //     columns: matrixsize,
+    //     rows: matrixsize,
+    // }
     
-}
-console.log(count);
+    // let matrix_A = {
+        //     entries: [[1,2,3],
+//              [4,5,6],
+//              [7,8,9]],
+//     columns: matrixsize,
+//     rows: matrixsize,
+// }
 
-const end = Date.now();
-console.log(`Execution time: ${end - start} ms`);
-*/
+
+const matrixsize = 20;
 
 let matrix_B = {
-    entris: [[5,6,7],[7,8,9],[1,2,3]],
-    columns: 3,
-    rows: 3,
+    entries: Array(matrixsize).fill(0).map(() => Array(matrixsize).fill(0).map(() => Math.floor(Math.random() * 10))),
+    columns: matrixsize,
+    rows: matrixsize,
 }
 
 let matrix_A = {
-    entris: [[1,2],[6,3],[1,8]],
-    columns: 3,
-    rows: 2,
+    entries: Array(matrixsize).fill(0).map(() => Array(matrixsize).fill(0).map(() => Math.floor(Math.random() * 10))),
+    columns: matrixsize,
+    rows: matrixsize,
+}
+
+function createSubtask(id,matrixA,matrixb){
+    this.id = id;
+    this.matrixA = matrixA;
+    this.matrixb = matrixb;
 }
 
 function matrix_mult(A,B){
-    if (A.columns !== B.rows){
+    let AColumns = A[0].length;
+    let Arows = A.length;
+    let Bcolumns = B[0].length;
+    let Brows = B.length;
+    if (AColumns !== Brows){
         console.log("Matrix multiplication not possible with given matrices");
         return false;
     }
-    let matrixAxB = new Array(B.columns);
-    for (let index = 0; index < B.columns; index++) {
-        matrixAxB[index] = new Array(A.rows);
+    let matrix_AxB = new Array(Arows);
+    for (let index = 0; index < Arows; index++) {
+        matrix_AxB[index] = new Array(Bcolumns);
     }
-    let matrixA = A.entris;
-    let matrixB = B.entris;
+
     let count = 0;
 
-    for (let A_rows = 0; A_rows < A.rows; A_rows++) {
-        for (let B_columns = 0; B_columns < B.columns; B_columns++) {
-            for (let index = 0; index < B.rows; index++) {
-                count += A.entris[index][A_rows]*B.entris[B_columns][index];
+    for (let ACurrentRows = 0; ACurrentRows < Arows; ACurrentRows++) {
+        for (let BCurrentColumns = 0; BCurrentColumns < Bcolumns; BCurrentColumns++) {
+            for (let index = 0; index < Brows; index++) {
+                count += A[ACurrentRows][index]*B[index][BCurrentColumns];
             } 
-            matrixAxB[A_rows][B_columns] = count;  
+            matrix_AxB[ACurrentRows][BCurrentColumns] = count;  
             count = 0;
         }
     }
-
-    for (let index = 0; index < A.rows; index++) {
-        for (let j = 0; j < B.columns; j++) {
-            console.log(matrixAxB[index][j] +" ");
-        }
-        console.log("newline");
-    }
-    return matrixAxB;
+    return matrix_AxB;
 }
 
-matrix_mult(matrix_A,matrix_B);
+let slicedMatrixA = matrix_A.entries.slice(0,Math.floor(matrix_A.entries.length/2));
+let slicedMatrixA2 = matrix_A.entries.slice(Math.floor(matrix_A.entries.length/2),matrix_A.entries.length);
 
+task1 = new createSubtask(1,slicedMatrixA,matrix_B.entries);
+task2 = new createSubtask(1,slicedMatrixA2,matrix_B.entries);
 
+let subtask1 = matrix_mult(task1.matrixA,task1.matrixb);
+let subtask2 = matrix_mult(task2.matrixA,task2.matrixb);
+
+function combinematrix(A,B){
+    return A.concat(B);
+}
+
+let finish = combinematrix(subtask1,subtask2);
+console.log(finish);
+
+function testMatrixOperation(){
+    let matrix_A = [
+        [1, 2],
+        [3, 4]
+    ];
+
+    let matrix_B = [
+        [2, 0],
+        [1, 2]
+    ];
+
+    // Test matrix_mult
+    let expectedMatrixMult = [
+        [4, 4],
+        [10, 8]
+    ];
+
+    let multiplyresult = matrix_mult(matrix_A,matrix_B);
+    if (JSON.stringify(expectedMatrixMult) === JSON.stringify(multiplyresult))
+        console.log("multiply test passed");
+    else
+        console.log("multiply test failed");
+
+    let expectedCombinedmatrix = [
+        [1, 2],
+        [3, 4],
+        [2, 0],
+        [1, 2]
+    ];
+    let combineresult = combinematrix(matrix_A,matrix_B);
+    if (JSON.stringify(expectedCombinedmatrix) === JSON.stringify(combineresult))
+        console.log("combine test passed");
+    else
+        console.log("combine test failed");
+}
+
+testMatrixOperation();
