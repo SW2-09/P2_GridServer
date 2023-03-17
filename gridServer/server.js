@@ -16,8 +16,6 @@ app.use(express.json()); // This allows us to parse json data
 
 app.set("view engine", "ejs"); // Makes .ejs files possible to use
 
-//Q: Please recreate the app.get function to refer to the public folder and render the index.ejs file
-
 app.get("/", (req, res) => {
   res.render("public", { text: "World" });
 });
