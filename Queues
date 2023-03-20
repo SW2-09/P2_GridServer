@@ -1,0 +1,84 @@
+
+// Queue constructor functon
+function Queue(){
+    this.elements={};
+    this.tail=0;
+    this.head=0;
+    this.enqueue=function(element){
+        this.elements[this.tail]=element
+        this.tail++;
+    };
+    this.dequeue=function(){
+        let element=this.elements[this.head];
+        delete this.elements[this.head]
+        this.head++;
+        return element;
+    };
+}
+
+let subtaskQuPend=new Queue();
+
+//Demo of enqueue and dequeue mehtods
+let subtask1="subtask 1";
+let subtask2="subtask 2";
+let subtask3="subtask 3";
+
+subtaskQuPend.enqueue(subtask1);
+subtaskQuPend.enqueue(subtask2);
+subtaskQuPend.enqueue(subtask3);
+
+console.log(subtaskQuPend.elements);
+
+let next_task=subtaskQuPend.dequeue();
+subtaskQuPend.dequeue();
+
+console.log(subtaskQuPend.elements);
+console.log(next_task);
+
+
+
+
+/*
+First attempt: 
+
+function QInit(n){
+    let QPend={queue: [], ()queue: array.slice(tail,head),  tail: 1,  head: 1};
+    let QFail={array: [], tail: 1,  head: 1};
+    let QComp={array: [], tail: 1,  head: 1};
+
+    let Queues={Qpend: QPend, Qfail: QFail, Qcomp: QComp};
+
+    return Queues
+}
+
+function Enqueue(Q,subtask){
+    Q.queue[Q.tail]=subtask;
+    if (Q.tail===Q.queue.length)
+        Q.tail=1;
+    else 
+        Q.tail=Q.tail+1;
+}
+
+function Dequeue(Q){
+    subtask=Q.queue[Q.head];
+    if(Q.head=Q.queue.length)
+        Q.head=1
+    else 
+        Q.head=Q.head+1; 
+    return subtask;
+}
+
+
+
+
+let Queues=QInit(10);
+
+
+Enqueue(Queues.Qpend,subtask1)
+console.log(Queues.Qpend.queue);
+Enqueue(Queues.Qpend,subtask2)
+console.log(Queues.Qpend.queue);
+let x=Dequeue(Queues.Qpend);
+console.log(x);
+console.log(Queues.Qpend.queue)
+*/
