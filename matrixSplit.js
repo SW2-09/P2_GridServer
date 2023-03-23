@@ -1,6 +1,7 @@
+import
 
+// the maxumimum amount of computations we want a single subtask to be
 const calcMax = Math.pow(3,3);
-
 const matrixsize = 10;
 
 //the two matrices that will be worked on
@@ -17,13 +18,18 @@ let matrix_A = {
     rows: matrixsize,
 }
 
-
-
-let arr = [];
+let arr = []; // the array which will hold the sliced matrixes of matrix A
 let ARows = matrix_A.rows;
 let A = matrix_A.entries;
-console.log(A);
+//console.log(A);
 
+/**
+ * 
+ * @param {Matrix} A the array containing the matrix A
+ * @param {Matrix} B the array containing the matrix B
+ * @param {number} ARows the number of row in the matrix A
+ * @returns does not return but pushes the slices of rows to an array
+ */
 function divideMatrices(A , B, ARows){
     if (ARows * B.rows * B.columns < calcMax){
         arr.push(A)
@@ -39,11 +45,10 @@ function divideMatrices(A , B, ARows){
     //console.log("her er slice 2 " + slicedMatrixA);
     divideMatrices(slicedMatrixA, B, Math.floor(ARows/2));
     divideMatrices(slicedMatrixA2, B, Math.floor(ARows/2));
-
 }
 
 divideMatrices(A, matrix_B, ARows)
-console.log(arr.length);
+//console.log(arr.length);
 // console.log("hejsa " + arr[0]);
 
 // let finished = [];
@@ -57,25 +62,41 @@ console.log(arr.length);
 // console.log(finished);
 
 
-class Job{
-    constructor(job_id, data, next = null, previous = null){
-        this.job_id = job_id;
-        this.data = data;
+class Job{//the job nodes of the job queue
+    constructor(jobId, matrixB, next = null, previous = null){
+        this.jobId = jobId;
+        this.subtaskList = new Queue_linked_list_subtask;
+        this.matrixB = matrixB;
         this.next = next;
         this.previous = previous;
     }
 }
 
-class Queue_linked_list{
+class subTask{//the subtask nodes og the subtask queue in the job queue
+    constructor(jobId, taskId, next = null, previous = null){
+        this.jobId = jobId;
+        this.taskId = taskId;
+        this.matrixA ;
+        this.next = next;
+        this.previous = previous;
+    }
+}
+/**
+ * A queue using a linked list 
+ * @method enQueue - will put the new element at the head of the queue
+ * @method deQueue - will remove the tail element of the queue
+ * @method removeJob - will search for the job with the specific job id and remove it from the queue
+ */
+class Queue_linked_list_job{
     constructor(){
         this.head = null;
         this.tail = null;
         this.size = 0;
     }
 
-    enQueue(job_id, data) {
+    enQueue(jobId, matrixB) {
         if (this.head === null) {
-            this.tail = this.head = new Job(job_id, data, this.head, this.tail);
+            this.tail = this.head = new Job(jobId, matrixB, this.head, this.tail);
             this.size++;
         }
         else{
@@ -107,18 +128,78 @@ class Queue_linked_list{
     }
 }
 
-let SubTaskQueue = new Queue_linked_list;
-for (let index = 0; index < arr.length; index++) {
-    SubTaskQueue.enQueue(index, arr[index])
+/**
+ * A queue using a linked list 
+ * @method enQueue - will put the new element at the head of the queue
+ * @method deQueue - will remove the tail element of the queue
+ */
+class Queue_linked_list_subtask{
+    constructor(){
+        this.head = null;
+        this.tail = null
+        this.size = 0;
+    }
+
+    enQueue(jobId, taskId) {
+        if (this.head === null) {
+            this.tail = this.head = new subTask(jobId, taskId, this.head, this.tail);
+            this.size++;
+        }
+        else{
+            this.head.previous = this.head = new subTask(jobId, taskId, this.head);
+            this.size++;
+        }
+    }
+
+    deQueue(){
+        if (this.head === null){return;}
+        if (this.head === this.tail){
+            this.head = this.tail = null;
+        }
+        else {
+            this.tail.previous.next = null;
+            this.tail = this.tail.previous;
+        }
+        this.size--;
+    }
 }
 
-console.log("lenght = " + arr.length);
-console.log("queue = " + SubTaskQueue.size);
-console.log("data = " );
-console.log(SubTaskQueue.head.data);
+let JobQueue = new Queue_linked_list_job;
+JobQueue.enQueue(1, matrix_B);
+for (let index = 0; index < arr.length; index++) {
+    JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index);
+    JobQueue.head.subtaskList.head.matrixA = arr[index];
+}
 
-while (SubTaskQueue.head !== null){
-    console.log("en hale");
-    console.log(SubTaskQueue.tail.data);
-    SubTaskQueue.deQueue();
+console.log(JobQueue.head.subtaskList.head);
+let x = JobQueue.head.subtaskList.head
+while (x.next !== null){
+    console.log("JobID " + x.jobId + " taskId " + x.taskId);
+    console.log(x.matrixA);
+    x = x.next;
+}
+
+// console.log("lenght = " + arr.length);
+// console.log("queue = " + SubTaskQueue.size);
+// console.log("data = " );
+// console.log(SubTaskQueue.head.data);
+
+// while (SubTaskQueue.head !== null){
+//     console.log("en hale");
+//     console.log(SubTaskQueue.tail.data);
+//     SubTaskQueue.deQueue();
+// }
+
+function subtaskFeeder(){//dette er ikke noet der er færdigt
+    let nextJob = JobQueue.tail;
+    while (JobQueue.tail.subtaskList.tail === null){
+        nextJob = JobQueue.tail.previous
+    }
+    let workerPackage = {
+        jobId: nextJob.jobId,
+        taskId: nextJob.subtaskList.tail.taskId,
+        matrixB: nextJob.matrixB,
+        matrixA: nextJob.subtaskList.tail.matrixA,
+    }
+    return workerPackage;
 }

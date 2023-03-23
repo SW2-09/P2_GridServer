@@ -39,7 +39,13 @@ function createSubtask(id,matrixA,matrixb){
     this.matrixb = matrixb;
 }
 let tidStart = Date.now();
-// function that multiply two given matrices
+
+/**
+ * multiplies the first given matrix with the second (A*B)
+ * @param {Matrix} A 
+ * @param {Matrix} B 
+ * @returns false if the matrices are not compatible for multiplication, or the resulting matrix of the matrix multiplication
+ */
 function matrix_mult(A,B){
     let AColumns = A[0].length;
     let ARows = A.length;
@@ -81,6 +87,12 @@ task2 = new createSubtask(1,slicedMatrixA2,matrix_B.entries);
 let subtask1 = matrix_mult(task1.matrixA,task1.matrixb);
 let subtask2 = matrix_mult(task2.matrixA,task2.matrixb);
 
+/**
+ * will add the matrix B  at the end of matrix A
+ * @param {Matrix} A 
+ * @param {Matrix} B 
+ * @returns the combined matrix of matrix A and B
+ */
 function combinematrix(A,B){
     return A.concat(B);
 }
@@ -90,7 +102,9 @@ let tid = Date.now() - tidStart;
 console.log("tid i sekunder " + tid/1000)
 // console.log(finish);
 
-
+/**
+ * test function that test the multiplication code and the combination code 
+ */
 function testMatrixOperation(){
     let matrix_A = [
         [1, 2],
