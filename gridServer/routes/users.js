@@ -36,6 +36,11 @@ router.post("/", (req, res) => {
 Express reads code from top to bottom, therefore, route parameters should be placed after the other routes.
 if routes are static, they should be placed before the route parameters.
 */
+//Q: Can you give an example of the execution of the code below?
+//A: 1. The user goes to http://localhost:3000/users/1
+//   2. The userRouter is used for all routes that start with /users
+//   3. The router.param function is called and the userId parameter is set to 1
+//   4. The router.get function is called and the userId parameter is set to 1
 
 router
   .route("/:userId")
@@ -55,9 +60,10 @@ router
 Middelware runs inbetween the request and the response.
 */
 const users = [{ name: "john" }, { name: "Claes" }];
+
 router.param("userId", (req, res, next, userId) => {
   req.user = users[userId];
-  next(); // Runs the next function in the chain
+  next();
 });
 
 module.exports = router; // Export the router to be used in server.js

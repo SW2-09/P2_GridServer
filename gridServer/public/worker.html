@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="javascripts/worker.js"></script>
+    <title>Worker page</title>
+  </head>
+  <body>
+    <h1>Hej Workers!</h1>
+
+    <div class="frontpage">
+      <div class="left">
+        <iframe
+          width="50%"
+          height="315"
+          src="https://www.youtube.com/embed/aqz-KE-bpKQ"
+          title="YouTube video player"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+      </div>
+
+      <div class="right">
+        <label>
+          Do you want to compute while watching Netflix?
+          <br />
+          <input type="checkbox" name="yes" onchange="if(this.checked){startLogging();} else {stopLogging();}">
+          Yes
+        </label>
+        <label>
+          <input type="checkbox" name="no" />
+          No
+        </label>
+      </div>
+    </div>
+  </body>
+</html>
