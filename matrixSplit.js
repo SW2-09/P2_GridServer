@@ -100,7 +100,7 @@ class Queue_linked_list_job{
             this.size++;
         }
         else{
-            this.head.previous = this.head = new Job(job_id, data, this.head);
+            this.head.previous = this.head = new Job(jobId, matrixB, this.head);
             this.size++;
         }
     }
