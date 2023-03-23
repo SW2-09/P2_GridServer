@@ -20,6 +20,7 @@ app.get("/", (req, res, next) => {
   res.render("public");
 });
 
+
 /* ** ROUTES **
 This is great practice to get into. This way we can have different nested routes in different files.
 1. Keeps the code clean and easy to read and to maintain.

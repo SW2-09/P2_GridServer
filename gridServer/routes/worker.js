@@ -24,10 +24,14 @@ workerRoute.use(
 workerRoute.get(
   "/:workerID",
   (req, res, next) => {
-    // if the user ID is 0, skip to the next router
-    if (req.params.workerID < workers.length) next("route");
-    // otherwise pass control to the next middleware function in this stack
-    else next();
+    if (req.params.workerID < workers.length) {
+      res.render("index", {
+        worker: workers[req.params.workerID].name,
+        error: null,
+      });
+      console.log("worker: " + workers[req.params.workerID].name);
+      //next(queue);
+    } else next();
   },
   (req, res, next) => {
     // render a regular page
