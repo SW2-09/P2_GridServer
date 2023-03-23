@@ -1,5 +1,3 @@
-import
-
 // the maxumimum amount of computations we want a single subtask to be
 const calcMax = Math.pow(3,3);
 const matrixsize = 10;
@@ -27,7 +25,7 @@ let A = matrix_A.entries;
  * 
  * @param {Matrix} A the array containing the matrix A
  * @param {Matrix} B the array containing the matrix B
- * @param {number} ARows the number of row in the matrix A
+ * @param {number} ARows the number of rows in the matrix A
  * @returns does not return but pushes the slices of rows to an array
  */
 function divideMatrices(A , B, ARows){
