@@ -38,7 +38,7 @@ function createSubtask(id,matrixA,matrixb){
     this.matrixA = matrixA;
     this.matrixb = matrixb;
 }
-let tidStart = Date.now();
+
 
 /**
  * multiplies the first given matrix with the second (A*B)
@@ -84,8 +84,8 @@ let slicedMatrixA2 = matrix_A.entries.slice(Math.floor(matrix_A.entries.length/2
 task1 = new createSubtask(1,slicedMatrixA,matrix_B.entries);
 task2 = new createSubtask(1,slicedMatrixA2,matrix_B.entries);
 
-let subtask1 = matrix_mult(task1.matrixA,task1.matrixb);
-let subtask2 = matrix_mult(task2.matrixA,task2.matrixb);
+// let subtask1 = matrix_mult(task1.matrixA,task1.matrixb);
+// let subtask2 = matrix_mult(task2.matrixA,task2.matrixb);
 
 /**
  * will add the matrix B  at the end of matrix A
@@ -96,6 +96,8 @@ let subtask2 = matrix_mult(task2.matrixA,task2.matrixb);
 function combinematrix(A,B){
     return A.concat(B);
 }
+let tidStart = Date.now();
+let noget = matrix_mult(matrix_A.entries,matrix_B.entries);
 
 // let finish = combinematrix(subtask1,subtask2);
 let tid = Date.now() - tidStart;
