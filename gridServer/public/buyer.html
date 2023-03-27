@@ -6,14 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Buyer page</title>
     <link href="stylesheets/buyer.css" rel="stylesheet" type="text/css">
+    <script src="../routes/buyer.js"></script>
   <body>
-    <script>
-      document.body.innerHTML = "Welcome usermane";
-    </script>
-    <form method="POST" action="/" enctype="multipart/form-data">
-      <input type="file" name="file"/>
-      <input type="submit" value="Upload"/>
-    </form> 
-
+    <div>
+      <form ref="uploadForm" 
+			id="uploadForm" 
+			action="/buyer/upload" 
+			method="post" 
+			encType="multipart/form-data">
+				<input type="file" name="sampleFile" />
+				<input type="submit" value="Upload!" />
+		</form>	
+    </div>
   </body>
 </html>
