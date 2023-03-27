@@ -1,4 +1,3 @@
-
 const { application } = require("express");
 const express = require("express");
 const buyerRouter = express.Router();
@@ -8,9 +7,9 @@ const { rejects } = require("assert");
 const { resolve } = require("path");
 
 /* TODO LIST:
-  * 1. Create upload-folder if it doesn't exist
-  * 2. 
-*/
+ * 1. Create upload-folder if it doesn't exist
+ * 2.
+ */
 
 const dirPath = "../gridServer/uploads/";
 const allowedFileFormat = ["csv", "json"];
@@ -24,7 +23,7 @@ buyerRouter.get("/", function (req, res) {
 /* ***********************
  *  File Upload Section *
  ************************ */
-
+//
 buyerRouter.use(fileUpload());
 
 buyerRouter.post("/upload", (req, res) => {
