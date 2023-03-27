@@ -6,7 +6,6 @@ const path = require("path");
 // Guide for sending html: https://www.digitalocean.com/community/tutorials/use-expressjs-to-deliver-html-files
 workerRoute.get("/", (req, res) => {
   console.log("Worker");
-  res.sendFile(path.join(__dirname, "../public/worker.html"));
 });
 
 workerRoute.use(
@@ -25,7 +24,7 @@ workerRoute.get(
   "/:workerID",
   (req, res, next) => {
     if (req.params.workerID < workers.length) {
-      res.render("index", {
+      res.render("../views/pages/worker", {
         worker: workers[req.params.workerID].name,
         error: null,
       });

@@ -5,7 +5,7 @@
 nodemon can be acti
 */
 
-const port = 3001;
+const port = 8080;
 
 const express = require("express");
 const app = express();
@@ -16,9 +16,16 @@ app.use(express.json()); // This allows us to parse json data
 
 app.set("view engine", "ejs"); // Makes .ejs files possible to use
 
-app.get("/", (req, res, next) => {
-  res.render("public");
+//index page
+app.get("/", (req, res) => {
+  res.render('pages/index');
 });
+
+//worker page
+app.get("/worker", (req, res) => {
+  res.render('pages/worker');
+});
+
 
 /* ** ROUTES **
 This is great practice to get into. This way we can have different nested routes in different files.

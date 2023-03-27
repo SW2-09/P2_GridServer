@@ -4,21 +4,16 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="stylesheets/worker.css" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/worker.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/stylesheets/navigationbar.css">
     <script src="javascripts/worker.js"></script>
     <title>Worker page</title>
   </head>
   <body>
+    <header>
+      <%- include('../partials/navigationbar.ejs'); %>
+    </header>
     <div class="frontpage">
-      <div class="top">
-        <img
-          src="images/favicon.png"
-          width="5%"
-          height="100%"
-          onclick="window.location.href='buyer'"
-        />
-        <h2>Welcome: UserID</h2>
-      </div>
       <div class="left">
         <div class="video" style="--aspect-ratio: 2/3">
           <iframe

@@ -53,7 +53,7 @@
 .compute{
     border: transparent;
     box-shadow: 5px 10px;
-    border-radius: 5%;
+    border-radius: 15px;
     height: 100px;
     width: 90%;
     box-shadow: 0px 0px 10px 2px lightgray;
@@ -70,7 +70,7 @@
  
 .subtasks{
     border: transparent;
-    border-radius: 5%;
+    border-radius: 15px;
     height: 100px;
     width: 90%;
     box-shadow: 0px 0px 10px 2px lightgray;
@@ -81,7 +81,7 @@
  
 .points{
     border: transparent;
-    border-radius: 5%;
+    border-radius: 15px;
     height: 100px;
     width: 90%;
     box-shadow: 0px 0px 10px 2px lightgray;
