@@ -7,24 +7,57 @@ nodemon can be acti
 
 const port = 8080;
 
-const express = require("express");
+const express = require('express');
+const expressLayouts = require('express-ejs-layouts');
+const mongoose = require('mongoose');
+const passport = require('passport')
+const session = require('express-session')
+
 const app = express();
 
 app.use(express.static("public")); // Middleware function that serves static files (e.g. css files) https://expressjs.com/en/starter/static-files.html
-app.use(express.urlencoded({ extended: true })); // Middleware function that parses the body of a request (e.g. form data)
+// app.use(express.urlencoded({ extended: true })); // Middleware function that parses the body of a request (e.g. form data)
 app.use(express.json()); // This allows us to parse json data
 
+
+//passport config
+require('./config/passport')(passport)
+
+//MongoDB Atlas config
+const db = require('./config/keys').MongoURI;
+
+// Connect to MongoDB
+mongoose.connect(db, {useNewUrlParser: true})
+    .then(() => console.log('MongoDB is connected'))
+    .catch(err => console.log(err));
+
+//EJS setup
+app.use(expressLayouts);
 app.set("view engine", "ejs"); // Makes .ejs files possible to use
 
+
+//Express session
+app.use(
+  session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+  })
+);
+
+//Bodyparser
+app.use(express.urlencoded({extended: false}));
+
+// Passport middleware
+app.use(passport.initialize())
+app.use(passport.session())
+
+
 //index page
-app.get("/", (req, res) => {
-  res.render('pages/index');
-});
+app.use('/', require('./routes/index'))
 
 //worker page
-app.get("/worker", (req, res) => {
-  res.render('pages/worker');
-});
+app.use('/',require('./routes/worker'))
 
 
 /* ** ROUTES **

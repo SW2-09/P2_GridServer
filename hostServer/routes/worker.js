@@ -1,8 +1,107 @@
-const { application } = require("express");
 const express = require("express");
 const workerRoute = express.Router();
-const path = require("path");
+const passport = require('passport');
+const bcrypt = require('bcryptjs');
 
+
+//User model
+const User = require('../models/User');
+
+//login page
+workerRoute.get('/login',(req,res)=>{
+  res.render("login")
+})
+
+
+//register page
+workerRoute.get('/register',(req,res)=>{
+  res.render("register")
+})
+
+//register handle
+workerRoute.post('/register', (req,res) =>{
+  const {name, password, password2} = req.body;
+  let errors = [];
+
+  //Check required fiels
+  if(!name || !password || !password2) {
+   errors.push({msg: 'Please enter a password'});
+  }
+
+  //Check password match
+  if(password != password2){
+       errors.push({msg: 'Passwords do not match'});
+  }
+
+  //Check if there is an error in the array
+  if(errors.length > 0){
+    res.render('register',{
+       errors, 
+       name,
+       password,
+       password2
+    });
+  } else{
+   //validation passed
+      User.findOne({name: name})
+      .then(user =>{
+           if(user){
+               //User exists
+               errors.push({msg: 'User is taken'});
+               res.render('register',{
+                   errors: errors, 
+                   name: name,
+                   password: password,
+                   password2: password2
+                });
+           } else{
+               const newUser = new User ({
+                   name: name,
+                   password: password
+               });
+
+               //Check the hashed password. Default function
+               bcrypt.genSalt(10, (err, salt) => {
+                   bcrypt.hash(newUser.password, salt, (err, hash) => {
+                     if (err) throw err;
+                     newUser.password = hash;
+                     newUser
+                       .save()
+                       .then(user => {
+                         res.redirect('/worker/login');
+                       })
+                       .catch(err => console.log(err));
+                   });
+                 });
+           }
+           
+           
+      })
+  }
+  
+})
+
+//Login handle
+workerRoute.post('/login',(req,res,next)=>{
+  passport.authenticate('local',{
+      successRedirect: '/worker',
+      failureRedirect: '/worker/login'
+  })(req, res, next);
+})
+
+
+//Logout handle
+workerRoute.get('/logout', (req, res) =>{
+  req.logout( err => {
+      if(err) { return next(err) }
+      res.redirect('/worker/login')
+      })
+})
+
+
+
+
+/*
 // Guide for sending html: https://www.digitalocean.com/community/tutorials/use-expressjs-to-deliver-html-files
 workerRoute.get("/", (req, res) => {
   console.log("Worker");
@@ -19,6 +118,7 @@ workerRoute.use(
     next();
   }
 );
+
 
 workerRoute.get(
   "/:workerID",
@@ -38,7 +138,8 @@ workerRoute.get(
   }
 );
 
-/*
+
+
 workerRoute.post("/", (req, res) => {
   if (true) {
     workers.push({ name: req.body.name });
@@ -51,13 +152,13 @@ workerRoute.post("/", (req, res) => {
 workerRoute.route("/:workerID").get((req, res) => {
   console.log(req.workerID);
 });
-*/
+
 
 const workers = [{ name: "Mogens" }, { name: "Grete" }];
 
 workerRoute.param("workerID", (req, res, next, workerID) => {
   req.workerID = workers[workerID];
   next();
-});
+}); */
 
 module.exports = workerRoute;

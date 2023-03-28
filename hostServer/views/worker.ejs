@@ -11,7 +11,10 @@
   </head>
   <body>
     <header>
-      <%- include('../partials/navigationbar.ejs'); %>
+      <label class="logo"> Holger Danske</label>
+      <a href="/worker/logout" class="">Logout</a>
+      <h4> <%= name %> </h4>
+
     </header>
     <div class="frontpage">
       <div class="left">
@@ -26,7 +29,7 @@
       </div>
       <div class="right">
         <div class="userinfo">
-          <h2>User Info</h2>
+          <h2>Account Settings</h2>
         </div>
         <div class="compute">
           <div class="header">
@@ -59,7 +62,7 @@
           <div class="header">
             <h3>Contribute History</h3>
           </div>
-          Number of subtasks completed: <span id="subtaskCompleted">0</span>
+          Number of subtasks completed: 0
         </div>
         <br />
         <div class="points">

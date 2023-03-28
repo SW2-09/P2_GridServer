@@ -63,6 +63,19 @@ function openWsConnection(){
 return ws;
 }
 
+//Ensure only 1 checkbox can be checked
+const checkboxes = document.querySelectorAll('input[name="option"]');
+checkboxes.forEach((checkbox) => {
+  checkbox.addEventListener('change', (event) => {
+    checkboxes.forEach((c) => {
+      if (c !== event.target) {
+        c.checked = false;
+      }
+    });
+  });
+});
+
+
 function handleChange(event) {
   const option = event.target.value;
   const checkboxes = document.getElementsByName("option");
