@@ -1,28 +1,82 @@
-let intervalId = null;
-let subtasks = 1;
-let completedSubtasks = 0;
+// algorithm
+function matrix_mult(A,B){
+  let AColumns = A[0].length;
+  let Arows = A.length;
+  let Bcolumns = B[0].length;
+  let Brows = B.length;
+  if (AColumns !== Brows){
+      console.log("Matrix multiplication not possible with given matrices");
+      return false;
+  }
+  let matrix_AxB = new Array(Arows);
+  for (let index = 0; index < Arows; index++) {
+      matrix_AxB[index] = new Array(Bcolumns);
+  }
+
+  let count = 0;
+
+  for (let ACurrentRows = 0; ACurrentRows < Arows; ACurrentRows++) {
+      for (let BCurrentColumns = 0; BCurrentColumns < Bcolumns; BCurrentColumns++) {
+          for (let index = 0; index < Brows; index++) {
+              count += A[ACurrentRows][index]*B[index][BCurrentColumns];
+          } 
+          matrix_AxB[ACurrentRows][BCurrentColumns] = count;  
+          count = 0;
+      }
+  }
+  return matrix_AxB;
+  }
+
+// open ws connection and handler for "message" events
+function openWsConnection(){
+  const ws= new WebSocket("ws://localhost:8001");
+
+  let workerID=Math.floor(Math.random() * 1000);
+
+  ws.addEventListener("message", e=>{
+      if(e.data=="No tasks in queue"){
+          console.log("No tasks in queue");
+          ws.close();
+      } else{
+          console.log("Client recieved:"+e.data);
+          let nextSubtask=JSON.parse(e.data);
+          console.log(nextSubtask);
+          console.log(nextSubtask.matrixA);
+          console.log(nextSubtask.matrixB);
+
+          let start_comp=Date.now();
+          let solution=matrix_mult(nextSubtask.matrixA,nextSubtask.matrixB.entries);
+          let end_comp=Date.now();
+
+          console.log(`Computation took ${(end_comp-start_comp)/1000} s`);
+          
+          let subSolution={
+              workerID: workerID,
+              solution: solution
+          }
+
+          ws.send(JSON.stringify(subSolution));
+
+          console.log(`A subsolution was send by worker: ${subSolution.workerID}`);
+      }
+  });
+return ws;
+}
 
 function handleChange(event) {
   const option = event.target.value;
   const checkboxes = document.getElementsByName("option");
-  const subtaskCount = document.getElementById("subtaskCompleted");
-  const pointsObtained = document.getElementById("pointsObtained");
 
   if (option === "yes" && event.target.checked) {
-    clearInterval(intervalId);
-    intervalId = setInterval(() => {
-      console.log(`Subtasks complete ${subtasks}`);
-      subtaskCount.innerText = subtasks.toString();
-      subtasks++;
-    }, 5000);
+
+    openWsConnection();
+
     checkboxes[1].checked = false;
   } else if (option === "no" && event.target.checked) {
-    console.log("Subtasked failed");
-    console.log(`You have computed: ${subtasks - 1}`);
+    console.log("Worker is not computing");
 
-    clearInterval(intervalId);
     checkboxes[0].checked = false;
-  } else {
-    clearInterval(intervalId);
+  } else{
+
   }
 }
