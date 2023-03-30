@@ -9,10 +9,12 @@ body{
     font-family: 'Courier New', Courier, monospace;
 }
 
-nav{
-    height: 80px;
+header{
+    height: 30%;
     width: 100%;
-    background-color:rgba(0, 0, 0, 0.616);
+    background-image: url("../images/background.png");
+    background-position: center;
+    background-size: 100%;
 }
 
 label.logo{
@@ -23,29 +25,26 @@ label.logo{
     justify-content: left;
 }
 
-nav ul{
+a{
     float: right;
-    margin-right: 40px;
-}
-
-nav li{
-    display: inline-block;
-    margin: 0 8px;
-    line-height: 80px;
-}
-
-nav a{
-    color: white;
     font-size: 20px;
+    justify-content: right;
+    display: inline-block;
+    margin: 0 40px;
+    line-height: 80px;
+    color: white;
     text-transform: uppercase;
-    border: 1px solid transparent;
-    padding: 7px 10px;
-    border-radius: 3px;
 }
 
-a:hover{
-    border: 1px solid white;
-    transition: .5s;
+h4{
+    float: right;
+    font-size: 20px;
+    justify-content: right;
+    display: inline-block;
+    margin: 0 20px;
+    line-height: 80px;
+    color: white;
+    text-transform: uppercase;
 }
 
 .netflix{

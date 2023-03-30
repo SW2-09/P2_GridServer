@@ -1,3 +1,35 @@
+//User model
+const User = require('../models/User');
+
+// algorithm
+function matrix_mult(A,B){
+  let AColumns = A[0].length;
+  let Arows = A.length;
+  let Bcolumns = B[0].length;
+  let Brows = B.length;
+  if (AColumns !== Brows){
+      console.log("Matrix multiplication not possible with given matrices");
+      return false;
+  }
+  let matrix_AxB = new Array(Arows);
+  for (let index = 0; index < Arows; index++) {
+      matrix_AxB[index] = new Array(Bcolumns);
+  }
+
+  let count = 0;
+
+  for (let ACurrentRows = 0; ACurrentRows < Arows; ACurrentRows++) {
+      for (let BCurrentColumns = 0; BCurrentColumns < Bcolumns; BCurrentColumns++) {
+          for (let index = 0; index < Brows; index++) {
+              count += A[ACurrentRows][index]*B[index][BCurrentColumns];
+          } 
+          matrix_AxB[ACurrentRows][BCurrentColumns] = count;  
+          count = 0;
+      }
+  }
+  return matrix_AxB;
+  }
+
 // open ws connection and handler for "message" events
 function openWsConnection(){
   const ws= new WebSocket("ws://localhost:8001");
@@ -35,6 +67,19 @@ function openWsConnection(){
 return ws;
 }
 
+//Ensure only 1 checkbox can be checked
+const checkboxes = document.querySelectorAll('input[name="option"]');
+checkboxes.forEach((checkbox) => {
+  checkbox.addEventListener('change', (event) => {
+    checkboxes.forEach((c) => {
+      if (c !== event.target) {
+        c.checked = false;
+      }
+    });
+  });
+});
+
+
 function handleChange(event) {
   const option = event.target.value;
   const checkboxes = document.getElementsByName("option");
@@ -42,7 +87,7 @@ function handleChange(event) {
   if (option === "yes" && event.target.checked) {
 
     openWsConnection();
-
+    req
     checkboxes[1].checked = false;
   } else if (option === "no" && event.target.checked) {
     console.log("Worker is not computing");
