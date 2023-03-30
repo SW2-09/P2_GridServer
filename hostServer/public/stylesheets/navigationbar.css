@@ -10,10 +10,11 @@ body{
 }
 
 header{
-    height: 80px;
+    height: 30%;
     width: 100%;
-    background-color: #333333ad;
-
+    background-image: url("../images/background.png");
+    background-position: center;
+    background-size: 100%;
 }
 
 label.logo{
@@ -28,9 +29,8 @@ a{
     float: right;
     font-size: 20px;
     justify-content: right;
-
     display: inline-block;
-    margin: 0 10px;
+    margin: 0 40px;
     line-height: 80px;
     color: white;
     text-transform: uppercase;

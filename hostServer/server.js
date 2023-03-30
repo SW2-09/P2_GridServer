@@ -19,6 +19,9 @@ app.use(express.static("public")); // Middleware function that serves static fil
 // app.use(express.urlencoded({ extended: true })); // Middleware function that parses the body of a request (e.g. form data)
 app.use(express.json()); // This allows us to parse json data
 
+//User model
+const User = require('./models/User');
+
 
 //passport config
 require('./config/passport')(passport)
@@ -52,7 +55,6 @@ app.use(express.urlencoded({extended: false}));
 app.use(passport.initialize())
 app.use(passport.session())
 
-
 //index page
 app.use('/', require('./routes/index'))
 
@@ -73,6 +75,7 @@ app.use("/worker", workerRoute);
 const userRoute = require("./routes/user");
 app.use("/users", userRoute);
 */
+
 
 app.listen(port, () =>
   console.log(`Server has been started on http://localhost:${port}`)

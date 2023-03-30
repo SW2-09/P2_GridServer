@@ -4,23 +4,24 @@ const passport = require('passport');
 const bcrypt = require('bcryptjs');
 
 
+
 //User model
 const User = require('../models/User');
 
 //login page
 workerRoute.get('/login',(req,res)=>{
-  res.render("login")
+  res.render("login");
 })
 
 
 //register page
 workerRoute.get('/register',(req,res)=>{
-  res.render("register")
+  res.render('register');
 })
 
 //register handle
 workerRoute.post('/register', (req,res) =>{
-  const {name, password, password2} = req.body;
+  const {name, password, password2, tasks_computed} = req.body;
   let errors = [];
 
   //Check required fiels
@@ -39,7 +40,8 @@ workerRoute.post('/register', (req,res) =>{
        errors, 
        name,
        password,
-       password2
+       password2,
+       tasks_computed
     });
   } else{
    //validation passed
@@ -52,12 +54,14 @@ workerRoute.post('/register', (req,res) =>{
                    errors: errors, 
                    name: name,
                    password: password,
-                   password2: password2
+                   password2: password2,
+                   tasks_computed: tasks_computed
                 });
            } else{
                const newUser = new User ({
                    name: name,
-                   password: password
+                   password: password,
+                   tasks_computed: tasks_computed 
                });
 
                //Check the hashed password. Default function
@@ -81,8 +85,10 @@ workerRoute.post('/register', (req,res) =>{
   
 })
 
+
 //Login handle
 workerRoute.post('/login',(req,res,next)=>{
+  console.log(req.body)
   passport.authenticate('local',{
       successRedirect: '/worker',
       failureRedirect: '/worker/login'
@@ -90,15 +96,15 @@ workerRoute.post('/login',(req,res,next)=>{
 })
 
 
+
+
 //Logout handle
 workerRoute.get('/logout', (req, res) =>{
   req.logout( err => {
       if(err) { return next(err) }
-      res.redirect('/worker/login')
+      res.redirect('/')
       })
-})
-
-
+    })
 
 
 /*

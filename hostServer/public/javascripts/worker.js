@@ -1,3 +1,6 @@
+//User model
+const User = require('../models/User');
+
 // algorithm
 function matrix_mult(A,B){
   let AColumns = A[0].length;
@@ -83,7 +86,7 @@ function handleChange(event) {
   if (option === "yes" && event.target.checked) {
 
     openWsConnection();
-
+    req
     checkboxes[1].checked = false;
   } else if (option === "no" && event.target.checked) {
     console.log("Worker is not computing");
