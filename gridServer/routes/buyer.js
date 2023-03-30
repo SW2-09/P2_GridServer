@@ -3,16 +3,16 @@ const express = require("express");
 const buyerRouter = express.Router();
 const path = require("path");
 const fileUpload = require("express-fileupload");
-const { rejects } = require("assert");
-const { resolve } = require("path");
+const fs = require("fs");
 
 /* TODO LIST:
- * 1. Create upload-folder if it doesn't exist
- * 2.
+ * 1. Create upload-folder if it doesn't exist DONE
+ * 2. File upload Error handling. DONE
+ * 3. Maybe upload should be async?
  */
 
 const dirPath = "../gridServer/uploads/";
-const allowedFileFormat = ["csv", "json"];
+const allowedFileFormat = ["text/csv", "application/json"]; //allow JSON and csv formats
 const maxFileSize = 10 * 1024 * 1024; // 10 MB
 
 // Guide for sending html: https://www.digitalocean.com/community/tutorials/use-expressjs-to-deliver-html-files
@@ -24,33 +24,49 @@ buyerRouter.get("/", function (req, res) {
  *  File Upload Section *
  ************************ */
 //
-buyerRouter.use(fileUpload());
 
+buyerRouter.use(fileUpload()); // Enables file upload
 buyerRouter.post("/upload", (req, res) => {
-  return new Promise((resolve, reject) => {
+  try {
+    if (!createFolder(dirPath)) {
+      throw new Error("Error creating upload folder");
+    }
     if (!req.files || Object.keys(req.files).length === 0) {
       // If no files were uploaded (i.e. no file was selected)
-      reject(new Error("No files were uploaded."));
+      throw new SyntaxError("No files were uploaded.");
     }
     const sampleFile = req.files.sampleFile;
     const uploadPath = dirPath + sampleFile.name;
 
     if (!allowedFileFormat.includes(sampleFile.mimetype)) {
-      reject(new Error("File format not supported"));
+      throw new SyntaxError("File format not supported");
     }
     if (sampleFile.size > maxFileSize) {
-      reject(
-        new Error("File size is too big. Max support is " + maxFileSize + "MB")
+      throw new SyntaxError(
+        "File size is too big. Max support is " + maxFileSize + "MB"
       );
     }
     sampleFile.mv(uploadPath, (err) => {
       if (err) {
-        reject(err);
+        throw new Error(err);
       } else {
-        resolve("File uploaded!");
+        res.send(sampleFile.name + " was uploaded to " + uploadPath);
       }
     });
-  });
+  } catch (err) {
+    console.log("uploading error: " + err);
+    res.send("uploading error: " + err);
+  }
 });
 
 module.exports = buyerRouter;
+
+const createFolder = (folderPath) => {
+  if (!fs.existsSync(folderPath)) {
+    fs.mkdirSync(folderPath);
+    console.log("Upload folder created at " + folderPath);
+    return true;
+  } else {
+    return false;
+  }
+};
