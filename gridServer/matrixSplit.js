@@ -1,10 +1,11 @@
 export{JobQueue, subtaskExtractor};
+import { matrix_mult_str } from "./algorithms.js"; 
+let matrix_mult= new Function('A','B',matrix_mult_str);
 
 
 // the maxumimum amount of computations we want a single subtask to be
 const calcMax = Math.pow(3,3);
-const matrixsize = 100;
-
+const matrixsize = 1000;
 //the two matrices that will be worked on
 let matrix_B = {
     //creating a random matrix of size = matrixsize
@@ -64,12 +65,13 @@ divideMatrices(A, matrix_B, ARows)
 
 
 class Job{//the job nodes of the job queue
-    constructor(jobId, matrixB, next = null, previous = null){
+    constructor(jobId, alg, matrixB, next = null, previous = null){
         this.jobId = jobId;
         this.subtaskList = new Queue_linked_list_subtask;
         this.matrixB = matrixB;
         this.next = next;
         this.previous = previous;
+        this.alg=alg;
     }
 }
 
@@ -97,11 +99,11 @@ class Queue_linked_list_job{
 
     enQueue(jobId, matrixB) {
         if (this.head === null) {
-            this.tail = this.head = new Job(jobId, matrixB, this.head, this.tail);
+            this.tail = this.head = new Job(jobId, matrix_mult_str, matrixB, this.head, this.tail);
             this.size++;
         }
         else{
-            this.head.previous = this.head = new Job(jobId, matrixB, this.head);
+            this.head.previous = this.head = new Job(jobId, matrix_mult_str, matrixB, this.head);
             this.size++;
         }
     }
@@ -172,27 +174,6 @@ for (let index = 0; index < arr.length; index++) {
     JobQueue.head.subtaskList.head.matrixA = arr[index];
 }
 
-/*
-console.log(JobQueue.head.subtaskList.head);
-let x = JobQueue.head.subtaskList.head
-while (x.next !== null){
-    console.log("JobID " + x.jobId + " taskId " + x.taskId);
-    console.log(x.matrixA);
-    x = x.next;
-}
-*/
-
-// console.log("lenght = " + arr.length);
-// console.log("queue = " + SubTaskQueue.size);
-// console.log("data = " );
-// console.log(SubTaskQueue.head.data);
-
-// while (SubTaskQueue.head !== null){
-//     console.log("en hale");
-//     console.log(SubTaskQueue.tail.data);
-//     SubTaskQueue.deQueue();
-// }
-
 function subtaskExtractor(JobQueue){
     let nextJob=JobQueue.tail;
     while (JobQueue.tail.subtaskList.tail === null){
@@ -200,24 +181,11 @@ function subtaskExtractor(JobQueue){
     }
     let workerPack={
         jobId: nextJob.jobId,
+        alg: nextJob.alog,
         taskId: nextJob.subtaskList.tail.taskId,
         matrixB: nextJob.matrixB,
         matrixA: nextJob.subtaskList.tail.matrixA,
     }
     return workerPack
-}
-
-function subtaskFeeder(){//dette er ikke noet der er færdigt
-    let nextJob = JobQueue.tail;
-    while (JobQueue.tail.subtaskList.tail === null){
-        nextJob = JobQueue.tail.previous
-    }
-    let workerPackage = {
-        jobId: nextJob.jobId,
-        taskId: nextJob.subtaskList.tail.taskId,
-        matrixB: nextJob.matrixB,
-        matrixA: nextJob.subtaskList.tail.matrixA,
-    }
-    return workerPackage;
 }
 

@@ -1,32 +1,3 @@
-// algorithm
-function matrix_mult(A,B){
-  let AColumns = A[0].length;
-  let Arows = A.length;
-  let Bcolumns = B[0].length;
-  let Brows = B.length;
-  if (AColumns !== Brows){
-      console.log("Matrix multiplication not possible with given matrices");
-      return false;
-  }
-  let matrix_AxB = new Array(Arows);
-  for (let index = 0; index < Arows; index++) {
-      matrix_AxB[index] = new Array(Bcolumns);
-  }
-
-  let count = 0;
-
-  for (let ACurrentRows = 0; ACurrentRows < Arows; ACurrentRows++) {
-      for (let BCurrentColumns = 0; BCurrentColumns < Bcolumns; BCurrentColumns++) {
-          for (let index = 0; index < Brows; index++) {
-              count += A[ACurrentRows][index]*B[index][BCurrentColumns];
-          } 
-          matrix_AxB[ACurrentRows][BCurrentColumns] = count;  
-          count = 0;
-      }
-  }
-  return matrix_AxB;
-  }
-
 // open ws connection and handler for "message" events
 function openWsConnection(){
   const ws= new WebSocket("ws://localhost:8001");
@@ -34,18 +5,19 @@ function openWsConnection(){
   let workerID=Math.floor(Math.random() * 1000);
 
   ws.addEventListener("message", e=>{
-      if(e.data=="No tasks in queue"){
-          console.log("No tasks in queue");
-          ws.close();
-      } else{
           console.log("Client recieved:"+e.data);
           let nextSubtask=JSON.parse(e.data);
+          console.log("Next subtask:");
           console.log(nextSubtask);
+          console.log("Matrix A:");
           console.log(nextSubtask.matrixA);
+          console.log("Matrix B:");
           console.log(nextSubtask.matrixB);
 
+          let alg=new Function('A','B',nextSubtask.alg);
+
           let start_comp=Date.now();
-          let solution=matrix_mult(nextSubtask.matrixA,nextSubtask.matrixB.entries);
+          let solution=alg(nextSubtask.matrixA,nextSubtask.matrixB.entries);
           let end_comp=Date.now();
 
           console.log(`Computation took ${(end_comp-start_comp)/1000} s`);
@@ -59,7 +31,7 @@ function openWsConnection(){
 
           console.log(`A subsolution was send by worker: ${subSolution.workerID}`);
       }
-  });
+  );
 return ws;
 }
 
