@@ -11,9 +11,9 @@ const userSchema = new mongoose.Schema({
     },
     tasks_computed: {
         type: Number,
-        default: 1
+        default: 0
     }
 })
 
 const User = mongoose.model('User', userSchema);
-module.exports = User;
+module.exports = User

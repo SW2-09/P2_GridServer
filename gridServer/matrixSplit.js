@@ -1,9 +1,8 @@
-export{JobQueue, subtaskExtractor};
 
 
-// the maxumimum amount of computations we want a single subtask to be
+//the maxumimum amount of computations we want a single subtask to be
 const calcMax = Math.pow(3,3);
-const matrixsize = 100;
+const matrixsize = 3000;
 
 //the two matrices that will be worked on
 let matrix_B = {
@@ -88,7 +87,7 @@ class subTask{//the subtask nodes og the subtask queue in the job queue
  * @method deQueue - will remove the tail element of the queue
  * @method removeJob - will search for the job with the specific job id and remove it from the queue
  */
-class Queue_linked_list_job{
+class Queue_linked_list_job {
     constructor(){
         this.head = null;
         this.tail = null;
@@ -135,7 +134,7 @@ class Queue_linked_list_job{
  * @method deQueue - will remove the tail element of the queue
  */
 class Queue_linked_list_subtask{
-    constructor(){
+    constructor(head, tail){
         this.head = null;
         this.tail = null
         this.size = 0;
@@ -221,3 +220,4 @@ function subtaskFeeder(){//dette er ikke noet der er færdigt
     return workerPackage;
 }
 
+export{JobQueue, subtaskExtractor};

@@ -112,7 +112,6 @@ workerRoute.get('/logout', (req, res) =>{
 workerRoute.get("/", (req, res) => {
   console.log("Worker");
 });
-
 workerRoute.use(
   "/:workerID",
   (req, res, next) => {
@@ -124,8 +123,6 @@ workerRoute.use(
     next();
   }
 );
-
-
 workerRoute.get(
   "/:workerID",
   (req, res, next) => {
@@ -143,9 +140,6 @@ workerRoute.get(
     res.send("Worker does not exists");
   }
 );
-
-
-
 workerRoute.post("/", (req, res) => {
   if (true) {
     workers.push({ name: req.body.name });
@@ -154,14 +148,10 @@ workerRoute.post("/", (req, res) => {
     console.log("Error");
   }
 });
-
 workerRoute.route("/:workerID").get((req, res) => {
   console.log(req.workerID);
 });
-
-
 const workers = [{ name: "Mogens" }, { name: "Grete" }];
-
 workerRoute.param("workerID", (req, res, next, workerID) => {
   req.workerID = workers[workerID];
   next();

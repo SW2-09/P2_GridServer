@@ -1,6 +1,3 @@
-//User model
-const User = require('../models/User');
-
 // algorithm
 function matrix_mult(A,B){
   let AColumns = A[0].length;
@@ -30,12 +27,14 @@ function matrix_mult(A,B){
   return matrix_AxB;
   }
 
+// initialize webSocket as ws
+let ws;
+let subtasks_completed = 0;
+
 // open ws connection and handler for "message" events
 function openWsConnection(){
-  const ws= new WebSocket("ws://localhost:8001");
-
-  let workerID=Math.floor(Math.random() * 1000);
-
+  ws = new WebSocket("ws://localhost:8001");
+  let workerID = Math.floor(Math.random() * 1000);
   ws.addEventListener("message", e=>{
       if(e.data=="No tasks in queue"){
           console.log("No tasks in queue");
@@ -51,19 +50,31 @@ function openWsConnection(){
           let solution=matrix_mult(nextSubtask.matrixA,nextSubtask.matrixB.entries);
           let end_comp=Date.now();
 
+          //FORSØG
+          subtasks_completed++;
+          console.log("KIG HER " + subtasks_completed);
+          subtasks_completed.innerText = subtasks_completed.toString();
+
+
           console.log(`Computation took ${(end_comp-start_comp)/1000} s`);
-          
+
           let subSolution={
               workerID: workerID,
               solution: solution
           }
 
           ws.send(JSON.stringify(subSolution));
-
+         // updateUserTasksComputed();
           console.log(`A subsolution was send by worker: ${subSolution.workerID}`);
       }
   });
 return ws;
+}
+
+
+// Stops the websocket connection
+function stopWsConnection(ws){
+    ws.close();
 }
 
 //Ensure only 1 checkbox can be checked
@@ -84,15 +95,14 @@ function handleChange(event) {
   const checkboxes = document.getElementsByName("option");
 
   if (option === "yes" && event.target.checked) {
-
     openWsConnection();
-    req
+
     checkboxes[1].checked = false;
   } else if (option === "no" && event.target.checked) {
+
     console.log("Worker is not computing");
 
+    stopWsConnection(ws);
     checkboxes[0].checked = false;
-  } else{
-
-  }
+  } 
 }
