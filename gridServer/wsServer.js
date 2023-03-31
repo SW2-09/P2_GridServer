@@ -6,6 +6,7 @@ console.log(JobQueue.size);
 //let JobQueue = require('./matrixSplit.js');
 //let subtaskExtractor = require('./matrixSplit.js');
 
+
 //Sending subtask to a connected worker
 function send_subtask(ws, JobQueue) {
   let next_task = subtaskExtractor(JobQueue);

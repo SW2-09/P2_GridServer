@@ -36,18 +36,19 @@ function openWsConnection(){
   ws = new WebSocket("ws://localhost:8001");
   let workerID = Math.floor(Math.random() * 1000);
   ws.addEventListener("message", e=>{
-      if(e.data=="No tasks in queue"){
-          console.log("No tasks in queue");
-          ws.close();
-      } else{
           console.log("Client recieved:"+e.data);
           let nextSubtask=JSON.parse(e.data);
+          console.log("Next subtask:");
           console.log(nextSubtask);
+          console.log("Matrix A:");
           console.log(nextSubtask.matrixA);
+          console.log("Matrix B:");
           console.log(nextSubtask.matrixB);
 
+          let alg=new Function('A','B',nextSubtask.alg);
+
           let start_comp=Date.now();
-          let solution=matrix_mult(nextSubtask.matrixA,nextSubtask.matrixB.entries);
+          let solution=alg(nextSubtask.matrixA,nextSubtask.matrixB.entries);
           let end_comp=Date.now();
 
           //FORSØG
@@ -67,7 +68,7 @@ function openWsConnection(){
          // updateUserTasksComputed();
           console.log(`A subsolution was send by worker: ${subSolution.workerID}`);
       }
-  });
+  );
 return ws;
 }
 
