@@ -1,19 +1,11 @@
-<<<<<<< HEAD
-=======
 export{JobQueue, subtaskExtractor};
 import { matrix_mult_str } from "./algorithms.js"; 
 let matrix_mult= new Function('A','B',matrix_mult_str);
->>>>>>> e0b44605e59063ee65bf8d1029655d7f9b7a1ffd
 
 
 //the maxumimum amount of computations we want a single subtask to be
 const calcMax = Math.pow(3,3);
-<<<<<<< HEAD
-const matrixsize = 3000;
-
-=======
 const matrixsize = 1000;
->>>>>>> e0b44605e59063ee65bf8d1029655d7f9b7a1ffd
 //the two matrices that will be worked on
 let matrix_B = {
     //creating a random matrix of size = matrixsize
@@ -197,21 +189,3 @@ function subtaskExtractor(JobQueue){
     return workerPack
 }
 
-<<<<<<< HEAD
-function subtaskFeeder(){//dette er ikke noet der er færdigt
-    let nextJob = JobQueue.tail;
-    while (JobQueue.tail.subtaskList.tail === null){
-        nextJob = JobQueue.tail.previous
-    }
-    let workerPackage = {
-        jobId: nextJob.jobId,
-        taskId: nextJob.subtaskList.tail.taskId,
-        matrixB: nextJob.matrixB,
-        matrixA: nextJob.subtaskList.tail.matrixA,
-    }
-    return workerPackage;
-}
-
-export{JobQueue, subtaskExtractor};
-=======
->>>>>>> e0b44605e59063ee65bf8d1029655d7f9b7a1ffd
