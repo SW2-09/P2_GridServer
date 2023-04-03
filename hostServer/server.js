@@ -5,34 +5,67 @@
 nodemon can be acti
 */
 
-const port = 3001;
+const port = 8080;
 
-const express = require("express");
+import express from "express";
+import expressLayouts from "express-ejs-layouts";
+import mongoose from "mongoose";
+import passport from "passport";
+import session from "express-session";
+
 const app = express();
 
-app.use(express.static("public")); // Middleware function that serves static files (e.g. css files) https://expressjs.com/en/starter/static-files.html
-app.use(express.urlencoded({ extended: true })); // Middleware function that parses the body of a request (e.g. form data)
+app.use(express.static('public')); // Middleware function that serves static files (e.g. css files) https://expressjs.com/en/starter/static-files.html
+// app.use(express.urlencoded({ extended: true })); // Middleware function that parses the body of a request (e.g. form data)
 app.use(express.json()); // This allows us to parse json data
 
+//User model
+import { User } from "./models/User.js";
+
+//passport config
+import { checkPassport } from "./config/passport.js";
+checkPassport(passport);
+
+//MongoDB Atlas config
+import { MongoURI as db } from "./config/keys.js";
+
+// Connect to MongoDB
+mongoose.connect(db, {useNewUrlParser: true, useUnifiedTopology: true})
+    .then(() => console.log('MongoDB is connected'))
+    .catch(err => console.log(err));
+
+
+//EJS setup
+app.use(expressLayouts);
 app.set("view engine", "ejs"); // Makes .ejs files possible to use
 
-app.get("/", (req, res, next) => {
-  res.render("public");
-});
 
-/* ** ROUTES **
-This is great practice to get into. This way we can have different nested routes in different files.
-1. Keeps the code clean and easy to read and to maintain.
-2. Each route can be in its own file.
-3. e.g. server.js -> routes/users.js -> routes/users/new.js
-*/
+//Express session
+app.use(
+  session({
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true
+  })
+);
 
-const workerRoute = require("./routes/worker");
-app.use("/worker", workerRoute);
-/*
-const userRoute = require("./routes/user");
-app.use("/users", userRoute);
-*/
+//Bodyparser
+app.use(express.urlencoded({extended: false}));
+
+// Passport middleware
+app.use(passport.initialize())
+app.use(passport.session())
+
+//Index page
+import {router as router} from "./routes/index.js"
+app.use('/', router )
+
+
+//Worker page
+import { workerRoute as workerRoute } from "./routes/worker.js";
+app.use('/', workerRoute);
+
+app.use("/worker", workerRoute)
 
 app.listen(port, () =>
   console.log(`Server has been started on http://localhost:${port}`)

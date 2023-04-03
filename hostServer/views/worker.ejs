@@ -4,21 +4,20 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="stylesheets/worker.css" rel="stylesheet" type="text/css" />
+    <link href="/stylesheets/worker.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/stylesheets/navigationsbar.css">
     <script src="javascripts/worker.js"></script>
-    <title>Worker page</title>
+    <title></title>
   </head>
+  
   <body>
+    <header>
+      <label class="logo"> Gridflix</label>
+      <a href="/worker/logout" class="">Logout</a>
+      <h4> <%= name %> </h4>
+
+    </header>
     <div class="frontpage">
-      <div class="top">
-        <img
-          src="images/favicon.png"
-          width="5%"
-          height="100%"
-          onclick="window.location.href='buyer'"
-        />
-        <h2>Welcome: UserID</h2>
-      </div>
       <div class="left">
         <div class="video" style="--aspect-ratio: 2/3">
           <iframe
@@ -31,7 +30,7 @@
       </div>
       <div class="right">
         <div class="userinfo">
-          <h2>User Info</h2>
+          <h2>Account Settings</h2>
         </div>
         <div class="compute">
           <div class="header">
@@ -64,7 +63,7 @@
           <div class="header">
             <h3>Contribute History</h3>
           </div>
-          Number of subtasks completed: <span id="subtaskCompleted">0</span>
+          Number of subtasks completed: <%= tasks_computed  %>
         </div>
         <br />
         <div class="points">
