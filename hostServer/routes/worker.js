@@ -3,8 +3,6 @@ const workerRoute = express.Router();
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
 
-
-
 //User model
 const User = require('../models/User');
 
@@ -12,7 +10,6 @@ const User = require('../models/User');
 workerRoute.get('/login',(req,res)=>{
   res.render("login");
 })
-
 
 //register page
 workerRoute.get('/register',(req,res)=>{
@@ -77,14 +74,11 @@ workerRoute.post('/register', (req,res) =>{
                        .catch(err => console.log(err));
                    });
                  });
-           }
-           
-           
+           }          
       })
   }
   
 })
-
 
 //Login handle
 workerRoute.post('/login',(req,res,next)=>{
@@ -95,9 +89,6 @@ workerRoute.post('/login',(req,res,next)=>{
   })(req, res, next);
 })
 
-
-
-
 //Logout handle
 workerRoute.get('/logout', (req, res) =>{
   req.logout( err => {
@@ -105,56 +96,5 @@ workerRoute.get('/logout', (req, res) =>{
       res.redirect('/')
       })
     })
-
-
-/*
-// Guide for sending html: https://www.digitalocean.com/community/tutorials/use-expressjs-to-deliver-html-files
-workerRoute.get("/", (req, res) => {
-  console.log("Worker");
-});
-workerRoute.use(
-  "/:workerID",
-  (req, res, next) => {
-    console.log("Request URL: " + req.originalUrl);
-    next();
-  },
-  (req, res, next) => {
-    console.log("Request Type: " + req.method);
-    next();
-  }
-);
-workerRoute.get(
-  "/:workerID",
-  (req, res, next) => {
-    if (req.params.workerID < workers.length) {
-      res.render("../views/pages/worker", {
-        worker: workers[req.params.workerID].name,
-        error: null,
-      });
-      console.log("worker: " + workers[req.params.workerID].name);
-      //next(queue);
-    } else next();
-  },
-  (req, res, next) => {
-    // render a regular page
-    res.send("Worker does not exists");
-  }
-);
-workerRoute.post("/", (req, res) => {
-  if (true) {
-    workers.push({ name: req.body.name });
-    res.redirect(`workers/${workers.length - 1}`);
-  } else {
-    console.log("Error");
-  }
-});
-workerRoute.route("/:workerID").get((req, res) => {
-  console.log(req.workerID);
-});
-const workers = [{ name: "Mogens" }, { name: "Grete" }];
-workerRoute.param("workerID", (req, res, next, workerID) => {
-  req.workerID = workers[workerID];
-  next();
-}); */
 
 module.exports = workerRoute;

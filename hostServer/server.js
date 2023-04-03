@@ -30,7 +30,7 @@ require('./config/passport')(passport)
 const db = require('./config/keys').MongoURI;
 
 // Connect to MongoDB
-mongoose.connect(db, {useNewUrlParser: true})
+mongoose.connect(db, {useNewUrlParser: true, useUnifiedTopology: true})
     .then(() => console.log('MongoDB is connected'))
     .catch(err => console.log(err));
 
@@ -61,13 +61,6 @@ app.use('/', require('./routes/index'))
 //worker page
 app.use('/',require('./routes/worker'))
 
-
-/* ** ROUTES **
-This is great practice to get into. This way we can have different nested routes in different files.
-1. Keeps the code clean and easy to read and to maintain.
-2. Each route can be in its own file.
-3. e.g. server.js -> routes/users.js -> routes/users/new.js
-*/
 
 const workerRoute = require("./routes/worker");
 app.use("/worker", workerRoute);
