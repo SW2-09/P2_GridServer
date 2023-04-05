@@ -1,49 +1,17 @@
-// algorithm
-function matrix_mult(A,B){
-  let AColumns = A[0].length;
-  let Arows = A.length;
-  let Bcolumns = B[0].length;
-  let Brows = B.length;
-  if (AColumns !== Brows){
-      console.log("Matrix multiplication not possible with given matrices");
-      return false;
-  }
-  let matrix_AxB = new Array(Arows);
-  for (let index = 0; index < Arows; index++) {
-      matrix_AxB[index] = new Array(Bcolumns);
-  }
-
-  let count = 0;
-
-  for (let ACurrentRows = 0; ACurrentRows < Arows; ACurrentRows++) {
-      for (let BCurrentColumns = 0; BCurrentColumns < Bcolumns; BCurrentColumns++) {
-          for (let index = 0; index < Brows; index++) {
-              count += A[ACurrentRows][index]*B[index][BCurrentColumns];
-          } 
-          matrix_AxB[ACurrentRows][BCurrentColumns] = count;  
-          count = 0;
-      }
-  }
-  return matrix_AxB;
-  }
-
-// initialize webSocket as ws
 let ws;
 let subtasks_completed = 0;
 
-// open ws connection and handler for "message" events
+// open ws connection and hand  er for "message" events
 function openWsConnection(){
   ws = new WebSocket("ws://localhost:8001");
   let workerID = Math.floor(Math.random() * 1000);
   ws.addEventListener("message", e=>{
-          console.log("Client recieved:"+e.data);
+          if(e.data === "0"){
+              console.log("Not work to do, waiting for new jobs");
+          }
+          else{
+          console.log(`You recieved task:\n`+e.data);
           let nextSubtask=JSON.parse(e.data);
-          console.log("Next subtask:");
-          console.log(nextSubtask);
-          console.log("Matrix A:");
-          console.log(nextSubtask.matrixA);
-          console.log("Matrix B:");
-          console.log(nextSubtask.matrixB);
 
           let alg=new Function('A','B',nextSubtask.alg);
 
@@ -67,6 +35,7 @@ function openWsConnection(){
           ws.send(JSON.stringify(subSolution));
          // updateUserTasksComputed();
           console.log(`A subsolution was send by worker: ${subSolution.workerID}`);
+        }
       }
   );
 return ws;

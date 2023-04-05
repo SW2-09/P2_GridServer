@@ -1,6 +1,6 @@
 export{matrix_mult_str}
 
-// Matrixmultiplication algorithm
+// Matrixmultiplication algorithm 
 
 let matrix_mult_str=
    `let AColumns = A[0].length;
