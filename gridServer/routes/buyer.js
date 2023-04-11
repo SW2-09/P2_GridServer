@@ -1,9 +1,33 @@
-const { application } = require("express");
-const express = require("express");
+export {buyerRouter}
+
+//const { application } = require("express");
+//const express = require("express");
+//const path = require("path");
+//const fileUpload = require("express-fileupload");
+//const fs = require("fs");
+
+
+import express from "express";
+import path from "path";
+import fileUpload from "express-fileupload";
+import fs from "fs";
+import passport from 'passport'
+import bcrypt from "bcryptjs"
+
 const buyerRouter = express.Router();
-const path = require("path");
-const fileUpload = require("express-fileupload");
-const fs = require("fs");
+
+//Buyer model
+
+
+//Logout handle
+buyerRouter.get('/logout', (req, res) =>{
+  req.logout( err => {
+      if(err) { return next(err) }
+      res.redirect('/')
+      })
+    })
+
+
 
 /* TODO LIST:
  * 1. Create upload-folder if it doesn't exist DONE
@@ -15,15 +39,16 @@ const dirPath = "../gridServer/uploads/";
 const allowedFileFormat = ["text/csv", "application/json"]; //allow JSON and csv formats
 const maxFileSize = 10 * 1024 * 1024; // 10 MB
 
-// Guide for sending html: https://www.digitalocean.com/community/tutorials/use-expressjs-to-deliver-html-files
+/* Guide for sending html: https://www.digitalocean.com/community/tutorials/use-expressjs-to-deliver-html-files
 buyerRouter.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "../public/buyer.html"));
-});
+});*/
 
 /* ***********************
  *  File Upload Section *
  ************************ */
 //
+
 
 buyerRouter.use(fileUpload()); // Enables file upload
 buyerRouter.post("/upload", (req, res) => {
@@ -58,8 +83,6 @@ buyerRouter.post("/upload", (req, res) => {
     res.send("uploading error: " + err);
   }
 });
-
-module.exports = buyerRouter;
 
 const createFolder = (folderPath) => {
   if (!fs.existsSync(folderPath)) {
