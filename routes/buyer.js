@@ -35,7 +35,7 @@ buyerRouter.get("/logout", (req, res) => {
  * 3. Maybe upload should be async?
  */
 
-const dirPath = "../gridServer/uploads/";
+const dirPath = "./uploads/";
 const allowedFileFormat = ["text/csv", "application/json"]; //allow JSON and csv formats
 const maxFileSize = 10 * 1024 * 1024; // 10 MB
 
@@ -83,6 +83,7 @@ const createFolder = (folderPath) => {
     console.log("Upload folder created at " + folderPath);
     return true;
   } else {
+    console.log("Upload folder already exists at " + folderPath);
     return false;
   }
 };
