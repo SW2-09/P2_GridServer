@@ -1,8 +1,8 @@
  export{arr, matrix_B};
 
  //the maxumimum amount of computations we want a single subtask to be
-const calcMax = Math.pow(3,3);
-const matrixsize = 1000;
+const calcMax = Math.pow(2000,3);
+const matrixsize = 3000;
 //the two matrices that will be worked on
 let matrix_A = {
     entries: Array(matrixsize).fill(0).map(() => Array(matrixsize).fill(0).map(() => Math.floor(Math.random() * 10))),

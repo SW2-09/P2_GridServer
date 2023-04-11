@@ -36,7 +36,7 @@ wss.on("connection", (ws) => {
     try {
       let messageParse = JSON.parse(message);
       console.log("Solution recieved:");
-      console.log(messageParse);
+      console.log(messageParse["solution"]);
 
     } catch (e) {
       console.log(`Something went wrong with the recieved message: ${e.message}`);
