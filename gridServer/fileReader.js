@@ -1,5 +1,5 @@
 export {expMatrixA, expMatrixB};
-let exportmatrix = [];
+
 let uploadButton = document.getElementById('uploadButton');
 
 uploadButton.addEventListener('click', 
@@ -7,7 +7,7 @@ uploadButton.addEventListener('click',
     let expMatrixA = parseCsvToJson(document.getElementById('uploadFile').files[0]);
     let expMatrixB = parseCsvToJson(document.getElementById('uploadFile2').files[0]);
 });
-});
+
 
 function parseCsvToJson(file){
     let matrix = [];
