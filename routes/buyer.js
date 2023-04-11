@@ -1,4 +1,4 @@
-export {buyerRouter}
+export { buyerRouter };
 
 //const { application } = require("express");
 //const express = require("express");
@@ -6,28 +6,28 @@ export {buyerRouter}
 //const fileUpload = require("express-fileupload");
 //const fs = require("fs");
 
-
 import express from "express";
 import path from "path";
 import fileUpload from "express-fileupload";
 import fs from "fs";
-import passport from 'passport'
-import bcrypt from "bcryptjs"
+//import passport from "passport";
+//import bcrypt from "bcryptjs";
 
 const buyerRouter = express.Router();
 
-//Buyer model
-
-
 //Logout handle
-buyerRouter.get('/logout', (req, res) =>{
-  req.logout( err => {
-      if(err) { return next(err) }
-      res.redirect('/')
-      })
-    })
+buyerRouter.get("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+});
 
-
+//buyerRouter.get("/", (req, res) => {
+//  res.send("DAMN");
+//});
 
 /* TODO LIST:
  * 1. Create upload-folder if it doesn't exist DONE
@@ -39,25 +39,18 @@ const dirPath = "../gridServer/uploads/";
 const allowedFileFormat = ["text/csv", "application/json"]; //allow JSON and csv formats
 const maxFileSize = 10 * 1024 * 1024; // 10 MB
 
-/* Guide for sending html: https://www.digitalocean.com/community/tutorials/use-expressjs-to-deliver-html-files
-buyerRouter.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "../public/buyer.html"));
-});*/
-
 /* ***********************
  *  File Upload Section *
  ************************ */
 //
 
-
 buyerRouter.use(fileUpload()); // Enables file upload
 buyerRouter.post("/upload", (req, res) => {
   try {
-    if (!createFolder(dirPath)) {
-      throw new Error("Error creating upload folder");
-    }
+    createFolder(dirPath);
     if (!req.files || Object.keys(req.files).length === 0) {
       // If no files were uploaded (i.e. no file was selected)
+      //console.log(req.);
       throw new SyntaxError("No files were uploaded.");
     }
     const sampleFile = req.files.sampleFile;
