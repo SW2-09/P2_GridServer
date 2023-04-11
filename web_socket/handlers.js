@@ -1,5 +1,5 @@
-import{JobQueue} from "../matrix_multiplication/jobQueue.js";
-import{subtaskFeeder, queueEmpty} from "../matrix_multiplication/taskFeed.js";
+import{JobQueue} from "../Jobtypes/matrix_multiplication/jobQueue.js";
+import{subtaskFeeder, queueEmpty} from "../Jobtypes/matrix_multiplication/taskFeed.js";
 import { WebSocketServer } from "ws";
 
 // websocket connection:
