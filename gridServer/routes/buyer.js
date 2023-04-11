@@ -47,9 +47,7 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
 buyerRouter.use(fileUpload()); // Enables file upload
 buyerRouter.post("/upload", (req, res) => {
   try {
-    if (!createFolder(dirPath)) {
-      //throw new Error("Error creating upload folder");
-    }
+    createFolder(dirPath);
     if (!req.files || Object.keys(req.files).length === 0) {
       // If no files were uploaded (i.e. no file was selected)
       //console.log(req.);
