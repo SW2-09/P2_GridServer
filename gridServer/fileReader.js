@@ -1,3 +1,5 @@
+export {exportmatrix};
+let exportmatrix = [];
 let uploadButton = document.getElementById('uploadButton');
 
 uploadButton.addEventListener('click', 
@@ -28,6 +30,7 @@ function parseCsvToJson(file){
 
             console.log("matrix")
             console.log(matrix);
+            exportmatrix = matrix;
         }
     })
 }
