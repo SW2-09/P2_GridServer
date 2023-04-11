@@ -47,30 +47,47 @@ const maxFileSize = 10 * 1024 * 1024; // 10 MB
 buyerRouter.use(fileUpload()); // Enables file upload
 buyerRouter.post("/upload", (req, res) => {
   try {
-    createFolder(dirPath);
+    let dynamicDirPath = dirPath + req.user.name + "/";
+    createFolder(dynamicDirPath);
     if (!req.files || Object.keys(req.files).length === 0) {
       // If no files were uploaded (i.e. no file was selected)
       //console.log(req.);
       throw new SyntaxError("No files were uploaded.");
     }
-    const sampleFile = req.files.sampleFile;
-    const uploadPath = dirPath + sampleFile.name;
 
-    if (!allowedFileFormat.includes(sampleFile.mimetype)) {
+    const sampleFile = req.files.sampleFile;
+    //const uploadPath = dynamicDirPath + sampleFile.name;
+
+    if (!Array.isArray(sampleFile)) {
+      throw new SyntaxError("Files must be sent as an array.");
+    }
+
+    sampleFile.forEach((file) => {
+    console.log(file.name)
+    if (!allowedFileFormat.includes(file.mimetype)) {
       throw new SyntaxError("File format not supported");
     }
-    if (sampleFile.size > maxFileSize) {
+    if (file.size > maxFileSize) {
       throw new SyntaxError(
         "File size is too big. Max support is " + maxFileSize + "MB"
       );
     }
-    sampleFile.mv(uploadPath, (err) => {
+  });
+
+
+    sampleFile.forEach((file) => {
+    let uploadPath = dynamicDirPath + file.name;
+
+    file.mv(uploadPath, (err) => {
       if (err) {
         throw new Error(err);
       } else {
-        res.send(sampleFile.name + " was uploaded to " + uploadPath);
+        console.log("File uploaded to " + uploadPath);
+        //res.send(sampleFile.name + " was uploaded to " + uploadPath);
       }
     });
+  });
+
   } catch (err) {
     console.log("uploading error: " + err);
     res.send("uploading error: " + err);
