@@ -17,8 +17,13 @@
         method="post"
         enctype="multipart/form-data"
       >
-        <input type="file" accept=".csv, .json" />
-        <input type="submit" value="Upload!" />
+      <label for="uploadFile">Matrix A</label>
+      <input type="file" id="uploadFile" name="uploadFile" accept=".csv">
+  
+      <label for="uploadFile2">Matrix B</label>
+      <input type="file" id="uploadFile2" name="uploadFile2" accept=".csv">
+      
+      <input id="uploadButton" type="submit" value="Upload!" />
       </form>
     </div>
   </body>
