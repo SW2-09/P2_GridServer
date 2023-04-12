@@ -88,10 +88,12 @@ buyerRouter.post("/upload", (req, res) => {
     });
   });
 
-  } catch (err) {
+  } 
+    catch (err) {
     console.log("uploading error: " + err);
     res.send("uploading error: " + err);
   }
+  res.redirect("/buyer");
 });
 
 const createFolder = (folderPath) => {
