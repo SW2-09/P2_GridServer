@@ -23,6 +23,11 @@ router.get("/buyer", ensureAuthenticated, (req, res) => {
   res.render("buyer", { name: req.user.name});
 });
 
+//admin page
+router.get("/admin", ensureAuthenticated, (req, res) => {
+  res.render("admin", { name: req.user.name });
+});
+
 router.post("/register", (req, res) => {
   const { name, password, password2 } = req.body;
   let errors = [];
@@ -84,8 +89,17 @@ router.post("/register", (req, res) => {
 //Login handle
 router.post("/login", (req, res, next) => {
   console.log(req.body);
+  if(req.body.name == "admin"){
+    passport.authenticate("local", {
+    successRedirect: "/admin",
+    failureRedirect: "/login",
+  })(req, res, next);
+  }
+  else{
   passport.authenticate("local", {
     successRedirect: "/buyer",
     failureRedirect: "/",
   })(req, res, next);
-});
+  }});
+
+

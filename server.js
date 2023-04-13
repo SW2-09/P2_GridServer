@@ -13,6 +13,7 @@ import mongoose from "mongoose";
 import session from "express-session";
 import passport from "passport";
 
+
 //const express = require("express");
 const app = express();
 
@@ -57,6 +58,10 @@ app.use("/buyer", buyerRouter);
 import { router } from "./routes/index.js";
 app.use("/", router);
 
+//Admin page
+import { adminRouter } from "./routes/admin.js";
+app.use("/admin", adminRouter);
+
 /* ** ROUTES **
 This is great practice to get into. This way we can have different nested routes in different files.
 1. Keeps the code clean and easy to read and to maintain.
@@ -73,3 +78,4 @@ app.use("/users", userRoute);
 app.listen(port, () =>
   console.log(`Server has been started on http://localhost:${port}`)
 );
+
