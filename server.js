@@ -79,19 +79,3 @@ app.listen(port, () =>
   console.log(`Server has been started on http://localhost:${port}`)
 );
 
-router.post("/admin/purge", (req, res) => {
-    console.log(req.body.name);
-    async function deleteCollection() {
-      console.log("Deleting collection");
-      const collection = "users";
-      
-      // await mongoose.connection.db.dropCollection(collection, function (err, result) {
-      //   if (err) {
-      //     console.log(err);
-      //   } else {
-      //     console.log("Collection deleted");
-      //   }
-      // });
-    }
-    deleteCollection();
-});

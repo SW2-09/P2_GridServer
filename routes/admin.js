@@ -1,20 +1,27 @@
 export { adminRouter };
 
+import mongoose from "mongoose";
 import express from "express";
 
 const adminRouter = express.Router();
 
-adminRouter.get("/", (req, res) => {
-  res.send("DAMN");
+adminRouter.post("/purge", (req, res) => {
+  deleteCollection(req.body.collection);
+  res.json({ message: "Purged '" + req.body.collection + "' collection from database: "});
+  
+  
 });
 
-const button = document.getElementById('purge');
-const collection = document.getElementById('collection');
+async function deleteCollection(collection) {
+  console.log("Deleting all '" + collection  + "' from database");
+  
+  await mongoose.connection.db.dropCollection(collection, function (err, result) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Collection deleted");
+    }
+  });
+}
 
-    button.addEventListener('click', () => {
-        console.log(collection.value);
-        fetch('/admin/purge', {
-             method: 'POST',
-             
-         })
-    })
+

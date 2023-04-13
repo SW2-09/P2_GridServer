@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<script src="../routes/admin.js"></script>
 <body>
     <div> <%=name %> </div>
     <button id ="test"> test</button>
@@ -16,7 +15,35 @@
     </select>
 </body>
 <script>
-    
+    const purge = document.getElementById("purge");
+
+    purge.addEventListener("click", async () => {
+        try{
+        const response = await fetch("/admin/purge", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                collection: document.getElementById("collection").value,
+            }),
+        });
+
+        if(response.status === 200)
+        {  
+            const responseJson = await response.json();
+            console.log(responseJson.message);
+        }
+        else
+        {
+            console.log("Error");
+        }
+
+    }catch (err) {
+        console.log(err);
+    }
+    });
+        
 </script>
 
 
