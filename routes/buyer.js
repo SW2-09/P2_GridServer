@@ -45,8 +45,8 @@ buyerRouter.post("/upload", (req, res) => {
     createFolder(dynamicDirPath);
 
     const files = Object.values(req.files); // list of files from request
-    files.forEach((file) => {
-      console.log(file);
+    files.forEach((file, index) => {
+      //console.log(file);
       if (!file || Object.keys(file).length === 0) {
         // If no files were uploaded (i.e. no file was selected)
         //console.log(req.);
@@ -64,7 +64,7 @@ buyerRouter.post("/upload", (req, res) => {
           "File size is too big. Max support is " + maxFileSize + "MB"
         );
       }
-      let uploadPath = dynamicDirPath + file.name;
+      let uploadPath = dynamicDirPath + index;
 
       file.mv(uploadPath, (err) => {
         if (err) {
