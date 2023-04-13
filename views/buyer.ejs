@@ -6,21 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Buyer page</title>
     <link href="stylesheets/buyer.css" rel="stylesheet" type="text/css" />
+    
   </head>
-  <script src="../routes/buyer.js"></script>
   <body>
-    <div>
-      <form
-        ref="uploadForm"
-        id="uploadForm"
-        action="/buyer/upload"
-        method="post"
-        enctype="multipart/form-data"
-        
-      >
-        <input type="file" accept=".json, .csv" name="sampleFile" multiple />
-        <input type="submit" value="Upload!" />
-      </form>
+    <div id="mainDiv">
+      <div>
+        <h1 id="h1">Welcome <%= name%></h1>
+        <button id="logout" class="logout"> Logout</button>
+      </div>
+      <div>
+        <h2>Current jobs</h2>
+        <div class="JobList">
+          <p>HEJSA</p>
+        </div>
+      </div>
+        <button id="createJob-button" class="Create-Job"> Create new job</button>
     </div>
+    
+    
+
+  
   </body>
+  <script src="javascripts/createJob.js"></script>
 </html>

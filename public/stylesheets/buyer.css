@@ -1,0 +1,18 @@
+h1, .logout {
+    display: inline-block;
+  }
+
+.logout {
+    float: right;
+    margin: 20px;
+}
+
+
+.JobList {
+    
+    outline: 2px solid black;
+}
+
+.Create-Job {
+
+}
