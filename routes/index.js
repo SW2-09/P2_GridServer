@@ -13,10 +13,6 @@ router.get("/", (req, res) => {
   res.render("login");
 });
 
-router.get("/login", (req, res) => {
-  res.render("login");
-});
-
 //register page
 router.get("/register", (req, res) => {
   res.render("register");
@@ -24,7 +20,7 @@ router.get("/register", (req, res) => {
 
 // buyer pag
 router.get("/buyer", ensureAuthenticated, (req, res) => {
-  res.render("buyer", { name: req.user.name });
+  res.render("buyer", { name: req.user.name});
 });
 
 router.post("/register", (req, res) => {
@@ -75,7 +71,7 @@ router.post("/register", (req, res) => {
             newBuyer
               .save()
               .then((buyer) => {
-                res.redirect("/login");
+                res.redirect("/");
               })
               .catch((err) => console.log(err));
           });
@@ -90,6 +86,6 @@ router.post("/login", (req, res, next) => {
   console.log(req.body);
   passport.authenticate("local", {
     successRedirect: "/buyer",
-    failureRedirect: "/login",
+    failureRedirect: "/",
   })(req, res, next);
 });

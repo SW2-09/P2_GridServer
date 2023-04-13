@@ -6,21 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Buyer page</title>
     <link href="stylesheets/buyer.css" rel="stylesheet" type="text/css" />
+    
   </head>
-  <script src="../routes/buyer.js"></script>
   <body>
-    <div>
-      <form
-        ref="uploadForm"
-        id="uploadForm"
-        action="/buyer/upload"
-        method="post"
-        enctype="multipart/form-data"
-      >
-        <input type="file" accept=".json, .csv" name="fileA" />
-        <input type="file" accept=".json, .csv" name="fileB" />
-        <input type="submit" value="Upload!" />
-      </form>
+Create_job_page
+    <header>
+      <div class="header-content">
+        <span class="welcome-message">Welcome <%= name%></span>
+        <div class="header-right">
+          <button id="logout" class="logoutButton"> Logout</button>
+        </div>
+      </div>
+    </header>
+    <div class="mainDiv" id="mainDiv">
     </div>
   </body>
+  <script src="javascripts/createJob.js"></script>
 </html>

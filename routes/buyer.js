@@ -38,6 +38,10 @@ const dirPath = "./uploads/";
 const allowedFileFormat = ["text/csv", "application/json"]; //allows JSON and csv formats
 const maxFileSize = 10 * 1024 * 1024; // 10 MB
 
+buyerRouter.post("/test", (req, res) => {
+  console.log(req.body);
+});
+
 buyerRouter.use(fileUpload()); // Enables file upload
 buyerRouter.post("/upload", (req, res) => {
   try {
