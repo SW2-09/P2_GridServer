@@ -47,7 +47,7 @@ let secondPage = `
 <div>
 <button id="cancelJob">Cancel</button>
 </div>
-<script src="test.js"></script>`;
+`;
 
 let frontPage = `body>
 <div id="mainDiv">
@@ -65,9 +65,10 @@ let frontPage = `body>
 </div>
 </body>`
 
-
-document.getElementById("createJob-button").addEventListener("mouseover", ()=> {
-    console.log("det virker");
+document.getElementById("createJob-button").addEventListener("click", ()=> {
+    const mainDiv = document.querySelector("#mainDiv");
+    mainDiv.innerHTML = secondPage;
+    
 });
 
 document.getElementById("cancelJob").addEventListener("click", ()=> {
@@ -76,16 +77,13 @@ document.getElementById("cancelJob").addEventListener("click", ()=> {
     mainDiv.innerHTML = frontPage;
 });
 
-document.getElementById("jobType").addEventListener("mouseover", ()=> {
+    document.getElementById("jobType").addEventListener("mouseover", ()=> {
     const jobType = document.getElementById("jobType").value; 
     console.log(jobType);
 });
 
-document.getElementById("createJob-button").addEventListener("click", ()=> {
-    const mainDiv = document.querySelector("#mainDiv");
-    mainDiv.innerHTML = secondPage;
-    
-});
+
+
 
 
 
