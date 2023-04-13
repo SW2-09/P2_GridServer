@@ -1,29 +1,13 @@
-
-let matrixUpload = `<div>
-<form
-    ref="uploadForm"
-    id="uploadForm"
-    action="/buyer/upload"
-    method="post"
-    enctype="multipart/form-data"
->
-<label for="uploadFile">Matrix A</label>
-<input type="file" id="uploadFile" name="uploadFile" accept=".csv">
-
-<label for="uploadFile2">Matrix B</label>
-<input type="file" id="uploadFile2" name="uploadFile2" accept=".csv">
-
-<input id="uploadButton" type="submit" value="Upload!" />
-</form>
-</div>`
+const mainDiv = document.getElementById("mainDiv");
 
 
-
-let secondPage = `
+const content = {
+CreateJob: `<div>
 <h1>Job creation</h1>
 </div>
 <div id="creationForm">
-<form>
+<form   action="/buyer/test"
+        method="post">
     <div>
         <label for="jobTitle">Job Title</label>
         <input type="text" name="jobTitle" id="jobTitle">
@@ -41,20 +25,16 @@ let secondPage = `
             <option value="none">Et andet sejt projekt</option>
             </select>
     </div>
-    <div>
+    <div id="Uploadtype"></div>
     <input type="submit" value="Create Job">
 </form>
 <div>
 <button id="cancelJob">Cancel</button>
 </div>
-`;
+`,
 
-let frontPage = `body>
+CurrentJobs: `
 <div id="mainDiv">
-  <div>
-    <h1 id="h1">Welcome <%= name%></h1>
-    <button id="logout" class="logout"> Logout</button>
-  </div>
   <div>
     <h2>Current jobs</h2>
     <div class="JobList">
@@ -62,29 +42,58 @@ let frontPage = `body>
     </div>
   </div>
     <button id="createJob-button" class="Create-Job"> Create new job</button>
+</div>`,
+
+underconstruction: `<div>
+<h1>Under construction</h1>
 </div>
-</body>`
+<div>
+<button id="cancelJob">Cancel</button>
+</div>
+`,
 
-document.getElementById("createJob-button").addEventListener("click", ()=> {
-    const mainDiv = document.querySelector("#mainDiv");
-    mainDiv.innerHTML = secondPage;
-    
+matrixUpload: `<div>
+<form
+    ref="uploadForm"
+    id="uploadForm"
+    action="/buyer/upload"
+    method="post"
+    enctype="multipart/form-data"
+>
+<label for="uploadFile">Matrix A</label>
+<input type="file" id="uploadFile" name="uploadFile" accept=".csv">
+
+<label for="uploadFile2">Matrix B</label>
+<input type="file" id="uploadFile2" name="uploadFile2" accept=".csv">
+
+<input id="uploadButton" type="submit" value="Upload!" />
+</form>
+</div>`,
+};
+
+
+
+mainDiv.addEventListener("click", (e) => {
+    if (e.target.id === "createJob-button") {
+        mainDiv.innerHTML = content.CreateJob;
+    }
 });
 
-document.getElementById("cancelJob").addEventListener("click", ()=> {
-    console.log("hejsa");
-    const mainDiv = document.querySelector("#mainDiv");
-    mainDiv.innerHTML = frontPage;
+mainDiv.addEventListener("click", (e) => {
+    if (e.target.id === "cancelJob") {
+        mainDiv.innerHTML = content.CurrentJobs;
+    }
 });
 
-    document.getElementById("jobType").addEventListener("mouseover", ()=> {
-    const jobType = document.getElementById("jobType").value; 
-    console.log(jobType);
+mainDiv.addEventListener("change", (e) => {
+    if (e.target.id === "jobType") {
+        if (e.target.value === "matrixMult") {
+            document.getElementById('Uploadtype').innerHTML = content.matrixUpload;
+        }
+        else {
+            document.getElementById('Uploadtype').innerHTML = ''
+        }
+    }
 });
 
-
-
-
-
-
- 
+mainDiv.innerHTML = content.CurrentJobs;
