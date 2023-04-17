@@ -4,7 +4,8 @@
 3. Use the "npm run devStart" command to start the server (see package.json) 
 nodemon can be acti
 */
-
+export{server};
+import {startWebsocketserver} from "./web_socket/handlers.js";
 const port = 3000;
 
 import express from "express";
@@ -75,7 +76,7 @@ const userRoute = require("./routes/user");
 app.use("/users", userRoute);
 */
 
-app.listen(port, () =>
+const server = app.listen(port, () =>
   console.log(`Server has been started on http://localhost:${port}`)
 );
-
+startWebsocketserver();

@@ -1,9 +1,12 @@
+export { startWebsocketserver }
 import{JobQueue} from "../Jobtypes/matrix_multiplication/jobQueue.js";
 import{subtaskFeeder, queueEmpty} from "../Jobtypes/matrix_multiplication/taskFeed.js";
 import { WebSocketServer } from "ws";
+import { server} from "../server.js";
 
 // websocket connection:
-const wss = new WebSocketServer({ port: 8001 });
+function startWebsocketserver(){
+const wss = new WebSocketServer({ server });
 
 console.log(`There are ${JobQueue.size} jobs in the queue.`);
 
@@ -36,7 +39,7 @@ wss.on("connection", (ws) => {
     try {
       let messageParse = JSON.parse(message);
       console.log("Solution recieved:");
-      console.log(messageParse["solution"]);
+      console.log(messageParse["workerID"]);
 
     } catch (e) {
       console.log(`Something went wrong with the recieved message: ${e.message}`);
@@ -53,4 +56,4 @@ wss.on("connection", (ws) => {
   ws.on("close", () => {
     console.log("Client has disconnected");
   });
-});
+})};
