@@ -1,4 +1,6 @@
 export{subtaskFeeder, queueEmpty};
+import { Buyer } from "../models/Buyer.js";
+
 
 //token for signifying that the queue is empty
 let queueEmpty="empty";
@@ -10,6 +12,7 @@ let queueEmpty="empty";
  */
 function subtaskFeeder(JobQueue){
     if (JobQueue.tail.subtaskList.tail=== null){
+        jobDone(JobQueue.tail);
         JobQueue.deQueue();
     }
     if(!(JobQueue.size > 0)){
@@ -26,4 +29,14 @@ function subtaskFeeder(JobQueue){
     }
     JobQueue.tail.subtaskList.deQueue();
     return workerPack;
+}
+
+function jobDone(job){
+    let Solution = [];
+    job.solutions.forEach(element => {
+        Solution.concat(element);
+    });
+    Buyer.findone({name: job.owner}).then((buyer)=>{
+
+    });
 }

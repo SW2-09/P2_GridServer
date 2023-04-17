@@ -10,6 +10,7 @@ class Job{//the job nodes of the job queue
         this.next = next;
         this.previous = previous;
         this.alg=alg;
+        this.solutions = [];
     }
 }
 
