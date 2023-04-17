@@ -1,62 +1,24 @@
-h1, .logout {
-    display: inline-block;
-  }
-
-.logout {
-    float: right;
-    margin: 20px;
-}
-
-
-.JobList {
-    
-    outline: 2px solid black;
-    width: 50%;
-}
-
-.Create-Job {
-
-}
 body {
     background-color: #f2f2f2;
     margin: 0;
     padding: 0;
     font-family: Arial, Helvetica, sans-serif;
-}
-
-.Job-Title {
-    font-size: 30px;
-    font-weight: bold;
-}
-
-.Job-Description {
-    font-size: 20px;
-}
-
-.mainDiv{
-    padding-left: 10px;
-
-}
+  }
+  
+  /* Header/Logo Title */
 
 header {
     background-color: #333;
     color: white;
     padding: 10px;
-    
-    
   }
-  
-  .header-content {
+
+.header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  
-  
-  .welcome-message {
-    margin-right: 10px;
-  }
-  
+
   .logoutButton {
     background-color: #3662f4;
     border: none;
@@ -69,7 +31,8 @@ header {
     cursor: pointer;
     border-radius: 4px;
   }
-  
-  .logoutButton:hover {
-    background-color: #3733ff;
+
+  .content{
+    padding-left: 10px;
+    padding-top: 10px;
   }

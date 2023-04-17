@@ -2,6 +2,7 @@ export { adminRouter };
 
 import mongoose from "mongoose";
 import express from "express";
+import { Buyer } from "../models/Buyer.js";
 
 const adminRouter = express.Router();
 
@@ -11,6 +12,16 @@ adminRouter.post("/purge", (req, res) => {
   
   
 });
+
+adminRouter.post("/lookup", (req, res) => {
+  getItems(req.body.collection).then((items) => {
+    console.log(items);
+    res.json({ message: "Items: " + items });
+  });
+  
+});
+   
+
 
 async function deleteCollection(collection) {
   console.log("Deleting all '" + collection  + "' from database");
@@ -23,5 +34,19 @@ async function deleteCollection(collection) {
     }
   });
 }
+
+
+// async function getItems(){
+
+//   const Items = await Buyer.find({});
+//   return Items;
+
+// }
+
+async function getItems(collection){
+  const Items =  await mongoose.connection.db.collection(collection).find({}).toArray();
+    return Items;
+  }
+
 
 
