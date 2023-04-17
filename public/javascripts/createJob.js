@@ -6,9 +6,7 @@ CreateJob: `<div>
 <h1>Job creation</h1>
 </div>
 <div id="creationForm">
-<form   action="/buyer/upload"
-        method="post"
-        enctype="multipart/form-data">
+<form  enctype="multipart/form-data">
     <div>
         <label for="jobTitle">Job Title</label>
         <input type="text" name="jobTitle" id="jobTitle">
@@ -88,3 +86,40 @@ mainDiv.addEventListener("change", (e) => {
 });
 
 mainDiv.innerHTML = content.CurrentJobs;
+
+
+
+mainDiv.addEventListener('change', function(e) {
+    if (e.target.id === "uploadFile") {
+        let file = document.getElementById('uploadFile').files[0];
+        parseCsvToJson(file);
+    }
+});
+
+function parseCsvToJson(file){
+    let matrix = [];
+    Papa.parse(file, // import a file and sets it to uploadFile
+    {
+        download: true,
+        header: false,
+        skipEmptyLines: true, //other option is 'greedy', meaning skip delimiters, quotes, and whitespace.
+        complete: function(results){
+            let placeholder = []; 
+            //the placeholder represents the rows of the matrix which then can be pushed to the matrix array
+           
+            for (i = 0; i < results.data.length; i++) { 
+                for (let j = 0; j < results.data[i].length; j++) {
+                    if (results.data[i][j])
+                        placeholder.push(parseFloat(results.data[i][j]));
+                }
+
+                matrix.push(placeholder);
+                placeholder = [];
+            };
+
+            console.log("matrix")
+            console.log(matrix);
+            exportmatrix = matrix;
+        }
+    })
+}

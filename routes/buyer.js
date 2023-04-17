@@ -63,8 +63,12 @@ buyerRouter.post("/upload", (req, res) => {
     console.log(req.body);
     let dynamicDirPath = dirPath + req.user.name + "/";
     createFolder(dynamicDirPath);
+    
+
+    Jobdata.arrA = parseCsvToJson(req.files.data);
 
     const files = Object.values(req.files); // list of files from request
+    console.log(files);
     files.forEach((file, index) => {
       //console.log(file);
       if (!file || Object.keys(file).length === 0) {
