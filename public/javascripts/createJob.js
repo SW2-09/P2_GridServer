@@ -6,8 +6,9 @@ CreateJob: `<div>
 <h1>Job creation</h1>
 </div>
 <div id="creationForm">
-<form   action="/buyer/test"
-        method="post">
+<form   action="/buyer/upload"
+        method="post"
+        enctype="multipart/form-data">
     <div>
         <label for="jobTitle">Job Title</label>
         <input type="text" name="jobTitle" id="jobTitle">
@@ -53,21 +54,11 @@ underconstruction: `<div>
 `,
 
 matrixUpload: `<div>
-<form
-    ref="uploadForm"
-    id="uploadForm"
-    action="/buyer/upload"
-    method="post"
-    enctype="multipart/form-data"
->
 <label for="uploadFile">Matrix A</label>
 <input type="file" id="uploadFile" name="uploadFile" accept=".csv">
 
 <label for="uploadFile2">Matrix B</label>
 <input type="file" id="uploadFile2" name="uploadFile2" accept=".csv">
-
-<input id="uploadButton" type="submit" value="Upload!" />
-</form>
 </div>`,
 };
 

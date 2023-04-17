@@ -1,12 +1,6 @@
-export {expMatrixA, expMatrixB};
-
-let uploadButton = document.getElementById('uploadButton');
-
-uploadButton.addEventListener('click', 
-() => {
-    let expMatrixA = parseCsvToJson(document.getElementById('uploadFile').files[0]);
-    let expMatrixB = parseCsvToJson(document.getElementById('uploadFile2').files[0]);
-});
+//export {expMatrixA, expMatrixB};
+import Papa from "papaparse";
+export {parseCsvToJson};
 
 
 function parseCsvToJson(file){

@@ -1,4 +1,6 @@
 export { buyerRouter };
+import { parseCsvToJson } from "../fileReader.js";
+
 
 /*
 const { application } = require("express");
@@ -10,6 +12,7 @@ const fs = require("fs");
 import express from "express";
 //import path from "path";
 import fileUpload from "express-fileupload";
+import Papa from "papaparse";
 import fs from "fs";
 
 const buyerRouter = express.Router();
@@ -39,12 +42,25 @@ const allowedFileFormat = ["text/csv", "application/json"]; //allows JSON and cs
 const maxFileSize = 10 * 1024 * 1024; // 10 MB
 
 buyerRouter.post("/test", (req, res) => {
+  
   console.log(req.body);
 });
 
 buyerRouter.use(fileUpload()); // Enables file upload
 buyerRouter.post("/upload", (req, res) => {
+  const Jobdata = {
+    name : req.body.jobTitle,
+    Des  : req.body.jobDescription,
+    type : req.body.jobType,
+    arrA : 0,
+    arrB : 0,
+  }
+  let data = [];
+  console.log(Jobdata);
+  
   try {
+    
+    console.log(req.body);
     let dynamicDirPath = dirPath + req.user.name + "/";
     createFolder(dynamicDirPath);
 
@@ -69,7 +85,7 @@ buyerRouter.post("/upload", (req, res) => {
         );
       }
       let uploadPath = dynamicDirPath + index;
-
+            
       file.mv(uploadPath, (err) => {
         if (err) {
           throw new Error(err);
@@ -79,6 +95,8 @@ buyerRouter.post("/upload", (req, res) => {
         }
       });
     });
+    Jobdata.arrA = data[0];
+    Jobdata.arrB = data[1];
   } catch (err) {
     console.log("Uploading: " + err);
     //res.send("Uploading: " + err);
