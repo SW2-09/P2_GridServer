@@ -48,12 +48,13 @@ buyerRouter.post("/test", (req, res) => {
 
 buyerRouter.use(fileUpload()); // Enables file upload
 buyerRouter.post("/upload", (req, res) => {
+  
   const Jobdata = {
     name : req.body.jobTitle,
     Des  : req.body.jobDescription,
     type : req.body.jobType,
-    arrA : 0,
-    arrB : 0,
+    arrA : req.body.uploadfile,
+    arrB : req.body.uploadfile2,
   }
   let data = [];
   console.log(Jobdata);
@@ -105,7 +106,7 @@ buyerRouter.post("/upload", (req, res) => {
     console.log("Uploading: " + err);
     //res.send("Uploading: " + err);
   }
-  res.redirect("/buyer");
+  //res.redirect("/buyer");
 });
 
 const createFolder = (folderPath) => {

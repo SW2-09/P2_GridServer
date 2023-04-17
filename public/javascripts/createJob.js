@@ -6,7 +6,8 @@ CreateJob: `<div>
 <h1>Job creation</h1>
 </div>
 <div id="creationForm">
-<form  enctype="multipart/form-data">
+<form  
+    enctype="multipart/form-data">
     <div>
         <label for="jobTitle">Job Title</label>
         <input type="text" name="jobTitle" id="jobTitle">
@@ -25,7 +26,7 @@ CreateJob: `<div>
             </select>
     </div>
     <div id="Uploadtype"></div>
-    <input type="submit" value="Create Job">
+    <input id="submit" type="submit" value="Create Job">
 </form>
 <div>
 <button id="cancelJob">Cancel</button>
@@ -89,37 +90,35 @@ mainDiv.innerHTML = content.CurrentJobs;
 
 
 
-mainDiv.addEventListener('change', function(e) {
-    if (e.target.id === "uploadFile") {
-        let file = document.getElementById('uploadFile').files[0];
-        parseCsvToJson(file);
+mainDiv.addEventListener("click", async (e) => {
+    if (e.target.id === "submit") {
+        e.preventDefault();
+        console.log("submit")
+        const jobTitle = document.getElementById("jobTitle").value;
+        const jobDescription = document.getElementById("jobDescription").value;
+        const jobType = document.getElementById("jobType").value;
+        const fileInput1 = document.getElementById("uploadFile");
+        const fileInput2 = document.getElementById("uploadFile2");
+
+        const file1 = fileInput1.files[0];
+        const file2 = fileInput2.files[0];
+
+        const formData = new FormData();
+        formData.append("jobTitle", jobTitle);
+        formData.append("jobDescription", jobDescription);
+        formData.append("jobType", jobType);
+        formData.append("uploadFile", file1);
+        formData.append("uploadFile2", file2);
+        try{
+        const response = await fetch("/buyer/upload", {
+            method: "POST",
+            body: formData,
+        })}
+        catch(err) {
+            console.log(err);
+            
+    }
     }
 });
 
-function parseCsvToJson(file){
-    let matrix = [];
-    Papa.parse(file, // import a file and sets it to uploadFile
-    {
-        download: true,
-        header: false,
-        skipEmptyLines: true, //other option is 'greedy', meaning skip delimiters, quotes, and whitespace.
-        complete: function(results){
-            let placeholder = []; 
-            //the placeholder represents the rows of the matrix which then can be pushed to the matrix array
-           
-            for (i = 0; i < results.data.length; i++) { 
-                for (let j = 0; j < results.data[i].length; j++) {
-                    if (results.data[i][j])
-                        placeholder.push(parseFloat(results.data[i][j]));
-                }
 
-                matrix.push(placeholder);
-                placeholder = [];
-            };
-
-            console.log("matrix")
-            console.log(matrix);
-            exportmatrix = matrix;
-        }
-    })
-}
