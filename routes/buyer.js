@@ -2,6 +2,7 @@ export { buyerRouter };
 import { parseCsvToJson } from "../fileReader.js";
 
 
+
 /*
 const { application } = require("express");
 const express = require("express");
@@ -41,21 +42,38 @@ const dirPath = "./uploads/";
 const allowedFileFormat = ["text/csv", "application/json"]; //allows JSON and csv formats
 const maxFileSize = 10 * 1024 * 1024; // 10 MB
 
-buyerRouter.post("/test", (req, res) => {
+buyerRouter.post("/test", async(req, res) => {
   
   console.log(req.body);
+  console.log(req.files);
+  const json = await csvToJson().fromFile(req.files['uploadFile1'].data);
+
+const jsonString = JSON.stringify(json, null, 2)
+
+console.log(jsonString);
 });
 
 buyerRouter.use(fileUpload()); // Enables file upload
-buyerRouter.post("/upload", (req, res) => {
+buyerRouter.post("/upload", async (req, res) => {
+    console.log(req.body);
+    const Jobdata = {
+      jobID : req.body.jobTitle + req.name,
+      Des  : req.body.jobDescription,
+      type : req.body.jobType,
+      arrA : req.body.uploadFile,
+      arrB : req.body.uploadFile2,
+    }
+    console.log(Jobdata);
+
+     fs.writeFileSync('file.json', JSON.stringify(Jobdata), (error) => {
+     if (error) throw error;
+   });
+    
+    
+  });
+buyerRouter.post("/uploadd", (req, res) => {
   
-  const Jobdata = {
-    name : req.body.jobTitle,
-    Des  : req.body.jobDescription,
-    type : req.body.jobType,
-    arrA : req.body.uploadfile,
-    arrB : req.body.uploadfile2,
-  }
+  
   let data = [];
   console.log(Jobdata);
   

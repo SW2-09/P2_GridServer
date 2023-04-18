@@ -100,25 +100,52 @@ mainDiv.addEventListener("click", async (e) => {
         const fileInput1 = document.getElementById("uploadFile");
         const fileInput2 = document.getElementById("uploadFile2");
 
-        const file1 = fileInput1.files[0];
-        const file2 = fileInput2.files[0];
-
-        const formData = new FormData();
-        formData.append("jobTitle", jobTitle);
-        formData.append("jobDescription", jobDescription);
-        formData.append("jobType", jobType);
-        formData.append("uploadFile", file1);
-        formData.append("uploadFile2", file2);
-        try{
-        const response = await fetch("/buyer/upload", {
+        const file1 = await parseCsvToJson(fileInput1.files[0]);
+        const file2 = await parseCsvToJson(fileInput2.files[0]);
+        console.log(file1);
+    
+        const formData = {jobTitle : jobTitle, jobDescription : jobDescription, jobType : jobType, uploadFile : file1, uploadFile2 : file2}
+        
+        console.log(formData);
+        fetch("/buyer/upload", {
             method: "POST",
-            body: formData,
-        })}
-        catch(err) {
-            console.log(err);
-            
-    }
+            headers: {
+                "Content-Type": "application/json",
+              },
+            body: JSON.stringify(formData),
+        });
+        
     }
 });
 
-
+function parseCsvToJson(file) {
+    return new Promise((resolve, reject) => {
+      let matrix = [];
+  
+      Papa.parse(file, {
+        download: true,
+        header: false,
+        skipEmptyLines: true,
+        complete: function (results) {
+          let placeholder = [];
+  
+          for (let i = 0; i < results.data.length; i++) {
+            for (let j = 0; j < results.data[i].length; j++) {
+              if (results.data[i][j]) {
+                placeholder.push(parseFloat(results.data[i][j]));
+              }
+            }
+  
+            matrix.push(placeholder);
+            placeholder = [];
+          }
+          console.log(matrix);
+  
+          resolve(matrix);
+        },
+        error: function (err) {
+          reject(err);
+        },
+      });
+    });
+  }
