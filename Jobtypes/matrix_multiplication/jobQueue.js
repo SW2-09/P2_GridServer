@@ -9,8 +9,10 @@ class Job{//the job nodes of the job queue
         this.matrixB = matrixB;
         this.next = next;
         this.previous = previous;
-        this.alg=alg;
+        this.alg = alg;
         this.solutions = [];
+        this.numOfSolutions = 0;
+        this.numOfTasks = 0;
     }
 }
 
@@ -115,12 +117,14 @@ JobQueue.enQueue(1, matrix_B);
 for (let index = 0; index < arr.length; index++) {
     JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index);
     JobQueue.head.subtaskList.head.matrixA = arr[index];
+    JobQueue.head.numOfTasks++;
 }
 
 JobQueue.enQueue(2, matrix_B);
 for (let index = 0; index < arr.length; index++) {
     JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index);
     JobQueue.head.subtaskList.head.matrixA = arr[index];
+    JobQueue.head.numOfTasks++;
 }
 
 

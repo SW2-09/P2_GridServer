@@ -1,24 +1,24 @@
- export{arr, matrix_B};
- import { expMatrixA, expMatrixB } from "../fileReader";
+ export{arr, matrix_B, matrix_A};
+//  import { expMatrixA, expMatrixB } from "../fileReader";
 
  //the maxumimum amount of computations we want a single subtask to be
-const calcMax = Math.pow(2000,3);
-const matrixsize = 3000;
+const calcMax = Math.pow(700,3);
+const matrixsize = 1000;
 //the two matrices that will be worked on
-let matrix_A = expMatrixA;
-// {
-//     entries: Array(matrixsize).fill(0).map(() => Array(matrixsize).fill(0).map(() => Math.floor(Math.random() * 10))),
-//     columns: matrixsize,
-//     rows: matrixsize,
-// }
+let matrix_A = //expMatrixA;
+{
+    entries: Array(matrixsize).fill(0).map(() => Array(matrixsize).fill(0).map(() => Math.floor(Math.random() * 10))),
+    columns: matrixsize,
+    rows: matrixsize,
+}
 
-let matrix_B = expMatrixB;
-// {
-//     //creating a random matrix of size = matrixsize
-//     entries: Array(matrixsize).fill(0).map(() => Array(matrixsize).fill(0).map(() => Math.floor(Math.random() * 10))),
-//     columns: matrixsize,
-//     rows: matrixsize,
-// }
+let matrix_B = //expMatrixB;
+{
+    //creating a random matrix of size = matrixsize
+    entries: Array(matrixsize).fill(0).map(() => Array(matrixsize).fill(0).map(() => Math.floor(Math.random() * 10))),
+    columns: matrixsize,
+    rows: matrixsize,
+}
 
 let arr = []; // the array which will hold the sliced matrixes of matrix A
 let ARows = matrix_A.rows;

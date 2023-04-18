@@ -1,4 +1,4 @@
-
+export{matrix_mult}
 // let matrix_B = {
     //     entries: [[1,2,3],
     //               [4,5,6],
@@ -78,69 +78,69 @@ function matrix_mult(A,B){
     return matrix_AxB;
 }
 
-let slicedMatrixA = matrix_A.entries.slice(0,Math.floor(matrix_A.entries.length/2));
-let slicedMatrixA2 = matrix_A.entries.slice(Math.floor(matrix_A.entries.length/2),matrix_A.entries.length);
+// let slicedMatrixA = matrix_A.entries.slice(0,Math.floor(matrix_A.entries.length/2));
+// let slicedMatrixA2 = matrix_A.entries.slice(Math.floor(matrix_A.entries.length/2),matrix_A.entries.length);
 
-task1 = new createSubtask(1,slicedMatrixA,matrix_B.entries);
-task2 = new createSubtask(1,slicedMatrixA2,matrix_B.entries);
+// task1 = new createSubtask(1,slicedMatrixA,matrix_B.entries);
+// task2 = new createSubtask(1,slicedMatrixA2,matrix_B.entries);
 
-// let subtask1 = matrix_mult(task1.matrixA,task1.matrixb);
-// let subtask2 = matrix_mult(task2.matrixA,task2.matrixb);
+// // let subtask1 = matrix_mult(task1.matrixA,task1.matrixb);
+// // let subtask2 = matrix_mult(task2.matrixA,task2.matrixb);
 
-/**
- * will add the matrix B  at the end of matrix A
- * @param {Matrix} A 
- * @param {Matrix} B 
- * @returns the combined matrix of matrix A and B
- */
-function combinematrix(A,B){
-    return A.concat(B);
-}
-let tidStart = Date.now();
-let noget = matrix_mult(matrix_A.entries,matrix_B.entries);
+// /**
+//  * will add the matrix B  at the end of matrix A
+//  * @param {Matrix} A 
+//  * @param {Matrix} B 
+//  * @returns the combined matrix of matrix A and B
+//  */
+// function combinematrix(A,B){
+//     return A.concat(B);
+// }
+// let tidStart = Date.now();
+// let noget = matrix_mult(matrix_A.entries,matrix_B.entries);
 
-// let finish = combinematrix(subtask1,subtask2);
-let tid = Date.now() - tidStart;
-console.log("tid i sekunder " + tid/1000)
-// console.log(finish);
+// // let finish = combinematrix(subtask1,subtask2);
+// let tid = Date.now() - tidStart;
+// console.log("tid i sekunder " + tid/1000)
+// // console.log(finish);
 
-/**
- * test function that test the multiplication code and the combination code 
- */
-function testMatrixOperation(){
-    let matrix_A = [
-        [1, 2],
-        [3, 4]
-    ];
+// /**
+//  * test function that test the multiplication code and the combination code 
+//  */
+// function testMatrixOperation(){
+//     let matrix_A = [
+//         [1, 2],
+//         [3, 4]
+//     ];
 
-    let matrix_B = [
-        [2, 0],
-        [1, 2]
-    ];
+//     let matrix_B = [
+//         [2, 0],
+//         [1, 2]
+//     ];
 
-    // Test matrix_mult
-    let expectedMatrixMult = [
-        [4, 4],
-        [10, 8]
-    ];
+//     // Test matrix_mult
+//     let expectedMatrixMult = [
+//         [4, 4],
+//         [10, 8]
+//     ];
 
-    let multiplyresult = matrix_mult(matrix_A,matrix_B);
-    if (JSON.stringify(expectedMatrixMult) === JSON.stringify(multiplyresult))
-        console.log("multiply test passed");
-    else
-        console.log("multiply test failed");
+//     let multiplyresult = matrix_mult(matrix_A,matrix_B);
+//     if (JSON.stringify(expectedMatrixMult) === JSON.stringify(multiplyresult))
+//         console.log("multiply test passed");
+//     else
+//         console.log("multiply test failed");
 
-    let expectedCombinedmatrix = [
-        [1, 2],
-        [3, 4],
-        [2, 0],
-        [1, 2]
-    ];
-    let combineresult = combinematrix(matrix_A,matrix_B);
-    if (JSON.stringify(expectedCombinedmatrix) === JSON.stringify(combineresult))
-        console.log("combine test passed");
-    else
-        console.log("combine test failed");
-}
+//     let expectedCombinedmatrix = [
+//         [1, 2],
+//         [3, 4],
+//         [2, 0],
+//         [1, 2]
+//     ];
+//     let combineresult = combinematrix(matrix_A,matrix_B);
+//     if (JSON.stringify(expectedCombinedmatrix) === JSON.stringify(combineresult))
+//         console.log("combine test passed");
+//     else
+//         console.log("combine test failed");
+// }
 
-testMatrixOperation();
+// testMatrixOperation();

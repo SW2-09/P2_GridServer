@@ -1,5 +1,7 @@
 export{subtaskFeeder, queueEmpty};
-import { Buyer } from "../models/Buyer.js";
+import { matrix_mult } from "./Partitioner.js";
+import { matrix_A,matrix_B } from "./matrixSplit.js";
+import { Buyer } from "../../models/Buyer.js";
 
 
 //token for signifying that the queue is empty
@@ -11,7 +13,8 @@ let queueEmpty="empty";
  * @param workerPack - The package of data to be sent to the worker
  */
 function subtaskFeeder(JobQueue){
-    if (JobQueue.tail.subtaskList.tail=== null){
+    if (JobQueue.tail.subtaskList.tail=== null && JobQueue.tail.numOfTasks === JobQueue.tail.numOfSolutions){
+        console.log("Job done!")
         jobDone(JobQueue.tail);
         JobQueue.deQueue();
     }
@@ -34,9 +37,13 @@ function subtaskFeeder(JobQueue){
 function jobDone(job){
     let Solution = [];
     job.solutions.forEach(element => {
-        Solution.concat(element);
+        Solution = Solution.concat(element);
     });
-    Buyer.findone({name: job.owner}).then((buyer)=>{
 
-    });
+    if (JSON.stringify(Solution) === JSON.stringify(matrix_mult(matrix_A.entries,matrix_B.entries))){
+        console.log("Job done correctly!");
+    }
+    else{
+        console.log("Job NOT done correctly!");
+    }
 }

@@ -36,7 +36,12 @@ wss.on("connection", (ws) => {
     try {
       let messageParse = JSON.parse(message);
       console.log("Solution recieved:");
-      console.log(messageParse["solution"]);
+      console.log(messageParse["jobId"]);
+      let currentJob=findJob(messageParse["jobId"]);
+      currentJob.solutions[messageParse["taskId"]] = messageParse["solution"]; 
+      currentJob.numOfSolutions++;
+      console.log("job solutions" + JobQueue.tail.solutions.length);
+      // console.log(messageParse["solution"]);
 
     } catch (e) {
       console.log(`Something went wrong with the recieved message: ${e.message}`);
@@ -47,10 +52,17 @@ wss.on("connection", (ws) => {
     } catch (e){
       console.log(`Something went wrong with sending message to server: ${e.message}`);
     }
-
   });
 
   ws.on("close", () => {
     console.log("Client has disconnected");
   });
 });
+
+function findJob(jobId){
+  let currentJob=JobQueue.tail;
+  while(currentJob.jobId!=jobId){
+    currentJob=currentJob.next;
+  }
+  return currentJob;
+}
