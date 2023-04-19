@@ -39,23 +39,16 @@ buyerRouter.get("/logout", (req, res) => {
  * ********************** */
 
 const dirPath = "./uploads/";
-const allowedFileFormat = ["text/csv", "application/json"]; //allows JSON and csv formats
-const maxFileSize = 10 * 1024 * 1024; // 10 MB
-
-buyerRouter.post("/test", async(req, res) => {
-  
-  console.log(req.body);
-  console.log(req.files);
-  const json = await csvToJson().fromFile(req.files['uploadFile1'].data);
-
-const jsonString = JSON.stringify(json, null, 2)
-
-console.log(jsonString);
-});
 
 buyerRouter.use(fileUpload()); // Enables file upload
+
+
 buyerRouter.post("/upload", async (req, res) => {
-    console.log(req.body);
+  try{
+    console.log(req);
+    let dynamicDirPath = dirPath + req.name + "/";
+    createFolder(dynamicDirPath);
+
     const Jobdata = {
       jobID : req.body.jobTitle + req.name,
       Des  : req.body.jobDescription,
@@ -63,70 +56,25 @@ buyerRouter.post("/upload", async (req, res) => {
       arrA : req.body.uploadFile,
       arrB : req.body.uploadFile2,
     }
-    console.log(Jobdata);
 
-     fs.writeFileSync('file.json', JSON.stringify(Jobdata), (error) => {
+    let uploadPath = dynamicDirPath + Jobdata.jobID + ".json";
+
+
+     fs.writeFileSync(uploadPath, JSON.stringify(Jobdata), (error) => {
      if (error) throw error;
+     else {
+      console.log("File uploaded to " + uploadPath);
+      res.send(jobID + " was uploaded to " + uploadPath);
+    }
    });
-    
-    
-  });
-buyerRouter.post("/uploadd", (req, res) => {
-  
-  
-  let data = [];
-  console.log(Jobdata);
-  
-  try {
-    
-    console.log(req.body);
-    let dynamicDirPath = dirPath + req.user.name + "/";
-    createFolder(dynamicDirPath);
-    
-
-    Jobdata.arrA = parseCsvToJson(req.files.data);
-
-    const files = Object.values(req.files); // list of files from request
-    console.log(files);
-    files.forEach((file, index) => {
-      //console.log(file);
-      if (!file || Object.keys(file).length === 0) {
-        // If no files were uploaded (i.e. no file was selected)
-        //console.log(req.);
-        throw new Error("No files were uploaded.");
-      }
-
-      //const uploadPath = dynamicDirPath + sampleFile.name;
-
-      console.log(file.name);
-      if (!allowedFileFormat.includes(file.mimetype)) {
-        throw new Error("File format not supported");
-      }
-      if (file.size > maxFileSize) {
-        throw new Error(
-          "File size is too big. Max support is " + maxFileSize + "MB"
-        );
-      }
-      let uploadPath = dynamicDirPath + index;
-            
-      file.mv(uploadPath, (err) => {
-        if (err) {
-          throw new Error(err);
-        } else {
-          console.log("File uploaded to " + uploadPath);
-          //res.send(sampleFile.name + " was uploaded to " + uploadPath);
-        }
-      });
-    });
-    Jobdata.arrA = data[0];
-    Jobdata.arrB = data[1];
   } catch (err) {
     console.log("Uploading: " + err);
     //res.send("Uploading: " + err);
   }
-  //res.redirect("/buyer");
-});
+  });
 
+
+//create folder in the uploads folder if not exists, the folder name is the user name
 const createFolder = (folderPath) => {
   if (!fs.existsSync(folderPath)) {
     fs.mkdirSync(folderPath);
@@ -137,55 +85,3 @@ const createFolder = (folderPath) => {
     return false;
   }
 };
-
-/* MULTI UPLOAD BACKUP
-
-
-buyerRouter.post("/upload", (req, res) => {
-  try {
-    let dynamicDirPath = dirPath + req.user.name + "/";
-    createFolder(dynamicDirPath);
-    if (!req.files || Object.keys(req.files).length === 0) {
-      // If no files were uploaded (i.e. no file was selected)
-      //console.log(req.);
-      throw new Error("No files were uploaded.");
-    }
-
-    const sampleFile = req.files.sampleFile;
-    //const uploadPath = dynamicDirPath + sampleFile.name;
-
-    if (!Array.isArray(sampleFile)) {
-      throw new Error("Files must be sent as an array.");
-    }
-
-    sampleFile.forEach((file) => {
-      console.log(file.name);
-      if (!allowedFileFormat.includes(file.mimetype)) {
-        throw new Error("File format not supported");
-      }
-      if (file.size > maxFileSize) {
-        throw new Error(
-          "File size is too big. Max support is " + maxFileSize + "MB"
-        );
-      }
-    });
-
-    sampleFile.forEach((file) => {
-      let uploadPath = dynamicDirPath + file.name;
-
-      file.mv(uploadPath, (err) => {
-        if (err) {
-          throw new Error(err);
-        } else {
-          console.log("File uploaded to " + uploadPath);
-          //res.send(sampleFile.name + " was uploaded to " + uploadPath);
-        }
-      });
-    });
-  } catch (err) {
-    console.log("Uploading: " + err);
-    res.send("Uploading: " + err);
-  }
-  res.redirect("/buyer");
-});
-*/

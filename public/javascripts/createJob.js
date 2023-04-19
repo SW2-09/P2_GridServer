@@ -7,14 +7,14 @@ CreateJob: `<div>
 </div>
 <div id="creationForm">
 <form  
-    enctype="multipart/form-data">
+    enctype="multipart/form-data" id="uploadForm">
     <div>
         <label for="jobTitle">Job Title</label>
-        <input type="text" name="jobTitle" id="jobTitle">
+        <input type="text" name="jobTitle" id="jobTitle" required>
     </div>
     <div>
         <label for="jobDescription">Job Description</label>
-        <input type="text" name="jobDescription" id="jobDescription">
+        <input type="text" name="jobDescription" id="jobDescription" required>
     </div>
     <div id="typeChoice">
         <label for="jobType">Job Type</label>
@@ -26,7 +26,7 @@ CreateJob: `<div>
             </select>
     </div>
     <div id="Uploadtype"></div>
-    <input id="submit" type="submit" value="Create Job">
+    <input id="submit" type="submit" value="Create Job" required>
 </form>
 <div>
 <button id="cancelJob">Cancel</button>
@@ -54,10 +54,10 @@ underconstruction: `<div>
 
 matrixUpload: `<div>
 <label for="uploadFile">Matrix A</label>
-<input type="file" id="uploadFile" name="uploadFile" accept=".csv">
+<input type="file" id="uploadFile" name="uploadFile" accept=".csv" required>
 
 <label for="uploadFile2">Matrix B</label>
-<input type="file" id="uploadFile2" name="uploadFile2" accept=".csv">
+<input type="file" id="uploadFile2" name="uploadFile2" accept=".csv" required>
 </div>`,
 };
 
@@ -92,13 +92,29 @@ mainDiv.innerHTML = content.CurrentJobs;
 
 mainDiv.addEventListener("click", async (e) => {
     if (e.target.id === "submit") {
+      const jobType = document.getElementById("jobType").value;
+      const Uploadform = document.getElementById("uploadForm")
+
+        if(!Uploadform.checkValidity() ||jobType==="none") {
+            Uploadform.reportValidity();
+            e.preventDefault();}
+            
+            else {
+
         e.preventDefault();
-        console.log("submit")
         const jobTitle = document.getElementById("jobTitle").value;
         const jobDescription = document.getElementById("jobDescription").value;
         const jobType = document.getElementById("jobType").value;
         const fileInput1 = document.getElementById("uploadFile");
         const fileInput2 = document.getElementById("uploadFile2");
+
+        const allowedFileFormat = ["text/csv", "application/json"]; //allows JSON and csv formats
+        const maxFileSize = 10 * 1024 * 1024; // 10 MB
+
+        if (!allowedFileFormat.includes(fileInput1.files[0].type) || !allowedFileFormat.includes(fileInput2.files[0].type)) {
+            alert("Please choose a valid file format(csv or json)");
+            return;
+        }
 
         const file1 = await parseCsvToJson(fileInput1.files[0]);
         const file2 = await parseCsvToJson(fileInput2.files[0]);
@@ -107,16 +123,18 @@ mainDiv.addEventListener("click", async (e) => {
         const formData = {jobTitle : jobTitle, jobDescription : jobDescription, jobType : jobType, uploadFile : file1, uploadFile2 : file2}
         
         console.log(formData);
-        fetch("/buyer/upload", {
+        const response = await fetch("/buyer/upload", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
               },
             body: JSON.stringify(formData),
         });
+        const data = await response.json();
+        console.log(data);
         
     }
-});
+}});
 
 function parseCsvToJson(file) {
     return new Promise((resolve, reject) => {
