@@ -5,7 +5,7 @@ import { WebSocketServer } from "ws";
 // websocket connection:
 const wss = new WebSocketServer({ port: 8001 });
 
-console.log(`There are ${JobQueue.size} jobs in the queue.`);
+console.log(`There are ${JobQueue.size} jobs and ${JobQueue.tail.subtaskList.size} tasks in the queue.`);
 
 /**
  * Sending subtask to the worker
@@ -14,7 +14,13 @@ console.log(`There are ${JobQueue.size} jobs in the queue.`);
  */
 function send_subtask(ws, JobQueue) {
   let next_task = subtaskFeeder(JobQueue);
-  ws.send(JSON.stringify(next_task));
+  if (next_task !== null) {
+    ws.send(JSON.stringify(next_task));
+  }
+  else{
+    console.log("sending 0 to worker")
+    ws.send("0");
+  }
 }
 
 /**
@@ -28,6 +34,7 @@ wss.on("connection", (ws) => {
   if (JobQueue.size > 0) {
     send_subtask(ws, JobQueue);
   } else {
+    console.log("sending 0 to worker")
     ws.send("0");
   }
 
@@ -36,11 +43,14 @@ wss.on("connection", (ws) => {
     try {
       let messageParse = JSON.parse(message);
       console.log("Solution recieved:");
-      console.log(messageParse["jobId"]);
+      console.log("jobID: " + messageParse["jobId"]);
+      console.log("taskID: " + messageParse["taskId"]);
       let currentJob=findJob(messageParse["jobId"]);
       currentJob.solutions[messageParse["taskId"]] = messageParse["solution"]; 
       currentJob.numOfSolutions++;
-      console.log("job solutions" + JobQueue.tail.solutions.length);
+      currentJob.pendingList.removeTask(messageParse["taskId"]);
+      console.log("pendingList: " + currentJob.pendingList.size);
+      // console.log("job solutions" + JobQueue.tail.solutions.length);
       // console.log(messageParse["solution"]);
 
     } catch (e) {
@@ -61,8 +71,11 @@ wss.on("connection", (ws) => {
 
 function findJob(jobId){
   let currentJob=JobQueue.tail;
-  while(currentJob.jobId!=jobId){
-    currentJob=currentJob.next;
+  if (currentJob.jobId==jobId){
+    return currentJob;
   }
-  return currentJob;
+  while(currentJob.previous.jobId!=jobId){
+    currentJob=currentJob.previous;
+  }
+  return currentJob.previous;
 }
