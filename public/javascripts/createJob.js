@@ -38,12 +38,12 @@ CreateJob: `<div>
 CurrentJobs: `
 <div id="mainDiv">
   <div>
-    <h2>Current jobs</h2>
+    <h1>Current jobs</h1>
     <div class="JobList">
-      <p>HEJSA</p>
+      <p>Put list of jobs here</p>
     </div>
   </div>
-    <button id="createJob-button" class="Create-Job"> Create new job</button>
+    <button id="createJob-button" class="createJob-button"> Create new job</button>
 </div>`,
 
 underconstruction: `<div>
@@ -123,11 +123,9 @@ mainDiv.addEventListener("click", async (e) => {
 
         const file1 = await parseCsvToJson(fileInput1.files[0]);
         const file2 = await parseCsvToJson(fileInput2.files[0]);
-        console.log(file1);
     
         const formData = {jobTitle : jobTitle, jobDescription : jobDescription, jobType : jobType, uploadFile : file1, uploadFile2 : file2}
         
-        console.log(formData);
         const response = await fetch("/buyer/upload", {
             method: "POST",
             headers: {
@@ -135,8 +133,10 @@ mainDiv.addEventListener("click", async (e) => {
               },
             body: JSON.stringify(formData),
         });
-        const data = await response.json();
-        console.log(data);
+        
+        const result = await response.text();
+        console.log("server response:" + result);
+        
         
     }
 }});
@@ -162,7 +162,6 @@ function parseCsvToJson(file) {
             matrix.push(placeholder);
             placeholder = [];
           }
-          console.log(matrix);
   
           resolve(matrix);
         },
