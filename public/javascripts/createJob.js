@@ -4,31 +4,34 @@ const content = {
 CreateJob: `<div>
 <h1>Job creation</h1>
 </div>
-<div id="creationForm">
+
+<div id="creationForm" class="uploadForm">
 <form  
-    enctype="multipart/form-data" id="uploadForm">
+    enctype="multipart/form-data" id="uploadForm" >
+    
     <div>
-        <label for="jobTitle">Job Title</label>
-        <input type="text" name="jobTitle" id="jobTitle" required>
+        <input class="form-control" type="text" name="jobTitle" id="jobTitle" placeholder="Job Title" required>
     </div>
+
     <div>
-        <label for="jobDescription">Job Description</label>
-        <input type="text" name="jobDescription" id="jobDescription" required>
+        <input class="form-control" type="text" name="jobDescription" id="jobDescription" placeholder="Job Description" required>
     </div>
-    <div id="typeChoice">
-        <label for="jobType">Job Type</label>
-        <select id="jobType" name="jobType">
-            <option value="none">None</option>
+
+    <div id="typeChoice" class="form-control">
+        <select  id="jobType" name="jobType" class="form-dropdown">
+            <option value="none">Job Type</option>
             <option id="ny" value="matrixMult">Matrix multiplication</option>
             <option value="none">Et sejt projekt</option>
             <option value="none">Et andet sejt projekt</option>
             </select>
     </div>
+
     <div id="Uploadtype"></div>
-    <input id="submit" type="submit" value="Create Job" required>
 </form>
-<div>
-<button id="cancelJob">Cancel</button>
+<div class="buttons">
+<input class="createjob-button" id="submit" type="submit" value="Create Job">
+<button id="cancelJob" class="cancelJob">Cancel</button>
+</div>
 </div>
 `,
 
@@ -52,11 +55,14 @@ underconstruction: `<div>
 `,
 
 matrixUpload: `<div>
-<label for="uploadFile">Matrix A</label>
-<input type="file" id="uploadFile" name="uploadFile" accept=".csv" required>
-
-<label for="uploadFile2">Matrix B</label>
-<input type="file" id="uploadFile2" name="uploadFile2" accept=".csv" required>
+  <div class="form-control">
+    <label for="uploadFile">Matrix A</label>
+    <input type="file" id="uploadFile" name="uploadFile" accept=".csv" required>
+  </div>
+  <div class="form-control">
+    <label for="uploadFile2">Matrix B</label>
+    <input type="file" id="uploadFile2" name="uploadFile2" accept=".csv" required>
+  </div>  
 </div>`,
 };
 
