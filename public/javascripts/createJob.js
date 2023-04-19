@@ -1,6 +1,4 @@
 const mainDiv = document.getElementById("mainDiv");
-const name = window.userName;
-console.log(name);
 
 const content = {
 CreateJob: `<div>
@@ -39,7 +37,7 @@ CurrentJobs: `
   <div>
     <h2>Current jobs</h2>
     <div class="JobList">
-      <p>HEJSA ${test}</p>
+      <p>HEJSA</p>
     </div>
   </div>
     <button id="createJob-button" class="Create-Job"> Create new job</button>

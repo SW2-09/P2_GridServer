@@ -45,7 +45,6 @@ buyerRouter.use(fileUpload()); // Enables file upload
 
 buyerRouter.post("/upload", async (req, res) => {
   try{
-    console.log(req);
     let dynamicDirPath = dirPath + req.user.name + "/";
     createFolder(dynamicDirPath);
 
@@ -67,8 +66,8 @@ buyerRouter.post("/upload", async (req, res) => {
       res.send(jobID + " was uploaded to " + uploadPath);
     }
    });
-  } catch (err) {
-    console.log("Uploading: " + err);
+  } catch (error) {
+    console.log("Uploading: " + error);
     //res.send("Uploading: " + err);
   }
   });
