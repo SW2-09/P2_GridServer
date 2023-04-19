@@ -46,11 +46,11 @@ buyerRouter.use(fileUpload()); // Enables file upload
 buyerRouter.post("/upload", async (req, res) => {
   try{
     console.log(req);
-    let dynamicDirPath = dirPath + req.name + "/";
+    let dynamicDirPath = dirPath + req.user.name + "/";
     createFolder(dynamicDirPath);
 
     const Jobdata = {
-      jobID : req.body.jobTitle + req.name,
+      jobID : req.body.jobTitle + req.user.name,
       Des  : req.body.jobDescription,
       type : req.body.jobType,
       arrA : req.body.uploadFile,
