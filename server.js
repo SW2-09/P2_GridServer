@@ -72,12 +72,6 @@ This is great practice to get into. This way we can have different nested routes
 3. e.g. server.js -> routes/users.js -> routes/users/new.js
 */
 
-//app.use("/buyer", buyerRouter);
-/*
-const userRoute = require("./routes/user");
-app.use("/users", userRoute);
-*/
-
 const server = app.listen(port, () =>
   console.log(`Server has been started on http://localhost:${port}`)
 );

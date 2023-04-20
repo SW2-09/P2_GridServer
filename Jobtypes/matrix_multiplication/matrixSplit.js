@@ -52,18 +52,6 @@ function divideMatrices(A , B, ARows){
 
 divideMatrices(A, matrix_B, ARows)
 
-//console.log(arr.length);
-// console.log("hejsa " + arr[0]);
-
-// let finished = [];
-// for (let i = 0; i < arr.length; i++) {
-//     for (let j = 0; j < arr[i].length; j++) {
-//         finished.push(arr[i][j])
-//     }
-// }
-
-// console.log("finished = ");
-// console.log(finished);
 
 
 
