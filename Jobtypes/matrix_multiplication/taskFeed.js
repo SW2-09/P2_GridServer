@@ -16,17 +16,17 @@ let queueEmpty="empty";
  */
 function subtaskFeeder(JobQueue){
     let currentJob = JobQueue.tail;
-    if (currentJob.subtaskList.tail=== null) {
+    if (currentJob.subtaskList.tail=== null) { //if there are no more subtasks in the subtask list
         console.log("No more subtasks to do. Checking pending list.")
         let failedJob = checkPendingList(currentJob.pendingList);
         if (failedJob === null && currentJob.numOfTasks === currentJob.numOfSolutions){//if the job is done
             console.log("Job done!")
-            jobDone(JobQueue.tail);
-            JobQueue.deQueue();
+            jobDone(JobQueue.tail); //send the solutions to the buyer DOES NOT DO SO YET
+            JobQueue.deQueue(); //remove the job from the queue
             console.log("JobQueue updated to size: " + JobQueue.size)
-            currentJob = JobQueue.tail;
+            currentJob = JobQueue.tail; //set the current job to the new tail
         }
-        else if (failedJob !== null){
+        else if (failedJob !== null){ //if there are failed subtasks
             console.log("Job not done yet!")
             console.log("currentJob: " + currentJob.jobId + " task: " + currentJob.pendingList.tail.taskId)
             let workerPack={
@@ -40,7 +40,7 @@ function subtaskFeeder(JobQueue){
             console.log("sending job: " + workerPack.jobId + " task: " + workerPack.taskId + " to worker \n")
             return workerPack;
         }
-        else{
+        else{ //if there are no failed subtasks
             if (currentJob.previous !== null){
             currentJob = currentJob.previous;
             console.log("herforbi");
@@ -86,34 +86,48 @@ function subtaskFeeder(JobQueue){
     return null;
 }
 
+/**
+ * Function looking through the pending list of a job and checking if any of the tasks are outdated.
+ * @param {linkedList} pending is the pending list of the current job
+ * @returns Null if the list is empty or there are no outdated tasks
+ *          returns an outdated task if there is one
+ */
+
 function checkPendingList(pending){
     if (pending.head === null) {
         console.log(" null failed job: ")
-        return null;
+        return null;    //if the list is empty
     }
     let head = pending.head;
     let recent = true;
     while (recent && head !== null) {
-        if (Date.now() - head.sendTime > 10000){
+        if (Date.now() - head.sendTime > 120000){ 
+            //checking whether it is longer than 120 seconds since the task was sent
             console.log("failed job: " + head.jobId + " task: " + head.taskId)
-            return head;
+            return head;   //if the task is outdated
         }
         head = head.next
     }
     console.log("null failed job2: " + pending.head.jobId + " task: " + pending.head.taskId)
-    return null;
+    return null; //if there are no outdated tasks
 }
 
+/**
+ * Function called when a job is done. Checks if the solutions are correct.
+ * @param { job class} job is the job that is done
+ */
 function jobDone(job){
     let Solution = [];
-    job.solutions.forEach(element => {
+    job.solutions.forEach(element => { //concatenates the solutions into one array to combine matrix
         Solution = Solution.concat(element);
     });
 
+    //logs whether the job was done correctly or not THIS SHOULD BE REMOVED WHEN THE ALGORITHM IS DONE
     if (JSON.stringify(Solution) === JSON.stringify(matrix_mult(matrix_A.entries,matrix_B.entries))){
-        console.log("Job done correctly!");
+        console.log("Job done correctly! HUSK AT FJERNE");
+        
     }
     else{
-        console.log("Job NOT done correctly!");
+        console.log("Job NOT done correctly! HUSK AT FJERNE");
     }
 }

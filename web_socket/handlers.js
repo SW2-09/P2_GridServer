@@ -5,7 +5,7 @@ import { WebSocketServer } from "ws";
 // websocket connection:
 const wss = new WebSocketServer({ port: 8001 });
 
-console.log(`There are ${JobQueue.size} jobs and ${JobQueue.tail.subtaskList.size} tasks in the queue.`);
+console.log(`There are ${JobQueue.size} jobs in the queue.`);
 
 /**
  * Sending subtask to the worker
@@ -69,6 +69,11 @@ wss.on("connection", (ws) => {
   });
 });
 
+/**
+ * Function to find a job in the queue by its jobId
+ * @param {number} jobId 
+ * @returns the job with the given jobId
+ */
 function findJob(jobId){
   let currentJob=JobQueue.tail;
   if (currentJob.jobId==jobId){
