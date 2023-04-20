@@ -75,8 +75,8 @@ function subtaskFeeder(JobQueue){
             matrixB: currentJob.matrixB,
             matrixA: currentJob.subtaskList.tail.matrixA,
         }
-        currentJob.pendingList.enQueue(currentJob.jobId,currentJob.subtaskList.tail.taskId); //add the subtask to the pending list
-        currentJob.pendingList.head.matrixA = currentJob.subtaskList.tail.matrixA; //add the matrixA to the job in the pending list
+        currentJob.pendingList.enQueue(currentJob.jobId,currentJob.subtaskList.tail.taskId,currentJob.subtaskList.tail.matrixA); //add the subtask to the pending list
+         //add the matrixA to the job in the pending list
         currentJob.pendingList.head.sendTime = Date.now(); //set the send time of the subtask to know when the task is outdated
         currentJob.subtaskList.deQueue(); //remove the subtask from the subtask list
         console.log("sending job: " + workerPack.jobId + " task: " + workerPack.taskId + " to worker \n")

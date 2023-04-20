@@ -73,9 +73,15 @@ function divideMatrices(A , B, ARows){
 }
 
 let test = Date.now();
+
 divideMatrices(A, matrix_B, ARows)
 
-    JobQueue.enQueue(test, matrix_B);
+    JobQueue.enQueue("job1", matrix_B);
+      for (let index = 0; index < arr.length; index++) {
+    JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
+    JobQueue.head.numOfTasks++;
+}
+JobQueue.enQueue("job2", matrix_B);
       for (let index = 0; index < arr.length; index++) {
     JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
     JobQueue.head.numOfTasks++;
