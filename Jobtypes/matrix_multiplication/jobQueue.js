@@ -1,6 +1,6 @@
 export{JobQueue};
 import { matrix_mult_str } from "./algorithms.js";
-import{ arr , matrix_A, matrix_B } from "./matrixSplit.js";
+//import{ arr , matrix_A, matrix_B } from "./matrixSplit.js";
 
 class Job{//the job nodes of the job queue
     constructor(jobId, alg, matrixB, next = null, previous = null){
@@ -21,7 +21,7 @@ class subTask{//the subtask nodes og the subtask queue in the job queue
     constructor(jobId, taskId, matrixA, next = null, previous = null){
         this.jobId = jobId;
         this.taskId = taskId;
-        this.matrixA ;
+        this.matrixA = matrixA;
         this.next = next;
         this.previous = previous;
         this.sendTime = 0;
@@ -99,13 +99,13 @@ class Queue_linked_list_subtask{
         this.size = 0;
     }
 
-    enQueue(jobId, taskId) { //will put the new element at the head of the queue
+    enQueue(jobId, taskId, matrixA) { //will put the new element at the head of the queue
         if (this.head === null) { //if the queue is empty
-            this.tail = this.head = new subTask(jobId, taskId, matrix_A, this.head, this.tail);
+            this.tail = this.head = new subTask(jobId, taskId, matrixA, this.head, this.tail);
             this.size++;
         }
         else{
-            this.head.previous = this.head = new subTask(jobId, taskId, matrix_A, this.head);
+            this.head.previous = this.head = new subTask(jobId, taskId, matrixA, this.head);
             this.size++;
         }
     }

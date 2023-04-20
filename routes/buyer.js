@@ -33,7 +33,7 @@ const dirPath = "./uploads/";
 buyerRouter.use(fileUpload()); // Enables file upload
 
 buyerRouter.post("/test", (req, res) => {
-  const calcMax = Math.pow(500,2);
+  const calcMax = Math.pow(500,3);
 const matrixsize = 1000;
   let matrix_A = 
 
@@ -72,9 +72,10 @@ function divideMatrices(A , B, ARows){
   divideMatrices(slicedMatrixA2, B, Math.floor(ARows/2));
 }
 
+let test = Date.now();
 divideMatrices(A, matrix_B, ARows)
 
-    JobQueue.enQueue(1, matrix_B);
+    JobQueue.enQueue(test, matrix_B);
       for (let index = 0; index < arr.length; index++) {
     JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
     JobQueue.head.numOfTasks++;
