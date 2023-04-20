@@ -1,4 +1,6 @@
 export { buyerRouter };
+import { JobQueue } from "../Jobtypes/matrix_multiplication/jobQueue.js";
+
 
 import express from "express";
 import fileUpload from "express-fileupload";
@@ -30,6 +32,55 @@ const dirPath = "./uploads/";
 
 buyerRouter.use(fileUpload()); // Enables file upload
 
+buyerRouter.post("/test", (req, res) => {
+  const calcMax = Math.pow(500,2);
+const matrixsize = 1000;
+  let matrix_A = 
+
+{
+    entries: Array(matrixsize).fill(0).map(() => Array(matrixsize).fill(0).map(() => Math.floor(Math.random() * 10))),
+    columns: matrixsize,
+    rows: matrixsize,
+}
+
+let matrix_B = {
+
+    //creating a random matrix of size = matrixsize
+    entries: Array(matrixsize).fill(0).map(() => Array(matrixsize).fill(0).map(() => Math.floor(Math.random() * 10))),
+    columns: matrixsize,
+    rows: matrixsize,
+}
+
+let arr = []; // the array which will hold the sliced matrixes of matrix A
+let ARows = matrix_A.rows;
+let A = matrix_A.entries;
+
+function divideMatrices(A , B, ARows){
+  if (ARows * B.rows * B.columns < calcMax){
+      arr.push(A)
+      return;
+  }
+  if (ARows < 2){
+      arr.push(A)
+      return;
+  }
+  let slicedMatrixA = A.slice(0,Math.floor(A.length/2));
+  //console.log("her er slice 1 " + slicedMatrixA);
+  let slicedMatrixA2 = A.slice(Math.floor(A.length/2),A.length);
+  //console.log("her er slice 2 " + slicedMatrixA);
+  divideMatrices(slicedMatrixA, B, Math.floor(ARows/2));
+  divideMatrices(slicedMatrixA2, B, Math.floor(ARows/2));
+}
+
+divideMatrices(A, matrix_B, ARows)
+
+    JobQueue.enQueue(1, matrix_B);
+      for (let index = 0; index < arr.length; index++) {
+    JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
+    JobQueue.head.numOfTasks++;
+}
+console.log(JobQueue);
+});
 
 buyerRouter.post("/upload", async (req, res) => {
   try{
@@ -77,3 +128,5 @@ const createFolder = (folderPath) => {
     return false;
   }
 };
+
+

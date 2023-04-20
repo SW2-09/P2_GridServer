@@ -171,3 +171,9 @@ function parseCsvToJson(file) {
       });
     });
   }
+
+document.getElementById("testbutton").addEventListener('click', () => {
+    console.log("test")
+    fetch("/buyer/test", {
+        method: "POST",
+})});
