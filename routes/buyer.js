@@ -1,19 +1,7 @@
 export { buyerRouter };
-import { parseCsvToJson } from "../fileReader.js";
 
-
-
-/*
-const { application } = require("express");
-const express = require("express");
-const path = require("path");
-const fileUpload = require("express-fileupload");
-const fs = require("fs");
-*/
 import express from "express";
-//import path from "path";
 import fileUpload from "express-fileupload";
-import Papa from "papaparse";
 import fs from "fs";
 
 const buyerRouter = express.Router();

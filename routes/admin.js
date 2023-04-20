@@ -9,8 +9,6 @@ const adminRouter = express.Router();
 adminRouter.post("/purge", (req, res) => {
   deleteCollection(req.body.collection);
   res.json({ message: "Purged '" + req.body.collection + "' collection from database: "});
-  
-  
 });
 
 adminRouter.post("/lookup", (req, res) => {
@@ -20,8 +18,6 @@ adminRouter.post("/lookup", (req, res) => {
   });
   
 });
-   
-
 
 async function deleteCollection(collection) {
   console.log("Deleting all '" + collection  + "' from database");
@@ -34,14 +30,6 @@ async function deleteCollection(collection) {
     }
   });
 }
-
-
-// async function getItems(){
-
-//   const Items = await Buyer.find({});
-//   return Items;
-
-// }
 
 async function getItems(collection){
   const Items =  await mongoose.connection.db.collection(collection).find({}).toArray();
