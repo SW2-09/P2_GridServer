@@ -74,7 +74,6 @@ wss.on("connection", (ws) => { //callback for when a new client connects
 
 })};
 
-});
 
 /**
  * Function to find a job in the queue by its jobId

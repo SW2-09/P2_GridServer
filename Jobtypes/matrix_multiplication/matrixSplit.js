@@ -1,5 +1,5 @@
 
- export{arr, matrix_B};
+ export{arr,matrix_A, matrix_B};
  //import { expMatrixA, expMatrixB } from "../fileReader";
 
  //the maxumimum amount of computations we want a single subtask to be
