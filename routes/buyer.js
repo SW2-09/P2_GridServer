@@ -58,6 +58,9 @@ buyerRouter.post("/upload", async (req, res) => {
 
     let uploadPath = dynamicDirPath + Jobdata.jobID + ".json";
 
+    let uploaddata = JSON.stringify(Jobdata);
+
+    console.log(uploaddata);
     
      fs.writeFile(uploadPath, JSON.stringify(Jobdata), (error) => {
      if (error){
@@ -70,7 +73,7 @@ buyerRouter.post("/upload", async (req, res) => {
    });
   } catch (error) {
     console.log("Uploading: " + error);
-    res.send("Uploading: " + err);
+    res.send("Uploading: " + error);
   }
   });
 
