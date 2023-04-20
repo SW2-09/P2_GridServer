@@ -6,6 +6,7 @@ class Job{//the job nodes of the job queue
     constructor(jobId, alg, matrixB, next = null, previous = null){
         this.jobId = jobId;
         this.subtaskList = new Queue_linked_list_subtask;
+        this.pendingList = new Queue_linked_list_subtask;
         this.matrixB = matrixB;
         this.next = next;
         this.previous = previous;
@@ -23,6 +24,7 @@ class subTask{//the subtask nodes og the subtask queue in the job queue
         this.matrixA ;
         this.next = next;
         this.previous = previous;
+        this.sendTime = 0;
     }
 }
 
@@ -40,8 +42,8 @@ class Queue_linked_list_job {
         this.size = 0;
     }
 
-    enQueue(jobId, matrixB) {
-        if (this.head === null) {
+    enQueue(jobId, matrixB) { //adds a new job to the queue
+        if (this.head === null) { //if the queue is empty
             this.tail = this.head = new Job(jobId, matrix_mult_str, matrixB, this.head, this.tail);
             this.size++;
         }
@@ -51,9 +53,9 @@ class Queue_linked_list_job {
         }
     }
 
-    deQueue(){
-        if (this.head === null){return;}
-        if (this.head === this.tail){
+    deQueue(){ //removes the tail of the queue
+        if (this.head === null){return;} //if the queue is empty
+        if (this.head === this.tail){ //if the queue has only one job
             this.head = this.tail = null;
         }
         else {
@@ -65,11 +67,22 @@ class Queue_linked_list_job {
 
     removeJob(JobId){
         let x = this.head;
-        while(JobId !== x.job_id){
+        while(JobId !== x.jobId){
             x = x.next;
         }
-        x.previous.next = x.next;
-        x.next = x.previous;
+        if (x === this.head && x === this.tail){ //if the job is the only job in the queue
+            this.head = this.tail = null;
+        }
+        else if (x === this.head){ //if the job is the head of the queue
+            this.head = this.head.next;
+        }
+        else if (x === this.tail){ //if the job is the tail of the queue
+            this.tail = this.tail.previous;
+        }
+        else { //if the job is in the middle of the queue
+            x.previous.next = x.next;
+            x.next.previous = x.previous;
+        }
         this.size--;
     }
 }
@@ -86,8 +99,8 @@ class Queue_linked_list_subtask{
         this.size = 0;
     }
 
-    enQueue(jobId, taskId) {
-        if (this.head === null) {
+    enQueue(jobId, taskId) { //will put the new element at the head of the queue
+        if (this.head === null) { //if the queue is empty
             this.tail = this.head = new subTask(jobId, taskId, this.head, this.tail);
             this.size++;
         }
@@ -97,9 +110,9 @@ class Queue_linked_list_subtask{
         }
     }
 
-    deQueue(){
-        if (this.head === null){return;}
-        if (this.head === this.tail){
+    deQueue(){ //removes the tail element of the queue
+        if (this.head === null){return;} //if the queue is empty
+        if (this.head === this.tail){ //if the queue only has one element
             this.head = this.tail = null;
         }
         else {
@@ -108,7 +121,29 @@ class Queue_linked_list_subtask{
         }
         this.size--;
     }
+
+    removeTask(TaskId){ //removes the task with the specific task id
+        let x = this.head;
+        while(TaskId !== x.taskId){
+            x = x.next;
+        }
+        if (x === this.head && x === this.tail){ //if the job is the only job in the queue
+            this.head = this.tail = null;
+        }
+        else if (x === this.head){ //if the job is the head of the queue
+            this.head = this.head.next;
+        }
+        else if (x === this.tail){ //if the job is the tail of the queue
+            this.tail = this.tail.previous;
+        }
+        else { //if the job is in the middle of the queue
+            x.previous.next = x.next;
+            x.next.previous = x.previous;
+        }
+        this.size--;
+    }
 }
+
 
 //Making a demo job queue
 let JobQueue = new Queue_linked_list_job;
