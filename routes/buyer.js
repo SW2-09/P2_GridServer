@@ -124,7 +124,6 @@ buyerRouter.post("/upload", async (req, res) => {
 
     let uploadPath = dynamicDirPath + Jobdata.jobID + ".json";
 
-    let uploaddata = JSON.stringify(Jobdata);
 
     createFolder(dynamicDirPath);
     
