@@ -1,3 +1,4 @@
+
  export{arr, matrix_B};
  //import { expMatrixA, expMatrixB } from "../fileReader";
 
@@ -6,6 +7,7 @@ const calcMax = Math.pow(2000,2);
 const matrixsize = 3000;
 //the two matrices that will be worked on
 let matrix_A = 
+
 {
     entries: Array(matrixsize).fill(0).map(() => Array(matrixsize).fill(0).map(() => Math.floor(Math.random() * 10))),
     columns: matrixsize,
@@ -13,6 +15,7 @@ let matrix_A =
 }
 
 let matrix_B = {
+
     //creating a random matrix of size = matrixsize
     entries: Array(matrixsize).fill(0).map(() => Array(matrixsize).fill(0).map(() => Math.floor(Math.random() * 10))),
     columns: matrixsize,

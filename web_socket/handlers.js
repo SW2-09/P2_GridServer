@@ -17,7 +17,13 @@ console.log(`There are ${JobQueue.size} jobs in the queue.`);
  */
 function send_subtask(ws, JobQueue) {
   let next_task = subtaskFeeder(JobQueue);
-  ws.send(JSON.stringify(next_task));
+  if (next_task !== null) { //if there is a subtask to send
+    ws.send(JSON.stringify(next_task));
+  }
+  else{ //if there is no subtask to send
+    console.log("sending 0 to worker")
+    ws.send("0");
+  }
 }
 
 /**
@@ -25,35 +31,63 @@ function send_subtask(ws, JobQueue) {
  * on "connection" - frst subtask is sent to the worker
  * on "message" - the solution contained in the message is parsed from string to object, and the next subtask is send.
  */
-wss.on("connection", (ws) => {
+wss.on("connection", (ws) => { //callback for when a new client connects
   console.log("New client connected");
   console.log("JobQueue: " + JobQueue);
-  if (JobQueue.size > 0) {
+  if (JobQueue.size > 0) { //if the queue is not empty, send a subtask to the worker
     send_subtask(ws, JobQueue);
-  } else {
+  } else { //if the queue is empty, send 0 to the worker
+    console.log("sending 0 to worker")
     ws.send("0");
   }
 
-  ws.on("message", (message) => {
+  ws.on("message", (message) => { //callback for when a message is recieved from the client
     // Try is for if some one sends somehting which cannot be passed to JSON:
     try {
       let messageParse = JSON.parse(message);
       console.log("Solution recieved:");
-      console.log(messageParse["workerID"]);
 
-    } catch (e) {
+      console.log("jobID: " + messageParse["jobId"]);
+      console.log("taskID: " + messageParse["taskId"]);
+      let currentJob=findJob(messageParse["jobId"]); //find the job in the queue
+      currentJob.solutions[messageParse["taskId"]] = messageParse["solution"]; 
+      currentJob.numOfSolutions++; //increase the number of solutions
+      currentJob.pendingList.removeTask(messageParse["taskId"]); //remove the task from the pending list
+      // console.log("job solutions" + JobQueue.tail.solutions.length);
+      // console.log(messageParse["solution"]);
+
+
+    } catch (e) { //if the message cannot be parsed to JSON
       console.log(`Something went wrong with the recieved message: ${e.message}`);
     }
 
-    try{
+    try{ //try to send the next subtask
         send_subtask(ws, JobQueue);
-    } catch (e){
+    } catch (e){ //if an error occurs when sending a subtask
       console.log(`Something went wrong with sending message to server: ${e.message}`);
     }
-
   });
 
-  ws.on("close", () => {
+  ws.on("close", () => { //when the worker disconnects
     console.log("Client has disconnected");
   });
+
 })};
+
+});
+
+/**
+ * Function to find a job in the queue by its jobId
+ * @param {number} jobId 
+ * @returns the job with the given jobId
+ */
+function findJob(jobId){
+  let currentJob=JobQueue.tail;
+  if (currentJob.jobId==jobId){
+    return currentJob;
+  }
+  while(currentJob.previous.jobId!=jobId){
+    currentJob=currentJob.previous;
+  }
+  return currentJob.previous;
+}
