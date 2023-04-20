@@ -1,9 +1,12 @@
+export { startWebsocketserver }
 import{JobQueue} from "../Jobtypes/matrix_multiplication/jobQueue.js";
 import{subtaskFeeder, queueEmpty} from "../Jobtypes/matrix_multiplication/taskFeed.js";
 import { WebSocketServer } from "ws";
+import { server} from "../server.js";
 
 // websocket connection:
-const wss = new WebSocketServer({ port: 8001 });
+function startWebsocketserver(){
+const wss = new WebSocketServer({ server });
 
 console.log(`There are ${JobQueue.size} jobs in the queue.`);
 
@@ -43,6 +46,7 @@ wss.on("connection", (ws) => { //callback for when a new client connects
     try {
       let messageParse = JSON.parse(message);
       console.log("Solution recieved:");
+
       console.log("jobID: " + messageParse["jobId"]);
       console.log("taskID: " + messageParse["taskId"]);
       let currentJob=findJob(messageParse["jobId"]); //find the job in the queue
@@ -51,6 +55,7 @@ wss.on("connection", (ws) => { //callback for when a new client connects
       currentJob.pendingList.removeTask(messageParse["taskId"]); //remove the task from the pending list
       // console.log("job solutions" + JobQueue.tail.solutions.length);
       // console.log(messageParse["solution"]);
+
 
     } catch (e) { //if the message cannot be parsed to JSON
       console.log(`Something went wrong with the recieved message: ${e.message}`);
@@ -66,6 +71,9 @@ wss.on("connection", (ws) => { //callback for when a new client connects
   ws.on("close", () => { //when the worker disconnects
     console.log("Client has disconnected");
   });
+
+})};
+
 });
 
 /**
