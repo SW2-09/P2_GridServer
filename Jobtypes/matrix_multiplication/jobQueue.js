@@ -42,8 +42,8 @@ class Queue_linked_list_job {
         this.size = 0;
     }
 
-    enQueue(jobId, matrixB) {
-        if (this.head === null) {
+    enQueue(jobId, matrixB) { //adds a new job to the queue
+        if (this.head === null) { //if the queue is empty
             this.tail = this.head = new Job(jobId, matrix_mult_str, matrixB, this.head, this.tail);
             this.size++;
         }
@@ -53,9 +53,9 @@ class Queue_linked_list_job {
         }
     }
 
-    deQueue(){
-        if (this.head === null){return;}
-        if (this.head === this.tail){
+    deQueue(){ //removes the tail of the queue
+        if (this.head === null){return;} //if the queue is empty
+        if (this.head === this.tail){ //if the queue has only one job
             this.head = this.tail = null;
         }
         else {
@@ -81,7 +81,7 @@ class Queue_linked_list_job {
         }
         else { //if the job is in the middle of the queue
             x.previous.next = x.next;
-            x.next = x.previous;
+            x.next.previous = x.previous;
         }
         this.size--;
     }
@@ -99,8 +99,8 @@ class Queue_linked_list_subtask{
         this.size = 0;
     }
 
-    enQueue(jobId, taskId) {
-        if (this.head === null) {
+    enQueue(jobId, taskId) { //will put the new element at the head of the queue
+        if (this.head === null) { //if the queue is empty
             this.tail = this.head = new subTask(jobId, taskId, this.head, this.tail);
             this.size++;
         }
@@ -110,9 +110,9 @@ class Queue_linked_list_subtask{
         }
     }
 
-    deQueue(){
-        if (this.head === null){return;}
-        if (this.head === this.tail){
+    deQueue(){ //removes the tail element of the queue
+        if (this.head === null){return;} //if the queue is empty
+        if (this.head === this.tail){ //if the queue only has one element
             this.head = this.tail = null;
         }
         else {
@@ -122,7 +122,7 @@ class Queue_linked_list_subtask{
         this.size--;
     }
 
-    removeTask(TaskId){
+    removeTask(TaskId){ //removes the task with the specific task id
         let x = this.head;
         while(TaskId !== x.taskId){
             x = x.next;
@@ -138,7 +138,7 @@ class Queue_linked_list_subtask{
         }
         else { //if the job is in the middle of the queue
             x.previous.next = x.next;
-            x.next = x.previous;
+            x.next.previous = x.previous;
         }
         this.size--;
     }
