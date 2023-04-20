@@ -121,11 +121,11 @@ function jobDone(job){
     });
 
     //logs whether the job was done correctly or not THIS SHOULD BE REMOVED WHEN THE ALGORITHM IS DONE
-    if (JSON.stringify(Solution) === JSON.stringify(matrix_mult(matrix_A.entries,matrix_B.entries))){
-        console.log("Job done correctly! HUSK AT FJERNE");
+    // if (JSON.stringify(Solution) === JSON.stringify(matrix_mult(matrix_A.entries,matrix_B.entries))){
+    //     console.log("Job done correctly! HUSK AT FJERNE");
         
-    }
-    else{
-        console.log("Job NOT done correctly! HUSK AT FJERNE");
-    }
+    // }
+    // else{
+    //     console.log("Job NOT done correctly! HUSK AT FJERNE");
+    // }
 }

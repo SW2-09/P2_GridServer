@@ -33,8 +33,8 @@ const dirPath = "./uploads/";
 buyerRouter.use(fileUpload()); // Enables file upload
 
 buyerRouter.post("/test", (req, res) => {
-  const calcMax = Math.pow(500,3);
-const matrixsize = 1000;
+const calcMax = Math.pow(500,3);
+const matrixsize = 10;
   let matrix_A = 
 
 {
@@ -54,6 +54,7 @@ let matrix_B = {
 let arr = []; // the array which will hold the sliced matrixes of matrix A
 let ARows = matrix_A.rows;
 let A = matrix_A.entries;
+
 
 function divideMatrices(A , B, ARows){
   if (ARows * B.rows * B.columns < calcMax){
@@ -76,6 +77,8 @@ let test = Date.now();
 
 divideMatrices(A, matrix_B, ARows)
 
+console.log(arr)
+
     JobQueue.enQueue("job1", matrix_B);
       for (let index = 0; index < arr.length; index++) {
     JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
@@ -90,9 +93,10 @@ console.log(JobQueue);
 });
 
 buyerRouter.post("/upload", async (req, res) => {
+  
   try{
     let dynamicDirPath = dirPath + req.user.name + "/";
-    createFolder(dynamicDirPath);
+    
 
     const Jobdata = {
       jobID : req.body.jobTitle + req.user.name,
@@ -101,12 +105,28 @@ buyerRouter.post("/upload", async (req, res) => {
       arrA : req.body.uploadFile,
       arrB : req.body.uploadFile2,
     }
+    let matrix_A = {
+      entries: Jobdata.arrA,
+      columns: Jobdata.arrA[0].length,
+      rows: Jobdata.arrA.length,
+    }
+    let matrix_B = {
+      entries: Jobdata.arrB,
+      columns: Jobdata.arrB[0].length,
+      rows: Jobdata.arrB.length,
+    }
+
+
+     // the array which will hold the sliced matrixes of matrix A
+    addtoque(matrix_A,matrix_B,Jobdata.jobID);
+    console.log(JobQueue.size);
+    console.log(JobQueue.head.numOfTasks);
 
     let uploadPath = dynamicDirPath + Jobdata.jobID + ".json";
 
     let uploaddata = JSON.stringify(Jobdata);
 
-    console.log(uploaddata);
+    createFolder(dynamicDirPath);
     
      fs.writeFile(uploadPath, JSON.stringify(Jobdata), (error) => {
      if (error){
@@ -136,4 +156,51 @@ const createFolder = (folderPath) => {
   }
 };
 
+ //the array which will hold the sliced matrixes of matrix A
 
+function addtoque(matrix_A,matrix_B,jobID){
+
+
+
+let ARows = matrix_A.rows;
+let A = matrix_A.entries;
+
+    let arr = divideMatrices(A, matrix_B, ARows)
+
+    JobQueue.enQueue(jobID, matrix_B);
+      for (let index = 0; index < arr.length; index++) {
+    JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
+    JobQueue.head.numOfTasks++;
+
+
+
+
+
+  }
+}
+
+function divideMatrices(A, B, ARows) {
+  const calcMax = Math.pow(500, 3);
+  let arr = []; // the array which will hold the sliced matrices of matrix A
+  
+  if (ARows * B.rows * B.columns < calcMax) {
+    arr.push(A);
+    return arr;
+  }
+  
+  if (ARows < 2) {
+    arr.push(A);
+    return arr;
+  }
+  
+  let slicedMatrixA = A.slice(0, Math.floor(A.length / 2));
+  let slicedMatrixA2 = A.slice(Math.floor(A.length / 2), A.length);
+
+  // Concatenate the returned arrays from the recursive calls
+  arr = arr.concat(
+    divideMatrices(slicedMatrixA, B, Math.floor(ARows / 2)),
+    divideMatrices(slicedMatrixA2, B, Math.floor(ARows / 2))
+  );
+
+  return arr;
+}
