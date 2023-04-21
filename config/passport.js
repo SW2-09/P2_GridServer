@@ -4,20 +4,18 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs'
 import { Strategy as localStrategy } from 'passport-local';
 
-
-
 //Load Buyer model
 import { Buyer } from '../models/Buyer.js';
 
 //Taken from passport website 
 function checkPassport(passport) {
     passport.use(
-        new localStrategy({usernameField: 'name'}, (name, password, done) =>{
+        new localStrategy({passReqToCallback: true, usernameField: 'name'}, (req, name, password, done) =>{
             //Match Buyer
             Buyer.findOne({name: name})
             .then(buyer => {
                 if(!buyer){
-                    return done(null, false, {msg: 'That name is username is not registrered'});
+                    return done(null, false, req.flash("error", "Buyer not found"));
                 }
 
                 //Match password
@@ -26,7 +24,7 @@ function checkPassport(passport) {
                     if (isMatch) {
                       return done(null, buyer);
                     } else {
-                      return done(null, false, {msg: 'Password incorrect' });
+                      return done(null, false, req.flash("error","Wrong password"));
                     }
                   });
             })

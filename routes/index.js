@@ -1,7 +1,7 @@
 export { router };
 
 import express from "express";
-import { ensureAuthenticated } from "../config/authentication.js";
+import { checkLoggedIn, ensureAuthenticated } from "../config/authentication.js";
 import passport from "passport";
 import bcrypt from "bcryptjs";
 import { Buyer } from "../models/Buyer.js";
@@ -9,12 +9,13 @@ import { Buyer } from "../models/Buyer.js";
 const router = express.Router();
 
 //login page
-router.get("/", (req, res) => {
-  res.render("login");
+router.get("/", checkLoggedIn, (req, res, next) => {
+  const errors = req.flash().error || [];
+  res.render("login", { errors });
 });
 
 //register page
-router.get("/register", (req, res) => {
+router.get("/register", checkLoggedIn, (req, res) => {
   res.render("register");
 });
 
@@ -101,5 +102,4 @@ router.post("/login", (req, res, next) => {
     failureRedirect: "/",
   })(req, res, next);
   }});
-
 
