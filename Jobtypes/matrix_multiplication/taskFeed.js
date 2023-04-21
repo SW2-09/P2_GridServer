@@ -15,6 +15,7 @@ let queueEmpty="empty";
  * @param workerPack - The package of data to be sent to the worker
  */
 function subtaskFeeder(JobQueue){
+    if (JobQueue.tail === null){ return null;}//if the queue is empty
     let currentJob = JobQueue.tail;
     if (currentJob.subtaskList.tail=== null) { //if there are no more subtasks in the subtask list
         console.log("No more subtasks to do. Checking pending list.")

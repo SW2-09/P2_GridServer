@@ -45,18 +45,25 @@ wss.on("connection", (ws) => { //callback for when a new client connects
     // Try is for if some one sends somehting which cannot be passed to JSON:
     try {
       let messageParse = JSON.parse(message);
-      console.log("Solution recieved:");
+      
+      if (messageParse["data"] === "ready for work") { //if the worker is ready for work
+      //send_subtask(ws, JobQueue); //send a subtask to the worker
+      console.log("kommer herind")
+      }
+      else {
+        let messageParse = JSON.parse(message);
+        console.log("Solution recieved:");
 
-      console.log("jobID: " + messageParse["jobId"]);
-      console.log("taskID: " + messageParse["taskId"]);
-      let currentJob=findJob(messageParse["jobId"]); //find the job in the queue
-      currentJob.solutions[messageParse["taskId"]] = messageParse["solution"]; 
-      currentJob.numOfSolutions++; //increase the number of solutions
-      currentJob.pendingList.removeTask(messageParse["taskId"]); //remove the task from the pending list
-      // console.log("job solutions" + JobQueue.tail.solutions.length);
-      // console.log(messageParse["solution"]);
-
-
+        console.log("jobID: " + messageParse["jobId"]);
+        console.log("taskID: " + messageParse["taskId"]);
+        let currentJob=findJob(messageParse["jobId"]); //find the job in the queue
+        currentJob.solutions[messageParse["taskId"]] = messageParse["solution"]; 
+        currentJob.numOfSolutions++; //increase the number of solutions
+        currentJob.pendingList.removeTask(messageParse["taskId"]); //remove the task from the pending list
+        // console.log("job solutions" + JobQueue.tail.solutions.length);
+        // console.log(messageParse["solution"]);
+      }
+      
     } catch (e) { //if the message cannot be parsed to JSON
       console.log(`Something went wrong with the recieved message: ${e.message}`);
     }
