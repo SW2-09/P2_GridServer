@@ -6,17 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Buyer page</title>
     <link href="stylesheets/buyer.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/stylesheets/navigationsbar.css">
     
   </head>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <body>
     <header>
-      <div class="header-content">
-        <span class="welcome-message">Welcome <%= name%></span>
-        
-        <button id="logout" class="logoutButton"> Logout</button>
-        
-      </div>
+        <div class="header-logo">
+          <label class="logo">GridFlix</label>
+        </div>
+        <div class="header-content">
+          <button id="nameButton"> Welcome <%= name  %></button>
+          <a href="/buyer/logout">Logout</a>
+        </div>
     </header>
     <div class="mainDiv" id="mainDiv">
     </div>

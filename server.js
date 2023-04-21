@@ -13,6 +13,7 @@ import expressLayouts from "express-ejs-layouts";
 import mongoose from "mongoose";
 import session from "express-session";
 import passport from "passport";
+import flash from "connect-flash";
 
 
 //const express = require("express");
@@ -42,6 +43,7 @@ mongoose
 //EJS setup
 app.use(expressLayouts);
 app.set("view engine", "ejs"); // Makes .ejs files possible to use
+app.use(flash());
 
 //Express session -  passport session (webpage)
 app.use(session({ secret: "secret", resave: true, saveUninitialized: true }));

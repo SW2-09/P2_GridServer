@@ -1,9 +1,10 @@
-
+<link rel="stylesheet" href="/stylesheets/register.css">
 <body>
 <div class="register-container">
   <div class="register-form">
     <div class="register-header">
       <h1 class="register-title"><i class=""></i> Register</h1>
+      <%= include ("./partials/messages") %>
     </div>
     <form action="/register" method="POST">
       <div class="form-group">
@@ -43,7 +44,7 @@
         Register
       </button>
     </form>
-    <p class="register-link">Have An Account? <a href="/login">Login</a></p>
+    <p class="register-link">Have An Account? <a href="/">Login</a></p>
   </div>
 </div>
 </body>
