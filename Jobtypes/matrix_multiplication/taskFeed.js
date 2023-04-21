@@ -75,8 +75,8 @@ function subtaskFeeder(JobQueue){
             matrixB: currentJob.matrixB,
             matrixA: currentJob.subtaskList.tail.matrixA,
         }
-        currentJob.pendingList.enQueue(currentJob.jobId,currentJob.subtaskList.tail.taskId); //add the subtask to the pending list
-        currentJob.pendingList.head.matrixA = currentJob.subtaskList.tail.matrixA; //add the matrixA to the job in the pending list
+        currentJob.pendingList.enQueue(currentJob.jobId,currentJob.subtaskList.tail.taskId,currentJob.subtaskList.tail.matrixA); //add the subtask to the pending list
+         //add the matrixA to the job in the pending list
         currentJob.pendingList.head.sendTime = Date.now(); //set the send time of the subtask to know when the task is outdated
         currentJob.subtaskList.deQueue(); //remove the subtask from the subtask list
         console.log("sending job: " + workerPack.jobId + " task: " + workerPack.taskId + " to worker \n")
@@ -121,11 +121,11 @@ function jobDone(job){
     });
 
     //logs whether the job was done correctly or not THIS SHOULD BE REMOVED WHEN THE ALGORITHM IS DONE
-    if (JSON.stringify(Solution) === JSON.stringify(matrix_mult(matrix_A.entries,matrix_B.entries))){
-        console.log("Job done correctly! HUSK AT FJERNE");
+    // if (JSON.stringify(Solution) === JSON.stringify(matrix_mult(matrix_A.entries,matrix_B.entries))){
+    //     console.log("Job done correctly! HUSK AT FJERNE");
         
-    }
-    else{
-        console.log("Job NOT done correctly! HUSK AT FJERNE");
-    }
+    // }
+    // else{
+    //     console.log("Job NOT done correctly! HUSK AT FJERNE");
+    // }
 }
