@@ -48,7 +48,7 @@ wss.on("connection", (ws) => { //callback for when a new client connects
       
       if (messageParse["data"] === "ready for work") { //if the worker is ready for work
       //send_subtask(ws, JobQueue); //send a subtask to the worker
-      console.log("kommer herind")
+      
       }
       else {
         let messageParse = JSON.parse(message);
