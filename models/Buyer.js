@@ -13,6 +13,10 @@ const buyerSchema = new mongoose.Schema({
     jobs_computed: {
         type: Number,
         default: 0
+    },
+    jobs:{
+        type: Object,
+        default: null,
     }
 })
 

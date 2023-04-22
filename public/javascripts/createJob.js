@@ -35,7 +35,16 @@ CreateJob: `<div>
 </div>
 `,
 
-CurrentJobs: `
+JobList:`
+<div id="jobList">
+<table>
+
+</table>
+
+</div>
+`
+,
+JobsOverview: `
 <div id="mainDiv">
   <div>
     <h1>Current jobs</h1>
@@ -43,8 +52,18 @@ CurrentJobs: `
       <p>Put list of jobs here</p>
     </div>
   </div>
-    <button id="createJob-button" class="createJob-button"> Create new job</button>
 </div>`,
+
+FrontPage:`
+<div id="mainDiv">
+  <div>
+    <h1> Job manager </h1>
+    <p>Submit a new grid computing job by pressing "Create new job". To get results of a job, press "Jobs overview".</p>
+    <button id="createJob-button" class="frontPageButtons"> Create new job</button>
+    <button id="jobInfo-button" class="frontPageButtons"> Jobs overview</button>
+  </div>`,
+
+
 
 underconstruction: `<div>
 <h1>Under construction</h1>
@@ -75,6 +94,12 @@ mainDiv.addEventListener("click", (e) => {
 });
 
 mainDiv.addEventListener("click", (e) => {
+  if (e.target.id === "jobInfo-button") {
+      mainDiv.innerHTML = content.JobsOverview;
+  }
+});
+
+mainDiv.addEventListener("click", (e) => {
     if (e.target.id === "cancelJob") {
         mainDiv.innerHTML = content.CurrentJobs;
     }
@@ -91,7 +116,7 @@ mainDiv.addEventListener("change", (e) => {
     }
 });
 
-mainDiv.innerHTML = content.CurrentJobs;
+mainDiv.innerHTML = content.FrontPage;
 
 
 
