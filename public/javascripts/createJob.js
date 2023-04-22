@@ -1,4 +1,6 @@
 const mainDiv = document.getElementById("mainDiv");
+import { name } from "ejs";
+import { Buyer } from "../../models/Buyer";
 
 const content = {
 CreateJob: `<div>
@@ -45,7 +47,7 @@ JobList:`
 `
 ,
 JobsOverview: `
-<div id="mainDiv">
+<div id="overviewDiv">
   <div>
     <h1>Current jobs</h1>
     <div class="JobList">
@@ -55,7 +57,7 @@ JobsOverview: `
 </div>`,
 
 FrontPage:`
-<div id="mainDiv">
+<div id="frontPage">
   <div>
     <h1> Job manager </h1>
     <p>Submit a new grid computing job by pressing "Create new job". To get results of a job, press "Jobs overview".</p>
@@ -164,6 +166,7 @@ mainDiv.addEventListener("click", async (e) => {
 
         updateDB(formData);
         
+        updateDB(formData);
         
     }
 }});
@@ -199,6 +202,14 @@ function parseCsvToJson(file) {
     });
   }
 
+<<<<<<< Updated upstream
+=======
+function updateDB(newJob){
+  Buyer.findOneAndUpdate({name: name },{$set: {Jobs: Object.assign(Jobs,newJob)}}
+    ) 
+}
+
+>>>>>>> Stashed changes
 
 document.getElementById("testbutton").addEventListener('click', () => {
     console.log("test")
