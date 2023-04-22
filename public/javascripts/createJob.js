@@ -161,6 +161,8 @@ mainDiv.addEventListener("click", async (e) => {
         
         const result = await response.text();
         console.log("server response:" + result);
+
+        updateDB(formData);
         
         
     }
@@ -196,6 +198,7 @@ function parseCsvToJson(file) {
       });
     });
   }
+
 
 document.getElementById("testbutton").addEventListener('click', () => {
     console.log("test")

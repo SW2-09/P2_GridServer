@@ -15,8 +15,8 @@ const buyerSchema = new mongoose.Schema({
         default: 0
     },
     jobs:{
-        type: Object,
-        default: null,
+        type: Array,
+        default: [],
     }
 })
 

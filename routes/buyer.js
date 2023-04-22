@@ -5,6 +5,7 @@ import { JobQueue } from "../Jobtypes/matrix_multiplication/jobQueue.js";
 import express from "express";
 import fileUpload from "express-fileupload";
 import fs from "fs";
+import{Buyer} from "../models/Buyer.js"
 
 const buyerRouter = express.Router();
 
@@ -97,7 +98,14 @@ buyerRouter.post("/upload", async (req, res) => {
   try{
     let dynamicDirPath = dirPath + req.user.name + "/";
     
+    console.log(req.user.name);
 
+    const jobInfo={
+      jobID : req.body.jobTitle + req.user.name,
+      Des  : req.body.jobDescription,
+      type : req.body.jobType,
+    }
+    
     const Jobdata = {
       jobID : req.body.jobTitle + req.user.name,
       Des  : req.body.jobDescription,
@@ -105,6 +113,12 @@ buyerRouter.post("/upload", async (req, res) => {
       arrA : req.body.uploadFile,
       arrB : req.body.uploadFile2,
     }
+    
+    //Update DB:
+    //console.log(Buyer.findOne({name: req.user.name}))
+    await Buyer.findOneAndUpdate({name: req.user.name },{"$push": {jobs: jobInfo}});
+    
+
     let matrix_A = {
       entries: Jobdata.arrA,
       columns: Jobdata.arrA[0].length,
@@ -203,3 +217,5 @@ function divideMatrices(A, B, ARows) {
 
   return arr;
 }
+
+ 
