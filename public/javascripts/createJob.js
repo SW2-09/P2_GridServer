@@ -1,6 +1,4 @@
 const mainDiv = document.getElementById("mainDiv");
-import { name } from "ejs";
-import { Buyer } from "../../models/Buyer";
 
 const content = {
 CreateJob: `<div>
@@ -202,14 +200,6 @@ function parseCsvToJson(file) {
     });
   }
 
-<<<<<<< Updated upstream
-=======
-function updateDB(newJob){
-  Buyer.findOneAndUpdate({name: name },{$set: {Jobs: Object.assign(Jobs,newJob)}}
-    ) 
-}
-
->>>>>>> Stashed changes
 
 document.getElementById("testbutton").addEventListener('click', () => {
     console.log("test")
