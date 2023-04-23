@@ -159,6 +159,11 @@ buyerRouter.post("/upload", async (req, res) => {
   }
   });
 
+  buyerRouter.get("/jobinfo",async (req, res) => {
+    Buyer.findOne({name: req.body.name})
+      .then((buyer)=>{res.body=buyer})
+  })
+
 
 //create folder in the uploads folder if not exists, the folder name is the user name
 const createFolder = (folderPath) => {

@@ -37,7 +37,12 @@ CreateJob: `<div>
 
 JobList:`
 <div id="jobList">
-<table>
+<script> 
+let tablecontent=""
+for ()
+
+</script>
+<table id="joblist_table">
 
 </table>
 
@@ -49,7 +54,10 @@ JobsOverview: `
   <div>
     <h1>Current jobs</h1>
     <div class="JobList">
-      <p>Put list of jobs here</p>
+      <p>List of jobs</p>
+    </div>
+    <div>
+    <button id="joblistUpdate">Update joblist</button>
     </div>
   </div>
 </div>`,
@@ -161,13 +169,16 @@ mainDiv.addEventListener("click", async (e) => {
         
         const result = await response.text();
         console.log("server response:" + result);
-
-        updateDB(formData);
-        
-        updateDB(formData);
         
     }
 }});
+
+
+mainDiv.addEventListener("click",async (e) => {
+  if (e.target.id === "joblistUpdate") {
+      const repsonse=await fetch("/buyer/joblist")
+  }
+})
 
 function parseCsvToJson(file) {
     return new Promise((resolve, reject) => {
