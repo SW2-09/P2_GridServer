@@ -1,5 +1,5 @@
 import{assert} from 'chai'
-import{matrix_mult_str} from "../../Jobtypes/matrix_multiplication/algorithms.js"
+import{matrix_mult_str} from "../../../Jobtypes/matrix_multiplication/algorithms.js"
 
 
 let matrix_mult=new Function('A','B',matrix_mult_str);
