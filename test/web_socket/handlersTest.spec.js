@@ -1,13 +1,14 @@
-
+// imports from test libraries
 import {spy} from "sinon";
 import {assert as assertSinon} from "sinon"
+//websocket imports
+import { WebSocket } from "ws";
+import { WebSocketServer } from "ws";
 
 import { subtaskFeeder } from "../../Jobtypes/matrix_multiplication/taskFeed.js";
 import{JobQueue} from "../../Jobtypes/matrix_multiplication/jobQueue.js";
 import {arr, matrix_B} from "../../Jobtypes/matrix_multiplication/matrixSplit.js"
 
-import { WebSocket } from "ws";
-import { WebSocketServer } from "ws";
 // Udestående: handlers skal importeres frem for defineres i denne fil. Det virker dog ikke umiddelbart. 
 //import {handlers} from "../../web_socket/handlers.js"
 
