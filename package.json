@@ -13,7 +13,8 @@
   "devDependencies": {
     "chai": "^4.3.7",
     "mocha": "^10.2.0",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "sinon": "^15.0.4"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

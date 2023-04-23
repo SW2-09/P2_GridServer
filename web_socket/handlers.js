@@ -1,21 +1,15 @@
 export { startWebsocketserver }
 import{JobQueue} from "../Jobtypes/matrix_multiplication/jobQueue.js";
-import{subtaskFeeder, queueEmpty} from "../Jobtypes/matrix_multiplication/taskFeed.js";
+import{subtaskFeeder} from "../Jobtypes/matrix_multiplication/taskFeed.js";
 import { WebSocketServer } from "ws";
 import { server} from "../server.js";
-
-// websocket connection:
-function startWebsocketserver(){
-const wss = new WebSocketServer({ server });
-
-console.log(`There are ${JobQueue.size} jobs in the queue.`);
 
 /**
  * Sending subtask to the worker
  * @param ws - websocket connection with the worker (
  * @param JobQueue - Queue of all jobs submitted by buyers
  */
-function send_subtask(ws, JobQueue) {
+function send_subtask() {
   let next_task = subtaskFeeder(JobQueue);
   if (next_task !== null) { //if there is a subtask to send
     ws.send(JSON.stringify(next_task));
@@ -25,6 +19,55 @@ function send_subtask(ws, JobQueue) {
     ws.send("0");
   }
 }
+
+let handlers={
+  JobQueue: JobQueue,
+  subtaskFeeder: subtaskFeeder,
+  ws: null,
+  sendSubtask: function sendSubtask(){
+                  let next_task = this.subtaskFeeder(this.JobQueue,handlers.ws);
+                   handlers.ws.send(JSON.stringify(next_task));
+                },
+  messageHandler: function messageHandler(message){
+                    // Try is for if some one sends somehting which cannot be passed to JSON:
+                    try {
+                    let messageParse = JSON.parse(message);
+                    console.log("Message recieved:");
+                    console.log(messageParse);
+                    handlers.sendSubtask();
+                    } catch (e){
+                    console.log(`Something went wrong: ${e.message}`);
+                    }
+                  },
+connectionHandler: function connectionHandler(ws){
+                      handlers.ws=ws
+                      console.log("New client connected");
+                      console.log("JobQueue: " + JobQueue);
+  
+                      if (JobQueue.size > 0) {
+                      
+                      handlers.sendSubtask(ws);
+                      } else {
+                      ws.send("0");
+                      }
+
+                     ws.on("message", handlers.messageHandler)
+                    }
+}
+
+
+
+// websocket connection:
+function startWebsocketserver(){
+const wss = new WebSocketServer({ server });
+
+console.log(`There are ${JobQueue.size} jobs in the queue.`);
+
+
+
+
+
+
 
 /**
  * Managing ws communications with worker. Two callbacks
