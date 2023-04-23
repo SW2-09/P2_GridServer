@@ -5,7 +5,7 @@
 nodemon can be acti
 */
 export{server};
-import {startWebsocketserver} from "./web_socket/handlers.js";
+import {startWebsocketserver, handlers} from "./web_socket/handlers.js";
 const port = 3000;
 
 import express from "express";
