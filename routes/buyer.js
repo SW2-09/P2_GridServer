@@ -116,8 +116,11 @@ buyerRouter.post("/upload", async (req, res) => {
     
     //Update DB:
     //console.log(Buyer.findOne({name: req.user.name}))
-    await Buyer.findOneAndUpdate({name: req.user.name },{"$push": {jobs: jobInfo}});
+    await Buyer.findOneAndUpdate({name: req.user.name },{"$push": {jobs_array: jobInfo}});
     
+    //Forsøg på at gøre det med jobs-object frem for jobs-array:
+    //await Buyer.findOneAndUpdate({name: req.user.name },{jobs_object: {`${jobID}`: jobInfo}});
+    //await Buyer.findOneAndUpdate({name: req.user.name },{'$set': jobs_object['Job'+'jobID']=jobInfo});
 
     let matrix_A = {
       entries: Jobdata.arrA,
