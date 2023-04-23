@@ -7,7 +7,7 @@ import { server} from "../server.js";
 
 
 /**
- * websocket handlers
+ * Object: websocket handlers
  * @param ws - websocket connection with the worker (
  * @param JobQueue - Queue of all jobs submitted by buyers
  */
