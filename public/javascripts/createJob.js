@@ -36,25 +36,24 @@ CreateJob: `<div>
 `,
 
 JobList:`
-<div id="jobList">
+
+`
+
+/*
+
 <script> 
-let tablecontent=""
-for ()
 
 </script>
-<table id="joblist_table">
-
-</table>
 
 </div>
-`
+*/
 ,
 JobsOverview: `
 <div id="overviewDiv">
   <div>
     <h1>Current jobs</h1>
-    <div class="JobList">
-      <p>List of jobs</p>
+    <div class="JobTable">
+    Det skal ind her
     </div>
     <div>
     <button id="joblistUpdate">Update joblist</button>
@@ -95,21 +94,67 @@ matrixUpload: `<div>
 
 
 
+
+const generateTable = (DOMProperty) => {
+  //Test job object
+
+  const job1={
+    Titel : "job-1",
+    Des  : "important job",
+    type : "matrix multiplication nxn",
+  }
+  const job2={
+    Titel : "job-2",
+    Des  : "Less important job",
+    type : "matrix multiplication nxm",
+  }
+  const job3={
+    Titel : "job-3",
+    Des  : "Less important job",
+    type : "matrix multiplication nxm",
+  }
+  let jobArray = [job1,job2, job3];
+
+  let jobTable=document.createElement('table');
+
+  document.querySelector(".JobTable").append(jobTable);
+
+  let tableHeader="<th>Titel</th> <th>ID</th> <th>Description</th> <th> Status </th>";
+
+  jobTable.insertRow(0).innerHTML=tableHeader;
+
+  jobArray.forEach((job, index) => {
+    let row = jobTable.insertRow(index+1);
+    row.insertCell(0).innerHTML=job.Titel;
+    row.insertCell(1).innerHTML=job.Des;
+    row.insertCell(2).innerHTML=job.type;
+    row.insertCell(3).innerHTML="under construction";
+  });
+
+
+}
+
+// Create job button
 mainDiv.addEventListener("click", (e) => {
     if (e.target.id === "createJob-button") {
         mainDiv.innerHTML = content.CreateJob;
     }
 });
-
+// Jobs overview button
 mainDiv.addEventListener("click", (e) => {
   if (e.target.id === "jobInfo-button") {
-      mainDiv.innerHTML = content.JobsOverview;
+      mainDiv.innerHTML = content.JobsOverview;   
+      const jobHTML = document.querySelector(".JobTable");
+      jobHTML.innerHTML = content.JobList;
+      generateTable(jobHTML.body)
+      
   }
 });
-
+// Cancel job button
 mainDiv.addEventListener("click", (e) => {
     if (e.target.id === "cancelJob") {
-        mainDiv.innerHTML = content.CurrentJobs;
+      mainDiv.innerHTML = content.CurrentJobs;
+        
     }
 });
 
@@ -174,12 +219,6 @@ mainDiv.addEventListener("click", async (e) => {
 }});
 
 
-mainDiv.addEventListener("click",async (e) => {
-  if (e.target.id === "joblistUpdate") {
-      const repsonse=await fetch("/buyer/joblist")
-  }
-})
-
 function parseCsvToJson(file) {
     return new Promise((resolve, reject) => {
       let matrix = [];
@@ -210,6 +249,38 @@ function parseCsvToJson(file) {
       });
     });
   }
+
+mainDiv.addEventListener("click", async (e) => {
+  if (e.target.id === "joblistUpdate") {
+  console.log("jobinfo wip")
+
+  getJobarrayFromDB("QWERT")
+
+  }
+})
+
+
+
+async function getJobarrayFromDB(username){
+  console.log(username)
+  const repsonse = await fetch("/buyer/jobinfo", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    //Send username to server
+
+    body: JSON.stringify({username: username}),
+
+  })
+  
+}
+
+/*  document.getElementById("joblistUpdate").addEventListener("click",async (e) => {
+        console.log("jobinfo wip")
+        const repsonse=await fetch("/buyer/joblist")
+  })
+  */
 
 
 document.getElementById("testbutton").addEventListener('click', () => {

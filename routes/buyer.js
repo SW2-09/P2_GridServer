@@ -7,6 +7,7 @@ import fileUpload from "express-fileupload";
 import fs from "fs";
 import{Buyer} from "../models/Buyer.js"
 
+
 const buyerRouter = express.Router();
 
 /* ********************** *
@@ -101,7 +102,7 @@ buyerRouter.post("/upload", async (req, res) => {
     console.log(req.user.name);
 
     const jobInfo={
-      jobID : req.body.jobTitle + req.user.name,
+      jobID : req.body.jobTitle,
       Des  : req.body.jobDescription,
       type : req.body.jobType,
     }
@@ -159,10 +160,14 @@ buyerRouter.post("/upload", async (req, res) => {
   }
   });
 
-  buyerRouter.get("/jobinfo",async (req, res) => {
-    Buyer.findOne({name: req.body.name})
-      .then((buyer)=>{res.body=buyer})
+  buyerRouter.post("/jobinfo", async (req, res) => {   //<-----------------------------------------
+
+    console.log(req.body.username)
+    const buyer = await Buyer.findOne({name:req.body.username})
+    console.log(buyer)
   })
+    //Find the buyer in the database
+  
 
 
 //create folder in the uploads folder if not exists, the folder name is the user name
