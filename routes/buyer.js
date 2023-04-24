@@ -43,16 +43,18 @@ buyerRouter.post("/upload", async (req, res) => {
     let jobtype = req.body.jobType;
     let Jobdata;
 
-    switch (jobtype) {
+    switch (jobtype) {// in case the jobtype is matrix multiplication
+
       case "matrixMult":{
         Jobdata = createMatrixMultJob(req.body, req.user.name);
         break;
       }
-      case "plus":{
+      case "plus":{// in case the jobtype is plus
         Jobdata = createPlusJob(req.body, req.user.name);
+
         break;
       }
-      default:{
+      default:{ // in case the jobtype is not found
         throw new Error("Jobtype not found");
       }
     }
@@ -65,13 +67,20 @@ buyerRouter.post("/upload", async (req, res) => {
     writeFile(uploadPath, Jobdata);
      
   } catch (error) {
+
     console.log("Uploading: " + error);
     res.send("Uploading: " + error);
   }
   });
 
 
-function createMatrixMultJob(jobData, jobOwner) {
+
+/**
+ * function to create a job of type matrix multiplication and enqueue it to the job queue
+ * @param {object} jobData object holding the data used to create the job
+ * @returns the object holding the data used to create the job
+ */
+function createMatrixMultJob(jobData) {
   const Jobdata = {
     jobID : jobData.jobTitle,
     Des  : jobData.jobDescription,
@@ -90,15 +99,24 @@ function createMatrixMultJob(jobData, jobOwner) {
     rows: Jobdata.arrB.length,
   }
 
-   // the array which will hold the sliced matrixes of matrix A
+
+  // adding the job to the job queue
   addMatrixToQue(Jobdata.jobID, Jobdata.type, jobOwner, matrix_A, matrix_B);
+
   console.log(JobQueue.size);
   console.log(JobQueue.head.numOfTasks);
 
   return Jobdata;
 }
 
+
+/**
+ * function to create a job of type plus and enqueue it to the job queue
+ * @param {object} jobData object holding the data for the job
+ * @returns the object used to create the job
+ */
 function createPlusJob(jobData, jobOwner){
+
   const Jobdata = {
     jobID : jobData.jobTitle,
     Des  : jobData.jobDescription,
@@ -106,22 +124,32 @@ function createPlusJob(jobData, jobOwner){
     arr : jobData.uploadFile,
   }
 
+  // adding the job to the job queue
   addPlusToQue(Jobdata.jobID, Jobdata.type, jobOwner, Jobdata.arr);
+
   console.log(JobQueue.size);
   console.log(JobQueue.head.numOfTasks);
 
   return Jobdata;
 }
 
- //the array which will hold the sliced matrixes of matrix A
 
+/**
+ * function for adding the matrix multiplication job to the job queue
+ * @param {string} jobID the id of the job
+ * @param {string} jobType the type of the job
+ * @param {matrix} matrix_A the matrix A
+ * @param {matrix} matrix_B the matrix B
+ */
 function addMatrixToQue(jobID, jobType, jobOwner, matrix_A, matrix_B){
+
 
   let ARows = matrix_A.rows;
   let A = matrix_A.entries;
 
   let arr = divideMatrices(A, matrix_B, ARows)
 
+  // enqueue the job to the job queue
   JobQueue.enQueue(jobID, jobType, jobOwner, matrix_mult_str, matrix_B);
   for (let index = 0; index < arr.length; index++) {
     JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
@@ -129,16 +157,37 @@ function addMatrixToQue(jobID, jobType, jobOwner, matrix_A, matrix_B){
   }
 }
 
+
+/**
+ * function which will enqueue the plus job to the job queue
+ * @param {string} jobID the id of the job
+ * @param {string} jobType the type of the job
+ * @param {array} entries the array which holds the numbers to be added
+ */
 function addPlusToQue(jobID, jobType, jobOwner, entries){
   
   let arr = dividePlus(entries);
+  // enqueue the job to the job queue
   JobQueue.enQueue(jobID, jobType, jobOwner, plus_str);
+
   for (let index = 0; index < arr.length; index++) {
-    JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
-    JobQueue.head.numOfTasks++;
+    if (arr[index].length == 1){
+      JobQueue.head.solutions[index] = arr[index][0];
+    }
+    else{
+      JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
+      JobQueue.head.numOfTasks++;
+    }
   }
 }
 
+/**
+ * recursive function to divide the matrix A into smaller matrices to fit desired calculation sizes for subtasks
+ * @param {matrix} A the matrix A
+ * @param {matrix} B the matrix B
+ * @param {number} ARows the number of rows in the matrix A
+ * @returns the array which will hold the sliced matrices of matrix A
+ */
 function divideMatrices(A, B, ARows) {
   
   let arr = []; // the array which will hold the sliced matrices of matrix A
@@ -164,6 +213,11 @@ function divideMatrices(A, B, ARows) {
   return arr;
 }
 
+/**
+ * function to divide the array of entries into smaller arrays to fit desired calculation sizes for subtasks
+ * @param {array} entries the array holding the entries to be added toghether
+ * @returns new array of smaller subtasks
+ */
 function dividePlus(entries){
 
   let arr = []; // the array which will hold the smaller problems
@@ -177,9 +231,5 @@ function dividePlus(entries){
       arr[index] = [];
       arr[index][0] = entries.pop();
   }
-  console.log(arr);
   return arr;
 }
-
-
-  
