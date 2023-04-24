@@ -76,8 +76,8 @@ connectionHandler: function connectionHandler(ws){//callback for when a new clie
 }
 }
 
-function startWebsocketserver(){
-  const wss = new WebSocketServer({ server });
+function startWebsocketserver(host, port){
+  const wss = new WebSocketServer({ host: host, port: port });
   console.log(`There are ${JobQueue.size} jobs in the queue.`);
 
   wss.on("connection",handlers.connectionHandler); 

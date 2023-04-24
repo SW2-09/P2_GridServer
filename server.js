@@ -6,7 +6,12 @@ nodemon can be acti
 */
 export{server};
 import {startWebsocketserver, handlers} from "./web_socket/handlers.js";
+
+const host = "localhost";
 const port = 3000;
+const webSocketPort = 8080;
+
+
 
 import express from "express";
 import expressLayouts from "express-ejs-layouts";
@@ -77,4 +82,4 @@ This is great practice to get into. This way we can have different nested routes
 const server = app.listen(port, () =>
   console.log(`Server has been started on http://localhost:${port}`)
 );
-startWebsocketserver();
+startWebsocketserver(host, webSocketPort);
