@@ -1,7 +1,7 @@
 export { startWebsocketserver , handlers}
 
-import{JobQueue} from "../Jobtypes/matrix_multiplication/jobQueue.js";
-import{subtaskFeeder} from "../Jobtypes/matrix_multiplication/taskFeed.js";
+import{JobQueue} from "../Jobtypes/jobQueue.js";
+import{subtaskFeeder} from "../Jobtypes/taskFeed.js";
 import { WebSocketServer } from "ws";
 import { server} from "../server.js";
 
@@ -27,6 +27,7 @@ let handlers={
   },
   messageHandler: (message) => { //callback for when a message is recieved from the client
     // Try is for if some one sends somehting which cannot be passed to JSON:
+    
     try {
       let messageParse = JSON.parse(message);
       
@@ -37,7 +38,7 @@ let handlers={
       else {
         let messageParse = JSON.parse(message);
         console.log("Solution recieved:");
-
+        console.log(messageParse)
         console.log("jobID: " + messageParse["jobId"]);
         console.log("taskID: " + messageParse["taskId"]);
         let currentJob=findJob(messageParse["jobId"]); //find the job in the queue

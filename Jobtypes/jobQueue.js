@@ -1,16 +1,17 @@
 export{JobQueue};
-import { matrix_mult_str } from "./algorithms.js";
+import { matrix_mult_str } from "./matrix_multiplication/calcAlgorithm.js";
 //import{ arr , matrix_A, matrix_B } from "./matrixSplit.js";
 
 class Job{//the job nodes of the job queue
-    constructor(jobId, alg, matrixB, next = null, previous = null){
+    constructor(jobId, jobType, algorithm, commonData, next = null, previous = null){
         this.jobId = jobId;
+        this.jobType = jobType;
         this.subtaskList = new Queue_linked_list_subtask;
         this.pendingList = new Queue_linked_list_subtask;
-        this.matrixB = matrixB;
+        this.commonData = commonData;
         this.next = next;
         this.previous = previous;
-        this.alg = alg;
+        this.alg = algorithm;
         this.solutions = [];
         this.numOfSolutions = 0;
         this.numOfTasks = 0;
@@ -18,10 +19,10 @@ class Job{//the job nodes of the job queue
 }
 
 class subTask{//the subtask nodes og the subtask queue in the job queue
-    constructor(jobId, taskId, matrixA, next = null, previous = null){
+    constructor(jobId, taskId, data, next = null, previous = null){
         this.jobId = jobId;
         this.taskId = taskId;
-        this.matrixA = matrixA;
+        this.data = data;
         this.next = next;
         this.previous = previous;
         this.sendTime = 0;
@@ -42,13 +43,16 @@ class Queue_linked_list_job {
         this.size = 0;
     }
 
-    enQueue(jobId, matrixB) { //adds a new job to the queue
+    enQueue(jobId, jobType, algorithm, commonData = null) { //adds a new job to the queue
+        if (commonData === null){
+            commonData = [];
+        }
         if (this.head === null) { //if the queue is empty
-            this.tail = this.head = new Job(jobId, matrix_mult_str, matrixB, this.head, this.tail);
+            this.tail = this.head = new Job(jobId, jobType, algorithm, commonData, this.head, this.tail);
             this.size++;
         }
         else{
-            this.head.previous = this.head = new Job(jobId, matrix_mult_str, matrixB, this.head);
+            this.head.previous = this.head = new Job(jobId, jobType, algorithm, commonData, this.head);
             this.size++;
         }
     }
@@ -99,13 +103,13 @@ class Queue_linked_list_subtask{
         this.size = 0;
     }
 
-    enQueue(jobId, taskId, matrixA) { //will put the new element at the head of the queue
+    enQueue(jobId, taskId, data) { //will put the new element at the head of the queue
         if (this.head === null) { //if the queue is empty
-            this.tail = this.head = new subTask(jobId, taskId, matrixA, this.head, this.tail);
+            this.tail = this.head = new subTask(jobId, taskId, data, this.head, this.tail);
             this.size++;
         }
         else{
-            this.head.previous = this.head = new subTask(jobId, taskId, matrixA, this.head);
+            this.head.previous = this.head = new subTask(jobId, taskId, data, this.head);
             this.size++;
         }
     }
