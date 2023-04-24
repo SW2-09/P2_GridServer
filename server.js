@@ -82,4 +82,5 @@ This is great practice to get into. This way we can have different nested routes
 const server = app.listen(port, () =>
   console.log(`Server has been started on http://localhost:${port}`)
 );
+
 startWebsocketserver(host, webSocketPort);
