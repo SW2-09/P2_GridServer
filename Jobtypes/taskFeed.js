@@ -1,4 +1,6 @@
 export{subtaskFeeder, queueEmpty};
+
+import { createFolder, writeFile } from "../utility.js";
 import { matrix_mult } from "./matrix_multiplication/Partitioner.js";
 import { matrix_A,matrix_B } from "./matrix_multiplication/matrixSplit.js";
 import { Buyer } from "../models/Buyer.js";
@@ -117,17 +119,22 @@ function checkPendingList(pending){
  * @param { job class} job is the job that is done
  */
 function jobDone(job){
+    console.log("Job done!")
+    console.log("JobId: " + job.jobId)
     let Solution = [];
     job.solutions.forEach(element => { //concatenates the solutions into one array to combine matrix
         Solution = Solution.concat(element);
     });
 
-    //logs whether the job was done correctly or not THIS SHOULD BE REMOVED WHEN THE ALGORITHM IS DONE
-    // if (JSON.stringify(Solution) === JSON.stringify(matrix_mult(matrix_A.entries,matrix_B.entries))){
-    //     console.log("Job done correctly! HUSK AT FJERNE");
-        
-    // }
-    // else{
-    //     console.log("Job NOT done correctly! HUSK AT FJERNE");
-    // }
+    
+    //path for file
+    let path = "./JobData/Solutions/" + job.jobOwner + "/";
+
+    createFolder(path); //creates a folder for the buyer
+
+    let filename = path + job.jobId + ".json"; //creates a filename for the solution
+
+    writeFile(filename, Solution); //writes the solution to a file
+
+    //Update the Buyer database here!
 }
