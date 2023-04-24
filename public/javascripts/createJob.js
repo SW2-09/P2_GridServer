@@ -95,9 +95,9 @@ matrixUpload: `<div>
 
 
 
-const generateTable = (DOMProperty) => {
+async function generateTable (DOMProperty) {
   //Test job object
-
+/*
   const job1={
     Titel : "job-1",
     Des  : "important job",
@@ -114,21 +114,28 @@ const generateTable = (DOMProperty) => {
     type : "matrix multiplication nxm",
   }
   let jobArray = [job1,job2, job3];
+  */
+  let jobsObject= await getJobarrayFromDB("QWERT")
+
+  console.log(jobsObject.jobs);
 
   let jobTable=document.createElement('table');
 
   document.querySelector(".JobTable").append(jobTable);
 
-  let tableHeader="<th>Titel</th> <th>ID</th> <th>Description</th> <th> Status </th>";
+  let tableHeader="<th>Titel</th> <th>JobID</th> <th>Description</th> <th> Status </th> <th> Download </th>";
 
   jobTable.insertRow(0).innerHTML=tableHeader;
 
-  jobArray.forEach((job, index) => {
+  jobsObject.jobs.forEach((job, index) => {
     let row = jobTable.insertRow(index+1);
-    row.insertCell(0).innerHTML=job.Titel;
+    row.insertCell(0).innerHTML=index+1;
     row.insertCell(1).innerHTML=job.Des;
     row.insertCell(2).innerHTML=job.type;
     row.insertCell(3).innerHTML="under construction";
+    if (true) {
+      row.insertCell(4).innerHTML=`<button id=download_btn_${index}> Download </button>`
+    }
   });
 
 
@@ -263,7 +270,7 @@ mainDiv.addEventListener("click", async (e) => {
 
 async function getJobarrayFromDB(username){
   console.log(username)
-  const repsonse = await fetch("/buyer/jobinfo", {
+  const response = await fetch("/buyer/jobinfo", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -271,9 +278,10 @@ async function getJobarrayFromDB(username){
     //Send username to server
 
     body: JSON.stringify({username: username}),
-
-  })
+  });
   
+  let jobs = await response.json();
+  return jobs
 }
 
 /*  document.getElementById("joblistUpdate").addEventListener("click",async (e) => {
