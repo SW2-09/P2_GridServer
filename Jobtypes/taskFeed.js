@@ -117,10 +117,23 @@ function checkPendingList(pending){
  * @param { job class} job is the job that is done
  */
 function jobDone(job){
-    let Solution = [];
-    job.solutions.forEach(element => { //concatenates the solutions into one array to combine matrix
-        Solution = Solution.concat(element);
-    });
+    console.log(job.solutions)
+    console.log(job.numOfTasks)
+    
+    if (job.jobType === "matrixMult"){ //if the job is a matrix multiplication job
+        let Solution = [];
+        job.solutions.forEach(element => { //concatenates the solutions into one array to combine matrix
+            Solution = Solution.concat(element);
+        });
+        console.log("Solution: " + Solution)
+    }
+    else if (job.jobType === "plus"){
+        let Solution = 0;
+        job.solutions.forEach(element => { //concatenates the solutions into one array to combine matrix
+            Solution += element;
+        });
+        console.log("Solution: " + Solution)
+    }
 
     //logs whether the job was done correctly or not THIS SHOULD BE REMOVED WHEN THE ALGORITHM IS DONE
     // if (JSON.stringify(Solution) === JSON.stringify(matrix_mult(matrix_A.entries,matrix_B.entries))){
