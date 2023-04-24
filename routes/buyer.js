@@ -80,7 +80,7 @@ buyerRouter.post("/upload", async (req, res) => {
  * @param {object} jobData object holding the data used to create the job
  * @returns the object holding the data used to create the job
  */
-function createMatrixMultJob(jobData) {
+function createMatrixMultJob(jobData, jobOwner) {
   const Jobdata = {
     jobID : jobData.jobTitle,
     Des  : jobData.jobDescription,
