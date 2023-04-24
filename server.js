@@ -9,7 +9,7 @@ import {startWebsocketserver, handlers} from "./web_socket/handlers.js";
 
 const host = "localhost";
 const port = 3000;
-const webSocketPort = 8080;
+const webSocketPort = 3443;
 
 
 
