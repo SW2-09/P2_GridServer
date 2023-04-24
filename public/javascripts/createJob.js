@@ -56,7 +56,7 @@ JobsOverview: `
     Det skal ind her
     </div>
     <div>
-    <button id="joblistUpdate">Update joblist</button>
+    <button id="jobInfo-button">Update joblist</button>
     </div>
   </div>
 </div>`,
@@ -96,28 +96,10 @@ matrixUpload: `<div>
 
 
 async function generateTable (DOMProperty) {
-  //Test job object
-/*
-  const job1={
-    Titel : "job-1",
-    Des  : "important job",
-    type : "matrix multiplication nxn",
-  }
-  const job2={
-    Titel : "job-2",
-    Des  : "Less important job",
-    type : "matrix multiplication nxm",
-  }
-  const job3={
-    Titel : "job-3",
-    Des  : "Less important job",
-    type : "matrix multiplication nxm",
-  }
-  let jobArray = [job1,job2, job3];
-  */
+
   let jobsObject= await getJobarrayFromDB("QWERT")
 
-  console.log(jobsObject.jobs);
+  //console.log(jobsObject.jobs);
 
   let jobTable=document.createElement('table');
 
@@ -137,7 +119,6 @@ async function generateTable (DOMProperty) {
       row.insertCell(4).innerHTML=`<button id=download_btn_${index}> Download </button>`
     }
   });
-
 
 }
 
@@ -257,6 +238,7 @@ function parseCsvToJson(file) {
     });
   }
 
+  /*
 mainDiv.addEventListener("click", async (e) => {
   if (e.target.id === "joblistUpdate") {
   console.log("jobinfo wip")
@@ -265,6 +247,7 @@ mainDiv.addEventListener("click", async (e) => {
 
   }
 })
+*/
 
 
 
