@@ -3,9 +3,10 @@ import { matrix_mult_str } from "./matrix_multiplication/calcAlgorithm.js";
 //import{ arr , matrix_A, matrix_B } from "./matrixSplit.js";
 
 class Job{//the job nodes of the job queue
-    constructor(jobId, jobType, algorithm, commonData, next = null, previous = null){
+    constructor(jobId, jobType, jobOwner, algorithm, commonData, next = null, previous = null){
         this.jobId = jobId;
         this.jobType = jobType;
+        this.jobOwner = jobOwner;
         this.subtaskList = new Queue_linked_list_subtask;
         this.pendingList = new Queue_linked_list_subtask;
         this.commonData = commonData;
@@ -43,16 +44,16 @@ class Queue_linked_list_job {
         this.size = 0;
     }
 
-    enQueue(jobId, jobType, algorithm, commonData = null) { //adds a new job to the queue
+    enQueue(jobId, jobType, jobOwner, algorithm, commonData = null) { //adds a new job to the queue
         if (commonData === null){
             commonData = [];
         }
         if (this.head === null) { //if the queue is empty
-            this.tail = this.head = new Job(jobId, jobType, algorithm, commonData, this.head, this.tail);
+            this.tail = this.head = new Job(jobId, jobType, jobOwner, algorithm, commonData, this.head, this.tail);
             this.size++;
         }
         else{
-            this.head.previous = this.head = new Job(jobId, jobType, algorithm, commonData, this.head);
+            this.head.previous = this.head = new Job(jobId, jobType, jobOwner, algorithm, commonData, this.head);
             this.size++;
         }
     }
