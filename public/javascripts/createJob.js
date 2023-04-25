@@ -145,7 +145,7 @@ mainDiv.addEventListener("click", (e) => {
 // Cancel job button
 mainDiv.addEventListener("click", (e) => {
     if (e.target.id === "cancelJob") {
-      mainDiv.innerHTML = content.CurrentJobs;
+      mainDiv.innerHTML = content.FrontPage;
         
     }
 });
@@ -233,7 +233,7 @@ mainDiv.addEventListener("click", async (e) => {
         
         const result = await response.text();
         console.log("server response:" + result);
-
+      }
     }
   });
 
