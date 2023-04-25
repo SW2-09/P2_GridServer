@@ -119,7 +119,6 @@ async function generateTable (DOMProperty) {
       row.insertCell(4).innerHTML=`<button id=download_btn_${index}> Download </button>`
     }
   });
-
 }
 
 // Create job button
