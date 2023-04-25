@@ -5,14 +5,20 @@
 nodemon can be acti
 */
 export{server};
-import {startWebsocketserver} from "./web_socket/handlers.js";
+import {startWebsocketserver, handlers} from "./web_socket/handlers.js";
+
+const host = "localhost";
 const port = 3000;
+const webSocketPort = 3443;
+
+
 
 import express from "express";
 import expressLayouts from "express-ejs-layouts";
 import mongoose from "mongoose";
 import session from "express-session";
 import passport from "passport";
+import flash from "connect-flash";
 
 
 //const express = require("express");
@@ -42,6 +48,7 @@ mongoose
 //EJS setup
 app.use(expressLayouts);
 app.set("view engine", "ejs"); // Makes .ejs files possible to use
+app.use(flash());
 
 //Express session -  passport session (webpage)
 app.use(session({ secret: "secret", resave: true, saveUninitialized: true }));
@@ -75,4 +82,5 @@ This is great practice to get into. This way we can have different nested routes
 const server = app.listen(port, () =>
   console.log(`Server has been started on http://localhost:${port}`)
 );
-startWebsocketserver();
+
+startWebsocketserver(host, webSocketPort);

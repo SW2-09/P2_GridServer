@@ -21,8 +21,7 @@ CreateJob: `<div>
         <select  id="jobType" name="jobType" class="form-dropdown">
             <option value="none">Job Type</option>
             <option id="ny" value="matrixMult">Matrix multiplication</option>
-            <option value="none">Et sejt projekt</option>
-            <option value="none">Et andet sejt projekt</option>
+            <option value="plus">Plus</option>
             </select>
     </div>
 
@@ -90,8 +89,14 @@ matrixUpload: `<div>
     <input type="file" id="uploadFile2" name="uploadFile2" accept=".csv" required>
   </div>  
 </div>`,
-};
 
+plusUpload: `<div>
+<div class="form-control">
+    <label for="uploadFile">Numbers to add</label>
+    <input type="file" id="uploadFile" name="uploadFile" accept=".csv" required>
+  </div>
+</div>`
+};
 
 
 
@@ -150,6 +155,9 @@ mainDiv.addEventListener("change", (e) => {
         if (e.target.value === "matrixMult") {
             document.getElementById('Uploadtype').innerHTML = content.matrixUpload;
         }
+        else if (e.target.value === "plus") {
+          document.getElementById('Uploadtype').innerHTML = content.plusUpload;
+      }
         else {
             document.getElementById('Uploadtype').innerHTML = ''
         }
@@ -158,39 +166,63 @@ mainDiv.addEventListener("change", (e) => {
 
 mainDiv.innerHTML = content.FrontPage;
 
-
-
 mainDiv.addEventListener("click", async (e) => {
     if (e.target.id === "submit") {
       const jobType = document.getElementById("jobType").value;
       const Uploadform = document.getElementById("uploadForm")
+      const jobTitle = document.getElementById("jobTitle").value;
+      const jobDescription = document.getElementById("jobDescription").value;
 
-        if(!Uploadform.checkValidity() ||jobType==="none") {
-            Uploadform.reportValidity();
-            e.preventDefault();}
-            
-            else {
-
-        e.preventDefault();
-        const jobTitle = document.getElementById("jobTitle").value;
-        const jobDescription = document.getElementById("jobDescription").value;
-        const jobType = document.getElementById("jobType").value;
-        const fileInput1 = document.getElementById("uploadFile");
-        const fileInput2 = document.getElementById("uploadFile2");
-
-        const allowedFileFormat = ["text/csv", "application/json"]; //allows JSON and csv formats
-        const maxFileSize = 10 * 1024 * 1024; // 10 MB
-
-        if (!allowedFileFormat.includes(fileInput1.files[0].type) || !allowedFileFormat.includes(fileInput2.files[0].type)) {
-            alert("Please choose a valid file format(csv or json)");
-            return;
-        }
-
-        const file1 = await parseCsvToJson(fileInput1.files[0]);
-        const file2 = await parseCsvToJson(fileInput2.files[0]);
-    
-        const formData = {jobTitle : jobTitle, jobDescription : jobDescription, jobType : jobType, uploadFile : file1, uploadFile2 : file2}
+      if(!Uploadform.checkValidity() ||jobType==="none") {
+          Uploadform.reportValidity();
+          e.preventDefault();}
+          
+      else {
+        let formData;
+        switch (jobType) {
+          case "matrixMult":{
+            e.preventDefault();
+            const fileInput1 = document.getElementById("uploadFile");
+            const fileInput2 = document.getElementById("uploadFile2");
+      
+            const allowedFileFormat = ["text/csv", "application/json"]; //allows JSON and csv formats
+            const maxFileSize = 10 * 1024 * 1024; // 10 MB
+      
+            if (!allowedFileFormat.includes(fileInput1.files[0].type) || !allowedFileFormat.includes(fileInput2.files[0].type)) {
+                alert("Please choose a valid file format(csv or json)");
+                return;
+            }
+      
+            const file1 = await parseCsvToJson(fileInput1.files[0], jobType);
+            const file2 = await parseCsvToJson(fileInput2.files[0], jobType);
         
+            formData = {jobTitle : jobTitle, jobDescription : jobDescription, jobType : jobType, uploadFile : file1, uploadFile2 : file2}
+            
+            break;
+          }
+          case "plus":{
+            e.preventDefault();
+            const fileInput = document.getElementById("uploadFile");
+      
+            const allowedFileFormat = ["text/csv", "application/json"]; //allows JSON and csv formats
+            const maxFileSize = 10 * 1024 * 1024; // 10 MB
+      
+            if (!allowedFileFormat.includes(fileInput.files[0].type)){
+                alert("Please choose a valid file format(csv or json)");
+                return;
+            }
+      
+            const file = await parseCsvToJson(fileInput.files[0], jobType);
+      
+            formData = {jobTitle : jobTitle, jobDescription : jobDescription, jobType : jobType, uploadFile : file}
+            
+          break;
+          }
+          default:
+            console.log("error jobtype not supported")
+            break;
+        }
+        console.log(formData);
         const response = await fetch("/buyer/upload", {
             method: "POST",
             headers: {
@@ -201,14 +233,13 @@ mainDiv.addEventListener("click", async (e) => {
         
         const result = await response.text();
         console.log("server response:" + result);
-        
+
     }
-}});
+  });
 
-
-function parseCsvToJson(file) {
+function parseCsvToJson(file, jobType) {
     return new Promise((resolve, reject) => {
-      let matrix = [];
+      let data = [];
   
       Papa.parse(file, {
         download: true,
@@ -216,22 +247,33 @@ function parseCsvToJson(file) {
         skipEmptyLines: true,
         complete: function (results) {
           let placeholder = [];
-  
-          for (let i = 0; i < results.data.length; i++) {
-            for (let j = 0; j < results.data[i].length; j++) {
-              if (results.data[i][j]) {
-                placeholder.push(parseFloat(results.data[i][j]));
+          if (jobType === "matrixMult") {
+              for (let i = 0; i < results.data.length; i++) {
+                for (let j = 0; j < results.data[i].length; j++) {
+                  if (results.data[i][j]) {
+                    placeholder.push(parseFloat(results.data[i][j]));
+                  }
+                }
+
+                data.push(placeholder);
+                placeholder = [];
               }
+
+              resolve(data);
             }
-  
-            matrix.push(placeholder);
-            placeholder = [];
-          }
-  
-          resolve(matrix);
-        },
+          else if (jobType === "plus"){
+            for (let i = 0; i < results.data[0].length; i++) {
+              data.push(parseFloat(results.data[0][i]));
+            }
+            }
+
+            resolve(data);
+
+            },
+
         error: function (err) {
           reject(err);
+        
         },
       });
     });

@@ -1,8 +1,9 @@
 export{subtaskFeeder, queueEmpty};
-import { matrix_mult } from "./Partitioner.js";
-import { matrix_A,matrix_B } from "./matrixSplit.js";
-import { Buyer } from "../../models/Buyer.js";
 
+import { createFolder, writeFile } from "../utility.js";
+import { matrix_mult } from "./matrix_multiplication/Partitioner.js";
+import { matrix_A,matrix_B } from "./matrix_multiplication/matrixSplit.js";
+import { Buyer } from "../models/Buyer.js";
 
 //token for signifying that the queue is empty
 let queueEmpty="empty";
@@ -15,6 +16,7 @@ let queueEmpty="empty";
  * @param workerPack - The package of data to be sent to the worker
  */
 function subtaskFeeder(JobQueue){
+    if (JobQueue.tail === null){ return null;}//if the queue is empty
     let currentJob = JobQueue.tail;
     if (currentJob.subtaskList.tail=== null) { //if there are no more subtasks in the subtask list
         console.log("No more subtasks to do. Checking pending list.")
@@ -31,10 +33,11 @@ function subtaskFeeder(JobQueue){
             console.log("currentJob: " + currentJob.jobId + " task: " + currentJob.pendingList.tail.taskId)
             let workerPack={ //create a package to send to the worker
                 jobId: currentJob.jobId,
+                jobType: currentJob.jobType,
                 alg: currentJob.alg,
                 taskId: currentJob.pendingList.tail.taskId,
-                matrixB: currentJob.matrixB,
-                matrixA: currentJob.pendingList.tail.matrixA,
+                commonData: currentJob.commonData,
+                data: currentJob.pendingList.tail.data,
             }
             //set the send time of the subtask to know when the task is outdated
             currentJob.pendingList.head.sendTime = Date.now(); 
@@ -44,7 +47,7 @@ function subtaskFeeder(JobQueue){
         else{ //if there are no failed subtasks
             if (currentJob.previous !== null){
             currentJob = currentJob.previous; //set the current job to the next job in the queue
-            console.log("herforbi");
+            
             }
             // let currentJob=JobQueue.tail.previous;
             // let workerPack={
@@ -70,12 +73,13 @@ function subtaskFeeder(JobQueue){
     if (currentJob.subtaskList.tail !== null) {
         let workerPack={ //create a package to send to the worker
             jobId: currentJob.jobId,
+            jobType: currentJob.jobType,
             alg: currentJob.alg,
             taskId: currentJob.subtaskList.tail.taskId,
-            matrixB: currentJob.matrixB,
-            matrixA: currentJob.subtaskList.tail.matrixA,
+            commonData: currentJob.commonData,
+            data: currentJob.subtaskList.tail.data,
         }
-        currentJob.pendingList.enQueue(currentJob.jobId,currentJob.subtaskList.tail.taskId,currentJob.subtaskList.tail.matrixA); //add the subtask to the pending list
+        currentJob.pendingList.enQueue(currentJob.jobId,currentJob.subtaskList.tail.taskId,currentJob.subtaskList.tail.data); //add the subtask to the pending list
          //add the matrixA to the job in the pending list
         currentJob.pendingList.head.sendTime = Date.now(); //set the send time of the subtask to know when the task is outdated
         currentJob.subtaskList.deQueue(); //remove the subtask from the subtask list
@@ -115,17 +119,33 @@ function checkPendingList(pending){
  * @param { job class} job is the job that is done
  */
 function jobDone(job){
-    let Solution = [];
-    job.solutions.forEach(element => { //concatenates the solutions into one array to combine matrix
-        Solution = Solution.concat(element);
-    });
+    console.log(job.numOfTasks)
+    let Solution
+    
+    if (job.jobType === "matrixMult"){ //if the job is a matrix multiplication job
+        Solution = []
+        job.solutions.forEach(element => { //concatenates the solutions into one array to combine matrix
+            Solution = Solution.concat(element);
+        });
+        console.log("Solution: " + Solution)
+    }
+    else if (job.jobType === "plus"){
+        job.solutions.forEach(element => { //concatenates the solutions into one array to combine matrix
+            Solution += element;
+        });
+        console.log("Solution: " + Solution)
+    }
 
-    //logs whether the job was done correctly or not THIS SHOULD BE REMOVED WHEN THE ALGORITHM IS DONE
-    // if (JSON.stringify(Solution) === JSON.stringify(matrix_mult(matrix_A.entries,matrix_B.entries))){
-    //     console.log("Job done correctly! HUSK AT FJERNE");
-        
-    // }
-    // else{
-    //     console.log("Job NOT done correctly! HUSK AT FJERNE");
-    // }
+
+    
+    //path for file
+    let path = "./JobData/Solutions/" + job.jobOwner + "/";
+
+    createFolder(path); //creates a folder for the buyer
+
+    let filename = path + job.jobId + ".json"; //creates a filename for the solution
+
+    writeFile(filename, Solution); //writes the solution to a file
+
+    //Update the Buyer database here!
 }

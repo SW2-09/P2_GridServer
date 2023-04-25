@@ -1,14 +1,18 @@
 export { buyerRouter };
-import { JobQueue } from "../Jobtypes/matrix_multiplication/jobQueue.js";
-
+import { JobQueue } from "../Jobtypes/jobQueue.js";
+import { matrix_mult_str } from "../Jobtypes/matrix_multiplication/calcAlgorithm.js";
+import { plus_str } from "../Jobtypes/plus/calcPlusAlgorithm.js";
+import { createFolder, writeFile } from "../utility.js";
 
 import express from "express";
 import fileUpload from "express-fileupload";
-import fs from "fs";
+
 import{Buyer} from "../models/Buyer.js"
 
 
 const buyerRouter = express.Router();
+
+const calcMax = Math.pow(500,3);
 
 /* ********************** *
  *    Logout handling     *
@@ -18,7 +22,7 @@ buyerRouter.get("/logout", (req, res) => {
     if (err) {
       return next(err);
     }
-    res.redirect("/");
+    res.redirect('/');
   });
 });
 
@@ -30,62 +34,90 @@ buyerRouter.get("/logout", (req, res) => {
  *      File upload       *
  * ********************** */
 
-const dirPath = "./uploads/";
+const dirPath = "./JobData/PendingJobs/";
 
-buyerRouter.use(fileUpload()); // Enables file upload
+buyerRouter.use(fileUpload());
 
-buyerRouter.post("/test", (req, res) => {
-const calcMax = Math.pow(500,3);
-const matrixsize = 10;
-  let matrix_A = 
+buyerRouter.post("/upload", async (req, res) => {
+  
+  try{
+    let dynamicDirPath = dirPath + req.user.name + "/";
+    let jobtype = req.body.jobType;
+    let Jobdata;
 
-{
-    entries: Array(matrixsize).fill(0).map(() => Array(matrixsize).fill(0).map(() => Math.floor(Math.random() * 10))),
-    columns: matrixsize,
-    rows: matrixsize,
-}
+    switch (jobtype) {// in case the jobtype is matrix multiplication
 
-let matrix_B = {
+      case "matrixMult":{
+        Jobdata = createMatrixMultJob(req.body, req.user.name);
+        break;
+      }
+      case "plus":{// in case the jobtype is plus
+        Jobdata = createPlusJob(req.body, req.user.name);
 
-    //creating a random matrix of size = matrixsize
-    entries: Array(matrixsize).fill(0).map(() => Array(matrixsize).fill(0).map(() => Math.floor(Math.random() * 10))),
-    columns: matrixsize,
-    rows: matrixsize,
-}
+        break;
+      }
+      default:{ // in case the jobtype is not found
+        throw new Error("Jobtype not found");
+      }
+    }
+    
+    let uploadPath = dynamicDirPath + Jobdata.jobID + ".json";
 
-let arr = []; // the array which will hold the sliced matrixes of matrix A
-let ARows = matrix_A.rows;
-let A = matrix_A.entries;
+    //create folder in the PendingJobs folder if not exists, the folder name is the user name
+    createFolder(dynamicDirPath);
+    //write the file to the new folder created in the PendingJobs folder
+    writeFile(uploadPath, Jobdata);
+     
+  } catch (error) {
 
-
-function divideMatrices(A , B, ARows){
-  if (ARows * B.rows * B.columns < calcMax){
-      arr.push(A)
-      return;
+    console.log("Uploading: " + error);
+    res.send("Uploading: " + error);
   }
-  if (ARows < 2){
-      arr.push(A)
-      return;
+  });
+
+ buyerRouter.post("/jobinfo", async (req, res) => {   //<-----------------------------------------
+
+    console.log(req.body.username)
+    const buyer = await Buyer.findOne({name:req.body.username})
+    res.json({jobs: buyer.jobs_array});
+  })
+    //Find the buyer in the database
+  
+
+/**
+ * function to create a job of type matrix multiplication and enqueue it to the job queue
+ * @param {object} jobData object holding the data used to create the job
+ * @returns the object holding the data used to create the job
+ */
+function createMatrixMultJob(jobData, jobOwner) {
+  const Jobdata = {
+    jobID : jobData.jobTitle,
+    Des  : jobData.jobDescription,
+    type : jobData.jobType,
+    arrA : jobData.uploadFile,
+    arrB : jobData.uploadFile2,
   }
-  let slicedMatrixA = A.slice(0,Math.floor(A.length/2));
-  //console.log("her er slice 1 " + slicedMatrixA);
-  let slicedMatrixA2 = A.slice(Math.floor(A.length/2),A.length);
-  //console.log("her er slice 2 " + slicedMatrixA);
-  divideMatrices(slicedMatrixA, B, Math.floor(ARows/2));
-  divideMatrices(slicedMatrixA2, B, Math.floor(ARows/2));
+  let matrix_A = {
+    entries: Jobdata.arrA,
+    columns: Jobdata.arrA[0].length,
+    rows: Jobdata.arrA.length,
+  }
+  let matrix_B = {
+    entries: Jobdata.arrB,
+    columns: Jobdata.arrB[0].length,
+    rows: Jobdata.arrB.length,
+  }
+
+
+  // adding the job to the job queue
+  addMatrixToQue(Jobdata.jobID, Jobdata.type, jobOwner, matrix_A, matrix_B);
+
+  console.log(JobQueue.size);
+  console.log(JobQueue.head.numOfTasks);
+
+  return Jobdata;
 }
 
-let test = Date.now();
-
-divideMatrices(A, matrix_B, ARows)
-
-console.log(arr)
-
-    JobQueue.enQueue("job1", matrix_B);
-      for (let index = 0; index < arr.length; index++) {
-    JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
-    JobQueue.head.numOfTasks++;
-}
 JobQueue.enQueue("job2", matrix_B);
       for (let index = 0; index < arr.length; index++) {
     JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
@@ -136,78 +168,88 @@ buyerRouter.post("/upload", async (req, res) => {
     }
 
 
-     // the array which will hold the sliced matrixes of matrix A
-    addtoque(matrix_A,matrix_B,Jobdata.jobID);
-    console.log(JobQueue.size);
-    console.log(JobQueue.head.numOfTasks);
 
-    let uploadPath = dynamicDirPath + Jobdata.jobID + ".json";
+/**
+ * function to create a job of type plus and enqueue it to the job queue
+ * @param {object} jobData object holding the data for the job
+ * @returns the object used to create the job
+ */
+function createPlusJob(jobData, jobOwner){
 
-
-    createFolder(dynamicDirPath);
-    
-     fs.writeFile(uploadPath, JSON.stringify(Jobdata), (error) => {
-     if (error){
-      throw error;
-     }
-      else {
-      console.log("File uploaded to " + uploadPath);
-      res.send(Jobdata.jobID + " was uploaded to " + uploadPath);
-    }
-   });
-  } catch (error) {
-    console.log("Uploading: " + error);
-    res.send("Uploading: " + error);
+  const Jobdata = {
+    jobID : jobData.jobTitle,
+    Des  : jobData.jobDescription,
+    type : jobData.jobType,
+    arr : jobData.uploadFile,
   }
-  });
-
-  buyerRouter.post("/jobinfo", async (req, res) => {   //<-----------------------------------------
-
-    console.log(req.body.username)
-    const buyer = await Buyer.findOne({name:req.body.username})
-    res.json({jobs: buyer.jobs_array});
-  })
-    //Find the buyer in the database
-  
 
 
-//create folder in the uploads folder if not exists, the folder name is the user name
-const createFolder = (folderPath) => {
-  if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath);
-    console.log("Upload folder created at " + folderPath);
-    return true;
-  } else {
-    console.log("Upload folder already exists at " + folderPath);
-    return false;
-  }
-};
+  // adding the job to the job queue
+  addPlusToQue(Jobdata.jobID, Jobdata.type, jobOwner, Jobdata.arr);
 
- //the array which will hold the sliced matrixes of matrix A
+  console.log(JobQueue.size);
+  console.log(JobQueue.head.numOfTasks);
 
-function addtoque(matrix_A,matrix_B,jobID){
+  return Jobdata;
+}
 
 
+/**
+ * function for adding the matrix multiplication job to the job queue
+ * @param {string} jobID the id of the job
+ * @param {string} jobType the type of the job
+ * @param {matrix} matrix_A the matrix A
+ * @param {matrix} matrix_B the matrix B
+ */
+function addMatrixToQue(jobID, jobType, jobOwner, matrix_A, matrix_B){
 
-let ARows = matrix_A.rows;
-let A = matrix_A.entries;
 
-    let arr = divideMatrices(A, matrix_B, ARows)
+  let ARows = matrix_A.rows;
+  let A = matrix_A.entries;
 
-    JobQueue.enQueue(jobID, matrix_B);
-      for (let index = 0; index < arr.length; index++) {
+  let arr = divideMatrices(A, matrix_B, ARows)
+
+  // enqueue the job to the job queue
+  JobQueue.enQueue(jobID, jobType, jobOwner, matrix_mult_str, matrix_B);
+  for (let index = 0; index < arr.length; index++) {
     JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
     JobQueue.head.numOfTasks++;
-
-
-
-
-
   }
 }
 
+
+/**
+ * function which will enqueue the plus job to the job queue
+ * @param {string} jobID the id of the job
+ * @param {string} jobType the type of the job
+ * @param {array} entries the array which holds the numbers to be added
+ */
+function addPlusToQue(jobID, jobType, jobOwner, entries){
+  
+  let arr = dividePlus(entries);
+  // enqueue the job to the job queue
+  JobQueue.enQueue(jobID, jobType, jobOwner, plus_str);
+
+  for (let index = 0; index < arr.length; index++) {
+    if (arr[index].length == 1){
+      JobQueue.head.solutions[index] = arr[index][0];
+    }
+    else{
+      JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
+      JobQueue.head.numOfTasks++;
+    }
+  }
+}
+
+/**
+ * recursive function to divide the matrix A into smaller matrices to fit desired calculation sizes for subtasks
+ * @param {matrix} A the matrix A
+ * @param {matrix} B the matrix B
+ * @param {number} ARows the number of rows in the matrix A
+ * @returns the array which will hold the sliced matrices of matrix A
+ */
 function divideMatrices(A, B, ARows) {
-  const calcMax = Math.pow(500, 3);
+  
   let arr = []; // the array which will hold the sliced matrices of matrix A
   
   if (ARows * B.rows * B.columns < calcMax) {
@@ -228,8 +270,27 @@ function divideMatrices(A, B, ARows) {
     divideMatrices(slicedMatrixA, B, Math.floor(ARows / 2)),
     divideMatrices(slicedMatrixA2, B, Math.floor(ARows / 2))
   );
-
   return arr;
 }
 
- 
+/**
+ * function to divide the array of entries into smaller arrays to fit desired calculation sizes for subtasks
+ * @param {array} entries the array holding the entries to be added toghether
+ * @returns new array of smaller subtasks
+ */
+function dividePlus(entries){
+
+  let arr = []; // the array which will hold the smaller problems
+  let index = 0
+  for (index; 1 < entries.length; index++) {
+    arr[index] = [];
+    arr[index][0] = entries.pop();
+    arr[index][1] = entries.pop();
+  }
+  if (entries.length == 1) {
+      arr[index] = [];
+      arr[index][0] = entries.pop();
+  }
+  return arr;
+}
+

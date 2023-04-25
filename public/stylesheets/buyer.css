@@ -1,12 +1,9 @@
-h1, .logout {
-    display: inline-block;
-  }
-
-.logout {
-    float: right;
-    margin: 20px;
+*{
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  list-style: none;
 }
-
 
 .JobList {
     
@@ -14,9 +11,7 @@ h1, .logout {
     width: 50%;
 }
 
-.Create-Job {
 
-}
 body {
     background-color: #f2f2f2;
     margin: 0;
@@ -38,43 +33,7 @@ body {
 
 }
 
-header {
-    background-color: #333;
-    color: white;
-    padding: 10px;
-    
-    
-  }
-  
-  .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  
-  .welcome-message {
-    margin-right: 10px;
-  }
-  
-  .logoutButton {
-    background-color: #3662f4;
-    border: none;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    padding: 5px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  
-  .logoutButton:hover {
-    background-color: #3733ff;
-  }
-
-  .uploadForm {
+.uploadForm {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -86,7 +45,7 @@ header {
   }
 
 
-  .form-control {
+.form-control {
     width: 100%;
     height: 30px;
     border-radius: 3px;
@@ -98,7 +57,7 @@ header {
     box-sizing: border-box;
   }
 
-  .form-dropdown{
+.form-dropdown{
     width: 100%;
     height: 30px;
     border-radius: 3px;
@@ -110,6 +69,7 @@ header {
   }
 
   .createjob-button, .cancelJob, .frontPageButtons {
+
     height: 20px;
     background-color: rgb(10, 13, 59);
     border: none;
@@ -120,7 +80,9 @@ header {
     cursor: pointer;
     transition: background-color 0.3s ease;
   }
+
   .createjob-button:hover,.cancelJob:hover, .frontPageButtons {
+
     background-color: rgb(0, 174, 239);
   }
 
