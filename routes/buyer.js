@@ -7,6 +7,8 @@ import { createFolder, writeFile } from "../utility.js";
 import express from "express";
 import fileUpload from "express-fileupload";
 
+import{Buyer} from "../models/Buyer.js"
+
 
 const buyerRouter = express.Router();
 
@@ -73,7 +75,14 @@ buyerRouter.post("/upload", async (req, res) => {
   }
   });
 
+ buyerRouter.post("/jobinfo", async (req, res) => {   //<-----------------------------------------
 
+    console.log(req.body.username)
+    const buyer = await Buyer.findOne({name:req.body.username})
+    res.json({jobs: buyer.jobs_array});
+  })
+    //Find the buyer in the database
+  
 
 /**
  * function to create a job of type matrix multiplication and enqueue it to the job queue
@@ -109,6 +118,56 @@ function createMatrixMultJob(jobData, jobOwner) {
   return Jobdata;
 }
 
+JobQueue.enQueue("job2", matrix_B);
+      for (let index = 0; index < arr.length; index++) {
+    JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
+    JobQueue.head.numOfTasks++;
+}
+console.log(JobQueue);
+});
+
+buyerRouter.post("/upload", async (req, res) => {
+  
+  try{
+    let dynamicDirPath = dirPath + req.user.name + "/";
+    
+    console.log(req.user.name);
+
+    const jobInfo={
+      
+      jobID : req.body.jobTitle,
+      Des  : req.body.jobDescription,
+      type : req.body.jobType,
+    }
+    
+    const Jobdata = {
+      jobID : req.body.jobTitle + req.user.name,
+      Des  : req.body.jobDescription,
+      type : req.body.jobType,
+      arrA : req.body.uploadFile,
+      arrB : req.body.uploadFile2,
+    }
+    
+    //Update DB:
+    //console.log(Buyer.findOne({name: req.user.name}))
+    await Buyer.findOneAndUpdate({name: req.user.name },{"$push": {jobs_array: jobInfo}});
+    
+    //Forsøg på at gøre det med jobs-object frem for jobs-array:
+    //await Buyer.findOneAndUpdate({name: req.user.name },{jobs_object: {`${jobID}`: jobInfo}});
+    //await Buyer.findOneAndUpdate({name: req.user.name },{'$set': jobs_object['Job'+'jobID']=jobInfo});
+
+    let matrix_A = {
+      entries: Jobdata.arrA,
+      columns: Jobdata.arrA[0].length,
+      rows: Jobdata.arrA.length,
+    }
+    let matrix_B = {
+      entries: Jobdata.arrB,
+      columns: Jobdata.arrB[0].length,
+      rows: Jobdata.arrB.length,
+    }
+
+
 
 /**
  * function to create a job of type plus and enqueue it to the job queue
@@ -123,6 +182,7 @@ function createPlusJob(jobData, jobOwner){
     type : jobData.jobType,
     arr : jobData.uploadFile,
   }
+
 
   // adding the job to the job queue
   addPlusToQue(Jobdata.jobID, Jobdata.type, jobOwner, Jobdata.arr);
@@ -233,3 +293,4 @@ function dividePlus(entries){
   }
   return arr;
 }
+

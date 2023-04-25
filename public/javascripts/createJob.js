@@ -34,16 +34,42 @@ CreateJob: `<div>
 </div>
 `,
 
-CurrentJobs: `
-<div id="mainDiv">
+JobList:`
+
+`
+
+/*
+
+<script> 
+
+</script>
+
+</div>
+*/
+,
+JobsOverview: `
+<div id="overviewDiv">
   <div>
     <h1>Current jobs</h1>
-    <div class="JobList">
-      <p>Put list of jobs here</p>
+    <div class="JobTable">
+    Det skal ind her
+    </div>
+    <div>
+    <button id="jobInfo-button">Update joblist</button>
     </div>
   </div>
-    <button id="createJob-button" class="createJob-button"> Create new job</button>
 </div>`,
+
+FrontPage:`
+<div id="frontPage">
+  <div>
+    <h1> Job manager </h1>
+    <p>Submit a new grid computing job by pressing "Create new job". To get results of a job, press "Jobs overview".</p>
+    <button id="createJob-button" class="frontPageButtons"> Create new job</button>
+    <button id="jobInfo-button" class="frontPageButtons"> Jobs overview</button>
+  </div>`,
+
+
 
 underconstruction: `<div>
 <h1>Under construction</h1>
@@ -73,15 +99,54 @@ plusUpload: `<div>
 };
 
 
+
+async function generateTable (DOMProperty) {
+
+  let jobsObject= await getJobarrayFromDB("QWERT")
+
+  //console.log(jobsObject.jobs);
+
+  let jobTable=document.createElement('table');
+
+  document.querySelector(".JobTable").append(jobTable);
+
+  let tableHeader="<th>Titel</th> <th>JobID</th> <th>Description</th> <th> Status </th> <th> Download </th>";
+
+  jobTable.insertRow(0).innerHTML=tableHeader;
+
+  jobsObject.jobs.forEach((job, index) => {
+    let row = jobTable.insertRow(index+1);
+    row.insertCell(0).innerHTML=index+1;
+    row.insertCell(1).innerHTML=job.Des;
+    row.insertCell(2).innerHTML=job.type;
+    row.insertCell(3).innerHTML="under construction";
+    if (true) {
+      row.insertCell(4).innerHTML=`<button id=download_btn_${index}> Download </button>`
+    }
+  });
+}
+
+// Create job button
 mainDiv.addEventListener("click", (e) => {
     if (e.target.id === "createJob-button") {
         mainDiv.innerHTML = content.CreateJob;
     }
 });
-
+// Jobs overview button
+mainDiv.addEventListener("click", (e) => {
+  if (e.target.id === "jobInfo-button") {
+      mainDiv.innerHTML = content.JobsOverview;   
+      const jobHTML = document.querySelector(".JobTable");
+      jobHTML.innerHTML = content.JobList;
+      generateTable(jobHTML.body)
+      
+  }
+});
+// Cancel job button
 mainDiv.addEventListener("click", (e) => {
     if (e.target.id === "cancelJob") {
-        mainDiv.innerHTML = content.CurrentJobs;
+      mainDiv.innerHTML = content.CurrentJobs;
+        
     }
 });
 
@@ -99,7 +164,7 @@ mainDiv.addEventListener("change", (e) => {
     }
 });
 
-mainDiv.innerHTML = content.CurrentJobs;
+mainDiv.innerHTML = content.FrontPage;
 
 mainDiv.addEventListener("click", async (e) => {
     if (e.target.id === "submit") {
@@ -167,8 +232,8 @@ mainDiv.addEventListener("click", async (e) => {
         });
         
         const result = await response.text();
-        console.log("server response:" + result); 
-      }
+        console.log("server response:" + result);
+
     }
   });
 
@@ -213,6 +278,42 @@ function parseCsvToJson(file, jobType) {
       });
     });
   }
+
+  /*
+mainDiv.addEventListener("click", async (e) => {
+  if (e.target.id === "joblistUpdate") {
+  console.log("jobinfo wip")
+
+  getJobarrayFromDB("QWERT")
+
+  }
+})
+*/
+
+
+
+async function getJobarrayFromDB(username){
+  console.log(username)
+  const response = await fetch("/buyer/jobinfo", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    //Send username to server
+
+    body: JSON.stringify({username: username}),
+  });
+  
+  let jobs = await response.json();
+  return jobs
+}
+
+/*  document.getElementById("joblistUpdate").addEventListener("click",async (e) => {
+        console.log("jobinfo wip")
+        const repsonse=await fetch("/buyer/joblist")
+  })
+  */
+
 
 document.getElementById("testbutton").addEventListener('click', () => {
     console.log("test")
