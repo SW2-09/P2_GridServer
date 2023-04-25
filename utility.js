@@ -3,7 +3,7 @@ import fs from "fs";
 
 export function createFolder(folderPath){
     if (!fs.existsSync(folderPath)) {
-      fs.mkdirSync(folderPath);
+      fs.mkdirSync(folderPath, { recursive: true });
       console.log("Upload folder created at " + folderPath);
       return true;
     } 
