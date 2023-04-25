@@ -34,19 +34,6 @@ CreateJob: `<div>
 </div>
 `,
 
-JobList:`
-
-`
-
-/*
-
-<script> 
-
-</script>
-
-</div>
-*/
-,
 JobsOverview: `
 <div id="overviewDiv">
   <div>
