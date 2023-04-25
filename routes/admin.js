@@ -8,7 +8,9 @@ const adminRouter = express.Router();
 
 adminRouter.post("/purge", (req, res) => {
   deleteCollection(req.body.collection);
-  res.json({ message: "Purged '" + req.body.collection + "' collection from database: "});
+  res.json({
+    message: "Purged '" + req.body.collection + "' collection from database: ",
+  });
 });
 
 adminRouter.post("/lookup", (req, res) => {
@@ -16,25 +18,27 @@ adminRouter.post("/lookup", (req, res) => {
     console.log(items);
     res.json({ message: "Items: " + items });
   });
-  
 });
 
 async function deleteCollection(collection) {
-  console.log("Deleting all '" + collection  + "' from database");
-  
-  await mongoose.connection.db.dropCollection(collection, function (err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("Collection deleted");
+  console.log("Deleting all '" + collection + "' from database");
+
+  await mongoose.connection.db.dropCollection(
+    collection,
+    function (err, result) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Collection deleted");
+      }
     }
-  });
+  );
 }
 
-async function getItems(collection){
-  const Items =  await mongoose.connection.db.collection(collection).find({}).toArray();
-    return Items;
-  }
-
-
-
+async function getItems(collection) {
+  const Items = await mongoose.connection.db
+    .collection(collection)
+    .find({})
+    .toArray();
+  return Items;
+}
