@@ -33,15 +33,20 @@ router.post("/register", (req, res) => {
   const { name, password, password2 } = req.body;
   let errors = [];
 
-  //Check required fiels
   if (!name || !password || !password2) {
+    if (!name && !password && !password2) {
+    errors.push({ msg: "Please enter all fields" });
+    } 
+    else if (!name) {
+    errors.push({ msg: "Please enter a name" });
+    } 
+    else if (!password || !password2) {
     errors.push({ msg: "Please enter a password" });
+    }
+  } else if (password !== password2) {
+  errors.push({ msg: "Passwords do not match" });
   }
 
-  //Check password match
-  if (password != password2) {
-    errors.push({ msg: "Passwords do not match" });
-  }
 
   //Check if there is an error in the array
   if (errors.length > 0) {
@@ -92,12 +97,14 @@ router.post("/login", (req, res, next) => {
   console.log(req.body);
   if(req.body.name == "admin"){
     passport.authenticate("local", {
+    failureFlash: true,
     successRedirect: "/admin",
     failureRedirect: "/login",
   })(req, res, next);
   }
   else{
   passport.authenticate("local", {
+    failureFlash: true,
     successRedirect: "/buyer",
     failureRedirect: "/",
   })(req, res, next);

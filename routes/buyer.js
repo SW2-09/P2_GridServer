@@ -88,7 +88,12 @@ buyerRouter.post("/upload", async (req, res) => {
 
     console.log(req.body.username)
     const buyer = await Buyer.findOne({name:req.body.username})
+    if(buyer){
     res.json({jobs: buyer.jobs_array});
+    }
+    else{
+      res.json({jobs: "No jobs found"});
+    }
   })
     //Find the buyer in the database
   
