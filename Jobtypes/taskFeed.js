@@ -185,8 +185,8 @@ async function jobDone(job) {
 
     //Update the job.completed in mongoDB
     await Buyer.findOneAndUpdate(
-        { name: job.jobOwner },
-        { $set: { "jobs_array.$[element].completed": true } },
-        { arrayFilters: [{ "element.jobID": job.jobId }] }
+        { name: job.jobOwner }, //filter
+        { $set: { "jobs_array.$[element].completed": true } }, //Update
+        { arrayFilters: [{ "element.jobID": job.jobId }] } //Arrayfiler
     );
 }
