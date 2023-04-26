@@ -138,7 +138,7 @@ function checkPendingList(pending) {
  * @param { job class} job is the job that is done
  */
 
-function jobDone(job){
+async function jobDone(job){
     let Solution = [];
     let workerArr = [];
     let final;
