@@ -84,19 +84,14 @@ const content = {
 };
 
 async function generateTable() {
-    //Bruger ikke DOMProperty
-
     let infoObject = await getJobarrayFromDB();
-    //console.log(infoObject)
-
-    //console.log(jobsObject.jobs);
 
     let jobTable = document.createElement("table");
 
     document.querySelector(".JobTable").append(jobTable);
 
     let tableHeader =
-        "<th>Index</th> <th>Title</th> <th>Description</th> <th> Type</th> <th> Status </th>";
+        "<th>Index</th> <th>Title</th> <th>Description</th> <th> Type</th> <th> Download solution </th>";
 
     jobTable.insertRow(0).innerHTML = tableHeader;
 
@@ -111,30 +106,29 @@ async function generateTable() {
             row.insertCell(
                 4
             ).innerHTML = `<button class=download_btn id=${job.jobID}> 
-             Download solution </button>`;
-            //href="../../JobData/Solutions/${infoObject.name}/${job.jobID}.json
+             Prepare download</button>`;
         } else {
             row.insertCell(4).innerHTML = "<p>Not completed</p>";
         }
     });
 }
+
 mainDiv.addEventListener("click", async (e) => {
     if (e.target.classList.contains("download_btn")) {
-        console.log("JEG HAR FAT");
         const response = await fetch("/buyer/download", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ id: e.target.id }),
-        })
-            .then((data) => {
-                data.blob();
-            })
-            .then((blob) => {
-                var file = window.URL.createObjectURL(blob);
-                window.location.assign(file);
-            });
+        });
+        let blob = await response.blob();
+        //creates tempoary URL
+        let fileURL = window.URL.createObjectURL(blob);
+
+        document.getElementById(
+            e.target.id
+        ).innerHTML = `<a href=${fileURL} download=${e.target.id}> Download</a>`;
     }
 });
 
@@ -149,8 +143,6 @@ mainDiv.addEventListener("click", (e) => {
 mainDiv.addEventListener("click", (e) => {
     if (e.target.id === "jobInfo-button") {
         mainDiv.innerHTML = content.JobsOverview;
-        const jobHTML = document.querySelector(".JobTable");
-        jobHTML.innerHTML = content.JobList;
         generateTable();
     }
 });
