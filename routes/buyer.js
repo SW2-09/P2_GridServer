@@ -3,6 +3,7 @@ import { JobQueue } from "../Jobtypes/jobQueue.js";
 import { matrix_mult_str } from "../Jobtypes/matrix_multiplication/calcAlgorithm.js";
 import { plus_str } from "../Jobtypes/plus/calcPlusAlgorithm.js";
 import { createFolder, writeFile } from "../utility.js";
+import path from "path";
 
 import express from "express";
 import fileUpload from "express-fileupload";
@@ -96,6 +97,26 @@ buyerRouter.post("/jobinfo", async (req, res) => {
     res.json({ jobs: buyer.jobs_array, name: req.user.name });
 });
 //Find the buyer in the database
+
+buyerRouter.post("/download", async (req, res) => {
+    //const options = { root: path.join(__dirname) };
+    //let filePath = `/JobData/Solutions/${req.user.name}/${req.body}`;
+
+    let relativePath = `JobData/Solutions/${req.user.name}/${req.body.id}.json`;
+    let absolutePath = path.resolve(relativePath);
+
+    //res.sendFile(`JobData/Solutions/${req.user.name}/${req.body.id}`, {
+    //    root: __dirname,
+    //});
+    //console.log(res);
+    res.sendFile(absolutePath, function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("solution-file was send");
+        }
+    });
+});
 
 /**
  * function to create a job of type matrix multiplication and enqueue it to the job queue

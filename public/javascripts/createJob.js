@@ -37,7 +37,7 @@ const content = {
     JobsOverview: `
 <div id="overviewDiv">
   <div>
-    <h1>Current jobs</h1>
+    <h1>Your jobs</h1>
     <div class="JobTable">
 
     </div>
@@ -96,27 +96,47 @@ async function generateTable() {
     document.querySelector(".JobTable").append(jobTable);
 
     let tableHeader =
-        "<th>Titel</th> <th>JobID</th> <th>Description</th> <th> Status </th> <th> Download </th>";
+        "<th>Index</th> <th>Title</th> <th>Description</th> <th> Type</th> <th> Status </th>";
 
     jobTable.insertRow(0).innerHTML = tableHeader;
 
     infoObject.jobs.forEach((job, index) => {
         let row = jobTable.insertRow(index + 1);
         row.insertCell(0).innerHTML = index + 1;
-        row.insertCell(1).innerHTML = job.Des;
-        row.insertCell(2).innerHTML = job.type;
-        row.insertCell(3).innerHTML = "under construction";
-        console.log(job);
+        row.insertCell(1).innerHTML = job.jobID;
+        row.insertCell(2).innerHTML = job.Des;
+        row.insertCell(3).innerHTML = job.type;
+        //console.log(job);
         if (job.completed) {
-            row.insertCell(4).innerHTML = `<button id=download_btn_${index}> 
-      <a href="../JobData/Solutions/${infoObject.name}/${job.jobID}" download="${job.jobID}">
-      Download
-      </a></button>`;
+            row.insertCell(
+                4
+            ).innerHTML = `<button class=download_btn id=${job.jobID}> 
+             Download solution </button>`;
+            //href="../../JobData/Solutions/${infoObject.name}/${job.jobID}.json
         } else {
             row.insertCell(4).innerHTML = "<p>Not completed</p>";
         }
     });
 }
+mainDiv.addEventListener("click", async (e) => {
+    if (e.target.classList.contains("download_btn")) {
+        console.log("JEG HAR FAT");
+        const response = await fetch("/buyer/download", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: e.target.id }),
+        })
+            .then((data) => {
+                data.blob();
+            })
+            .then((blob) => {
+                var file = window.URL.createObjectURL(blob);
+                window.location.assign(file);
+            });
+    }
+});
 
 //!fs.existsSync(`../JobData/Solutions/${jobsObject.name}/${job.jobID}`)
 // Create job button
