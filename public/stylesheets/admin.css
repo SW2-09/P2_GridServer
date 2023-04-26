@@ -1,38 +1,38 @@
 body {
-  background-color: #f2f2f2;
-  margin: 0;
-  padding: 0;
-  font-family: Arial, Helvetica, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Header/Logo Title */
 
 header {
-  background-color: #333;
-  color: white;
-  padding: 10px;
+    background-color: #333;
+    color: white;
+    padding: 10px;
 }
 
 .header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .logoutButton {
-  background-color: #3662f4;
-  border: none;
-  color: white;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  padding: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 4px;
+    background-color: #3662f4;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    padding: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
 }
 
 .content {
-  padding-left: 10px;
-  padding-top: 10px;
+    padding-left: 10px;
+    padding-top: 10px;
 }
