@@ -13,25 +13,25 @@ import { server } from "../server.js";
 
 let handlers={
   subtaskFeeder: subtaskFeeder,
-  ws: null,
-  sendSubtask: function send_subtask() {
+  sendSubtask: function send_subtask(ws) {
     let next_task = handlers.subtaskFeeder(JobQueue);
     if (next_task !== null) { //if there is a subtask to send
-      handlers.ws.send(JSON.stringify(next_task));
+      ws.send(JSON.stringify(next_task));
     }
     else{ //if there is no subtask to send
       console.log("sending 0 to worker")
-      handlers.ws.send("0");
+      ws.send("0");
     }
   },
-  messageHandler: (message) => { //callback for when a message is recieved from the client
+  messageHandler: function (ws) { //callback for when a message is recieved from the client
     // Try is for if some one sends somehting which cannot be passed to JSON:
-    
+    return (message) => {
     try {
       let messageParse = JSON.parse(message);
       
       if (messageParse["data"] === "ready for work") { //if the worker is ready for work
       //send_subtask(ws, JobQueue); //send a subtask to the worker
+      handlers.sendSubtask(ws);
       
       }
       else {
@@ -70,6 +70,7 @@ let handlers={
         currentJob.pendingList.removeTask(messageParse["taskId"]); //remove the task from the pending list
         // console.log("job solutions" + JobQueue.tail.solutions.length);
         // console.log(messageParse["solution"]);
+        handlers.sendSubtask(ws);
       }
         } catch (e) {
             //if the message cannot be parsed to JSON
@@ -78,30 +79,22 @@ let handlers={
             );
         }
 
-        try {
-            //try to send the next subtask
-            handlers.sendSubtask();
-        } catch (e) {
-            //if an error occurs when sending a subtask
-            console.log(
-                `Something went wrong with sending message to server: ${e.message}`
-            );
-        }
-    },
-    connectionHandler: function connectionHandler(ws) {
+    }}
+    ,
+    connectionHandler: function (ws) {
         //callback for when a new client connects
         handlers.ws = ws;
         console.log("New client connected");
         if (JobQueue.size > 0) {
             //if the queue is not empty, send a subtask to the worker
-            handlers.sendSubtask();
+            handlers.sendSubtask(ws);
         } else {
             //if the queue is empty, send 0 to the worker
             console.log("sending 0 to worker");
             ws.send("0");
         }
 
-        ws.on("message", handlers.messageHandler);
+        ws.on("message", handlers.messageHandler(ws));
 
         ws.on("close", () => {
             //when the worker disconnects
