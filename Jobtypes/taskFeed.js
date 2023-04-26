@@ -55,7 +55,10 @@ function subtaskFeeder(JobQueue) {
                 data: currentJob.pendingList.tail.data,
             };
             //set the send time of the subtask to know when the task is outdated
-            //currentJob.pendingList.head.sendTime = Date.now();
+            console.log("-----test------ " + currentJob.pendingList.tail.sendTime)
+            currentJob.pendingList.tail.sendTime = Date.now();
+            console.log("-----test------ " + currentJob.pendingList.tail.sendTime)
+
             console.log(
                 "sending job: " +
                     workerPack.jobId +
@@ -116,19 +119,23 @@ function subtaskFeeder(JobQueue) {
  *          returns an outdated task if there is one
  */
 function checkPendingList(pending) {
-    if (pending.head === null) {
+    if (pending.tail === null) {
         return null;    //if the list is empty
 
     }
-    let head = pending.head;
+    let tail = pending.tail;
     let recent = true;
-    while (recent && head !== null) {
-        if (Date.now() - head.sendTime > 10000) {
+    while (recent && tail !== null) {
+        if ((Date.now() - tail.sendTime) > 30000) {
             //checking whether it is longer than 120 seconds since the task was sent
-            head.sendTime = Date.now();
-            return head;   //if the task is outdated
+            
+            console.log("Date.now(): " + Date.now());
+            console.log("head.sendTime: " + tail.sendTime);
+            console.log("Difference: " + (Date.now() - tail.sendTime));
+
+            return tail;   //if the task is outdated
         }
-        head = head.next;
+        tail = tail.previous;
     }
 
     return null; //if there are no outdated tasks

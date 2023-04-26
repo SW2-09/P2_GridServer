@@ -112,7 +112,6 @@ function startWebsocketserver(host, port) {
  **/
 
 function findJob(jobId){
-  console.log("!!!!i am finding job!!!!")
   let currentJob=JobQueue.tail;
   if (currentJob.jobId==jobId){
     return currentJob;
