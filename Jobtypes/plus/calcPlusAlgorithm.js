@@ -1,4 +1,5 @@
 export { plus_str };
 let plus_str = 
-`let result = A+B;
+`let result = [];
+ result.push(A+B);
 return result;`

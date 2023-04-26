@@ -37,13 +37,37 @@ let handlers={
       }
       else {
         let messageParse = JSON.parse(message);
+        let currentJob=findJob(messageParse["jobId"]);
         console.log("Solution recieved:");
-        console.log(messageParse)
+        
         console.log("jobID: " + messageParse["jobId"]);
         console.log("taskID: " + messageParse["taskId"]);
-        let currentJob=findJob(messageParse["jobId"]); //find the job in the queue
-        currentJob.solutions[messageParse["taskId"]] = messageParse["solution"]; 
-        currentJob.numOfSolutions++; //increase the number of solutions
+         //find the job in the queue
+        let currentSolution = messageParse["solution"];
+        let workerFound = false;
+        for (let index = 0; index < currentJob.solutions.length; index++) {
+
+          if (currentJob.solutions[index].workerId === messageParse["workerId"]) {
+            workerFound = true;
+            currentJob.solutions[index].workerSolutions.push({
+                                                              taskId: messageParse["taskId"],
+                                                              solution: createTaskSolution(currentSolution)
+                                                            });
+            currentJob.numOfSolutions++;
+            break;
+          }
+        }
+        if (workerFound === false) {
+          
+          currentJob.solutions.push({
+                                      workerId: messageParse["workerId"], 
+                                      workerSolutions: [{
+                                                        taskId: messageParse["taskId"],
+                                                        solution: createTaskSolution(currentSolution)
+                                                      },]
+                                    });
+          currentJob.numOfSolutions++;
+        }
         currentJob.pendingList.removeTask(messageParse["taskId"]); //remove the task from the pending list
         // console.log("job solutions" + JobQueue.tail.solutions.length);
         // console.log(messageParse["solution"]);
@@ -89,7 +113,6 @@ function startWebsocketserver(host, port){
  * @param {number} jobId 
  * @returns the job with the given jobId
  **/
-
 function findJob(jobId){
   let currentJob=JobQueue.tail;
   if (currentJob.jobId==jobId){
@@ -101,3 +124,16 @@ function findJob(jobId){
   return currentJob.previous;
 }
 
+
+/**
+ * function to create a solution array the solution received from the worker
+ * @param {array} input 
+ * @returns the solution array
+ */
+function createTaskSolution(input){
+  let solutionArray=[];
+  input.forEach(element => {
+    solutionArray.push(element);
+  });
+  return solutionArray;
+}

@@ -171,13 +171,15 @@ function addPlusToQue(jobID, jobType, jobOwner, entries){
   JobQueue.enQueue(jobID, jobType, jobOwner, plus_str);
 
   for (let index = 0; index < arr.length; index++) {
-    if (arr[index].length == 1){
-      JobQueue.head.solutions[index] = arr[index][0];
-    }
-    else{
+    // if (arr[index].length == 1){
+    //   console.log("addind to solutions" + index)
+    //   console.log(arr[index][0])
+    //   JobQueue.head.solutions[0] = arr[index][0];
+    // }
+    // else{
       JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
       JobQueue.head.numOfTasks++;
-    }
+    //}
   }
 }
 
@@ -230,6 +232,7 @@ function dividePlus(entries){
   if (entries.length == 1) {
       arr[index] = [];
       arr[index][0] = entries.pop();
+      arr[index][1] = 0;
   }
   return arr;
 }
