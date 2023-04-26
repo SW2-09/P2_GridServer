@@ -8,6 +8,7 @@ import { Buyer } from "../models/Buyer.js";
 
 //token for signifying that the queue is empty
 let queueEmpty = "empty";
+let timeer = Date.now();
 
 // && JobQueue.tail.numOfTasks === JobQueue.tail.numOfSolutions)
 
@@ -56,7 +57,7 @@ function subtaskFeeder(JobQueue) {
             };
             //set the send time of the subtask to know when the task is outdated
             console.log("-----test------ " + currentJob.pendingList.tail.sendTime)
-            currentJob.pendingList.tail.sendTime = Date.now();
+            JobQueue.tail.pendingList.tail.sendTime = Date.now();
             console.log("-----test------ " + currentJob.pendingList.tail.sendTime)
 
             console.log(
@@ -129,6 +130,9 @@ function checkPendingList(pending) {
         if ((Date.now() - tail.sendTime) > 30000) {
             //checking whether it is longer than 120 seconds since the task was sent
             
+            timeer = Date.now() - timeer;
+            console.log("Rigtig tid!!" + timeer);
+
             console.log("Date.now(): " + Date.now());
             console.log("head.sendTime: " + tail.sendTime);
             console.log("Difference: " + (Date.now() - tail.sendTime));
