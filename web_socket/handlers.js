@@ -1,10 +1,9 @@
-export { startWebsocketserver , handlers}
+export { startWebsocketserver, handlers };
 
-import{JobQueue} from "../Jobtypes/jobQueue.js";
-import{subtaskFeeder} from "../Jobtypes/taskFeed.js";
+import { JobQueue } from "../Jobtypes/jobQueue.js";
+import { subtaskFeeder } from "../Jobtypes/taskFeed.js";
 import { WebSocketServer } from "ws";
-import { server} from "../server.js";
-
+import { server } from "../server.js";
 
 /**
  * Object: websocket handlers
@@ -72,47 +71,58 @@ let handlers={
         // console.log("job solutions" + JobQueue.tail.solutions.length);
         // console.log(messageParse["solution"]);
       }
-      
-    } catch (e) { //if the message cannot be parsed to JSON
-      console.log(`Something went wrong with the recieved message: ${e.message}`);
-    }
+        } catch (e) {
+            //if the message cannot be parsed to JSON
+            console.log(
+                `Something went wrong with the recieved message: ${e.message}`
+            );
+        }
 
-    try{ //try to send the next subtask
-        handlers.sendSubtask();
-    } catch (e){ //if an error occurs when sending a subtask
-      console.log(`Something went wrong with sending message to server: ${e.message}`);
-    }
-  },
-connectionHandler: function connectionHandler(ws){//callback for when a new client connects
-  handlers.ws=ws
-  console.log("New client connected");
-  if (JobQueue.size > 0) { //if the queue is not empty, send a subtask to the worker
-  handlers.sendSubtask();
-  } else { //if the queue is empty, send 0 to the worker
-    console.log("sending 0 to worker")
-    ws.send("0");
-  }
+        try {
+            //try to send the next subtask
+            handlers.sendSubtask();
+        } catch (e) {
+            //if an error occurs when sending a subtask
+            console.log(
+                `Something went wrong with sending message to server: ${e.message}`
+            );
+        }
+    },
+    connectionHandler: function connectionHandler(ws) {
+        //callback for when a new client connects
+        handlers.ws = ws;
+        console.log("New client connected");
+        if (JobQueue.size > 0) {
+            //if the queue is not empty, send a subtask to the worker
+            handlers.sendSubtask();
+        } else {
+            //if the queue is empty, send 0 to the worker
+            console.log("sending 0 to worker");
+            ws.send("0");
+        }
 
-  ws.on("message", handlers.messageHandler)
+        ws.on("message", handlers.messageHandler);
 
-  ws.on("close", () => { //when the worker disconnects
-    console.log("Client has disconnected");
-  });
-}
-}
-
-function startWebsocketserver(host, port){
-  const wss = new WebSocketServer({ host: host, port: port });
-  console.log(`There are ${JobQueue.size} jobs in the queue.`);
-
-  wss.on("connection",handlers.connectionHandler); 
+        ws.on("close", () => {
+            //when the worker disconnects
+            console.log("Client has disconnected");
+        });
+    },
 };
+
+function startWebsocketserver(host, port) {
+    const wss = new WebSocketServer({ host: host, port: port });
+    console.log(`There are ${JobQueue.size} jobs in the queue.`);
+
+    wss.on("connection", handlers.connectionHandler);
+}
 
 /**
  * Function to find a job in the queue by its jobId
- * @param {number} jobId 
+ * @param {number} jobId
  * @returns the job with the given jobId
  **/
+
 function findJob(jobId){
   let currentJob=JobQueue.tail;
   if (currentJob.jobId==jobId){
@@ -137,3 +147,4 @@ function createTaskSolution(input){
   });
   return solutionArray;
 }
+
