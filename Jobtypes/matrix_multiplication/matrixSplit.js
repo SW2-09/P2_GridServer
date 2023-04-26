@@ -6,28 +6,28 @@ const calcMax = Math.pow(2000, 2);
 const matrixsize = 3000;
 //the two matrices that will be worked on
 let matrix_A = {
-  entries: Array(matrixsize)
-    .fill(0)
-    .map(() =>
-      Array(matrixsize)
+    entries: Array(matrixsize)
         .fill(0)
-        .map(() => Math.floor(Math.random() * 10))
-    ),
-  columns: matrixsize,
-  rows: matrixsize,
+        .map(() =>
+            Array(matrixsize)
+                .fill(0)
+                .map(() => Math.floor(Math.random() * 10))
+        ),
+    columns: matrixsize,
+    rows: matrixsize,
 };
 
 let matrix_B = {
-  //creating a random matrix of size = matrixsize
-  entries: Array(matrixsize)
-    .fill(0)
-    .map(() =>
-      Array(matrixsize)
+    //creating a random matrix of size = matrixsize
+    entries: Array(matrixsize)
         .fill(0)
-        .map(() => Math.floor(Math.random() * 10))
-    ),
-  columns: matrixsize,
-  rows: matrixsize,
+        .map(() =>
+            Array(matrixsize)
+                .fill(0)
+                .map(() => Math.floor(Math.random() * 10))
+        ),
+    columns: matrixsize,
+    rows: matrixsize,
 };
 
 let arr = []; // the array which will hold the sliced matrixes of matrix A
@@ -42,20 +42,20 @@ let A = matrix_A.entries;
  * @returns does not return but pushes the slices of rows to an array
  */
 function divideMatrices(A, B, ARows) {
-  if (ARows * B.rows * B.columns < calcMax) {
-    arr.push(A);
-    return;
-  }
-  if (ARows < 2) {
-    arr.push(A);
-    return;
-  }
-  let slicedMatrixA = A.slice(0, Math.floor(A.length / 2));
-  //console.log("her er slice 1 " + slicedMatrixA);
-  let slicedMatrixA2 = A.slice(Math.floor(A.length / 2), A.length);
-  //console.log("her er slice 2 " + slicedMatrixA);
-  divideMatrices(slicedMatrixA, B, Math.floor(ARows / 2));
-  divideMatrices(slicedMatrixA2, B, Math.floor(ARows / 2));
+    if (ARows * B.rows * B.columns < calcMax) {
+        arr.push(A);
+        return;
+    }
+    if (ARows < 2) {
+        arr.push(A);
+        return;
+    }
+    let slicedMatrixA = A.slice(0, Math.floor(A.length / 2));
+    //console.log("her er slice 1 " + slicedMatrixA);
+    let slicedMatrixA2 = A.slice(Math.floor(A.length / 2), A.length);
+    //console.log("her er slice 2 " + slicedMatrixA);
+    divideMatrices(slicedMatrixA, B, Math.floor(ARows / 2));
+    divideMatrices(slicedMatrixA2, B, Math.floor(ARows / 2));
 }
 
 divideMatrices(A, matrix_B, ARows);
