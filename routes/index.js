@@ -1,7 +1,10 @@
 export { router };
 
 import express from "express";
-import { checkLoggedIn, ensureAuthenticated } from "../config/authentication.js";
+import {
+  checkLoggedIn,
+  ensureAuthenticated,
+} from "../config/authentication.js";
 import passport from "passport";
 import bcrypt from "bcryptjs";
 import { Buyer } from "../models/Buyer.js";
@@ -21,7 +24,7 @@ router.get("/register", checkLoggedIn, (req, res) => {
 
 // buyer pag
 router.get("/buyer", ensureAuthenticated, (req, res) => {
-  res.render("buyer", { name: req.user.name});
+  res.render("buyer", { name: req.user.name });
 });
 
 //admin page
@@ -35,18 +38,15 @@ router.post("/register", (req, res) => {
 
   if (!name || !password || !password2) {
     if (!name && !password && !password2) {
-    errors.push({ msg: "Please enter all fields" });
-    } 
-    else if (!name) {
-    errors.push({ msg: "Please enter a name" });
-    } 
-    else if (!password || !password2) {
-    errors.push({ msg: "Please enter a password" });
+      errors.push({ msg: "Please enter all fields" });
+    } else if (!name) {
+      errors.push({ msg: "Please enter a name" });
+    } else if (!password || !password2) {
+      errors.push({ msg: "Please enter a password" });
     }
   } else if (password !== password2) {
-  errors.push({ msg: "Passwords do not match" });
+    errors.push({ msg: "Passwords do not match" });
   }
-
 
   //Check if there is an error in the array
   if (errors.length > 0) {
@@ -95,18 +95,17 @@ router.post("/register", (req, res) => {
 //Login handle
 router.post("/login", (req, res, next) => {
   console.log(req.body);
-  if(req.body.name == "admin"){
+  if (req.body.name == "admin") {
     passport.authenticate("local", {
-    failureFlash: true,
-    successRedirect: "/admin",
-    failureRedirect: "/login",
-  })(req, res, next);
+      failureFlash: true,
+      successRedirect: "/admin",
+      failureRedirect: "/login",
+    })(req, res, next);
+  } else {
+    passport.authenticate("local", {
+      failureFlash: true,
+      successRedirect: "/buyer",
+      failureRedirect: "/",
+    })(req, res, next);
   }
-  else{
-  passport.authenticate("local", {
-    failureFlash: true,
-    successRedirect: "/buyer",
-    failureRedirect: "/",
-  })(req, res, next);
-  }});
-
+});

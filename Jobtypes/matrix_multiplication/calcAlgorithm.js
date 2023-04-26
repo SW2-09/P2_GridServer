@@ -1,9 +1,8 @@
-export{matrix_mult_str}
+export { matrix_mult_str };
 
-// Matrixmultiplication algorithm 
+// Matrixmultiplication algorithm
 
-let matrix_mult_str=
-   `let AColumns = A[0].length;
+let matrix_mult_str = `let AColumns = A[0].length;
     let Arows = A.length;
     let Bcolumns = B[0].length;
     let Brows = B.length;
@@ -28,6 +27,4 @@ let matrix_mult_str=
         }
     }
     return matrix_AxB;
-    `
-
-    
+    `;

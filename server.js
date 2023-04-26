@@ -4,8 +4,8 @@
 3. Use the "npm run devStart" command to start the server (see package.json) 
 nodemon can be acti
 */
-export{server};
-import {startWebsocketserver, handlers} from "./web_socket/handlers.js";
+export { server };
+import { startWebsocketserver, handlers } from "./web_socket/handlers.js";
 
 const host = "localhost";
 const port = 3000;
@@ -19,14 +19,12 @@ import session from "express-session";
 import passport from "passport";
 import flash from "connect-flash";
 
-
 //const express = require("express");
 const app = express();
 
 app.use(express.static("public")); // Middleware function that serves static files (e.g. css files) https://expressjs.com/en/starter/static-files.html
 app.use(express.urlencoded({ extended: true })); // Middleware function that parses the body of a request (e.g. form data)
-app.use(express.json({limit: '50mb'})); // This allows us to parse json data
-
+app.use(express.json({ limit: "50mb" })); // This allows us to parse json data
 
 //Buyer model
 import { Buyer } from "./models/Buyer.js";
@@ -58,14 +56,16 @@ app.set("view engine", "ejs"); // Makes .ejs files possible to use
 app.use(flash());
 
 //Express session -  passport session (webpage)
-app.use(session({ 
-  name: "Gridserver",
-  secret: "GridSecret", 
-  resave: false, 
-  saveUninitialized: true,
-  store: store,
-  cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }, // 1 week
-}));
+app.use(
+  session({
+    name: "Gridserver",
+    secret: "GridSecret",
+    resave: false,
+    saveUninitialized: true,
+    store: store,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }, // 1 week
+  })
+);
 
 //Bodyparser
 //app.use(express.urlencoded({ extended: false }));
