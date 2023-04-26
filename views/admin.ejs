@@ -1,26 +1,26 @@
 <html lang="en">
-  <link href="stylesheets/admin.css" rel="stylesheet" />
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <header>
-      <div class="header-content">
-        <div><%=name %></div>
-        <button class="logoutButton" id="logout">Logout</button>
-      </div>
-    </header>
-    <div class="content">
-      <button id="purge">Purge Users</button>
-      <select name="collection" id="collection">
-        <option value="users">Users</option>
-        <option value="buyers">Buyers</option>
-      </select>
-      <button id="Lookup">DB lookup</button>
-    </div>
-  </body>
-  <script src="javascripts/admin.js"></script>
+    <link href="stylesheets/admin.css" rel="stylesheet" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <header>
+            <div class="header-content">
+                <div><%=name %></div>
+                <button class="logoutButton" id="logout">Logout</button>
+            </div>
+        </header>
+        <div class="content">
+            <button id="purge">Purge Users</button>
+            <select name="collection" id="collection">
+                <option value="users">Users</option>
+                <option value="buyers">Buyers</option>
+            </select>
+            <button id="Lookup">DB lookup</button>
+        </div>
+    </body>
+    <script src="javascripts/admin.js"></script>
 </html>

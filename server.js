@@ -39,15 +39,15 @@ import { sessionsURI } from "./config/keys.js";
 
 //Connect to MongoDB
 mongoose
-  .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log(err));
+    .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log("MongoDB connected"))
+    .catch((err) => console.log(err));
 
 //Storage for sessions
 const sessiontStore = mongoDBStore(session);
 const store = new sessiontStore({
-  uri: sessionsURI,
-  collection: "Gridserver",
+    uri: sessionsURI,
+    collection: "Gridserver",
 });
 
 //EJS setup
@@ -57,14 +57,14 @@ app.use(flash());
 
 //Express session -  passport session (webpage)
 app.use(
-  session({
-    name: "Gridserver",
-    secret: "GridSecret",
-    resave: false,
-    saveUninitialized: true,
-    store: store,
-    cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }, // 1 week
-  })
+    session({
+        name: "Gridserver",
+        secret: "GridSecret",
+        resave: false,
+        saveUninitialized: true,
+        store: store,
+        cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }, // 1 week
+    })
 );
 
 //Bodyparser
@@ -94,7 +94,7 @@ This is great practice to get into. This way we can have different nested routes
 */
 
 const server = app.listen(port, () =>
-  console.log(`Server has been started on http://localhost:${port}`)
+    console.log(`Server has been started on http://localhost:${port}`)
 );
 
 startWebsocketserver(host, webSocketPort);
