@@ -65,6 +65,7 @@ buyerRouter.post("/upload", async (req, res) => {
       jobID: req.body.jobTitle,
       Des: req.body.jobDescription,
       type: jobtype,
+      completed: false,
     }
     //Update DB:
     //console.log(Buyer.findOne({name: req.user.name}))
@@ -84,16 +85,14 @@ buyerRouter.post("/upload", async (req, res) => {
   }
   });
 
- buyerRouter.post("/jobinfo", async (req, res) => {   //<-----------------------------------------
+ buyerRouter.post("/jobinfo", async (req, res) => {   //<
+    //console.log(req.body)
+    //console.log("name:" + req.user.name)
 
-    console.log(req.body.username)
-    const buyer = await Buyer.findOne({name:req.body.username})
-    if(buyer){
-    res.json({jobs: buyer.jobs_array});
-    }
-    else{
-      res.json({jobs: "No jobs found"});
-    }
+    const buyer = await Buyer.findOne({name:req.user.name})
+    res.json({jobs:buyer.jobs_array, name:req.user.name});
+
+
   })
     //Find the buyer in the database
   

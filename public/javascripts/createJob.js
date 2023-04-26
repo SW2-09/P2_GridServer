@@ -1,4 +1,6 @@
+
 const mainDiv = document.getElementById("mainDiv");
+
 
 const content = {
 CreateJob: `<div>
@@ -34,25 +36,12 @@ CreateJob: `<div>
 </div>
 `,
 
-JobList:`
-
-`
-
-/*
-
-<script> 
-
-</script>
-
-</div>
-*/
-,
 JobsOverview: `
 <div id="overviewDiv">
   <div>
     <h1>Current jobs</h1>
     <div class="JobTable">
-    Det skal ind her
+
     </div>
     <div>
     <button id="jobInfo-button">Update joblist</button>
@@ -100,9 +89,10 @@ plusUpload: `<div>
 
 
 
-async function generateTable (DOMProperty) {
+async function generateTable () { //Bruger ikke DOMProperty
 
-  let jobsObject= await getJobarrayFromDB("QWERT")
+  let infoObject = await getJobarrayFromDB()
+  //console.log(infoObject)
 
   //console.log(jobsObject.jobs);
 
@@ -113,19 +103,27 @@ async function generateTable (DOMProperty) {
   let tableHeader="<th>Titel</th> <th>JobID</th> <th>Description</th> <th> Status </th> <th> Download </th>";
 
   jobTable.insertRow(0).innerHTML=tableHeader;
-
-  jobsObject.jobs.forEach((job, index) => {
+  
+  infoObject.jobs.forEach((job, index) => {
     let row = jobTable.insertRow(index+1);
     row.insertCell(0).innerHTML=index+1;
     row.insertCell(1).innerHTML=job.Des;
     row.insertCell(2).innerHTML=job.type;
     row.insertCell(3).innerHTML="under construction";
-    if (true) {
-      row.insertCell(4).innerHTML=`<button id=download_btn_${index}> Download </button>`
+    console.log(job)
+    if (job.completed) {
+      row.insertCell(4).innerHTML=`<button id=download_btn_${index}> 
+      <a href="../JobData/Solutions/${infoObject.name}/${job.jobID}" download="${job.jobID}">
+      Download
+      </a></button>`
+    }
+    else{
+      row.insertCell(4).innerHTML="<p>Not completed</p>"
     }
   });
 }
 
+//!fs.existsSync(`../JobData/Solutions/${jobsObject.name}/${job.jobID}`)
 // Create job button
 mainDiv.addEventListener("click", (e) => {
     if (e.target.id === "createJob-button") {
@@ -138,7 +136,7 @@ mainDiv.addEventListener("click", (e) => {
       mainDiv.innerHTML = content.JobsOverview;   
       const jobHTML = document.querySelector(".JobTable");
       jobHTML.innerHTML = content.JobList;
-      generateTable(jobHTML.body)
+      generateTable()
       
   }
 });
@@ -292,8 +290,7 @@ mainDiv.addEventListener("click", async (e) => {
 
 
 
-async function getJobarrayFromDB(username){
-  console.log(username)
+async function getJobarrayFromDB(){
   const response = await fetch("/buyer/jobinfo", {
     method: "POST",
     headers: {
@@ -301,11 +298,11 @@ async function getJobarrayFromDB(username){
     },
     //Send username to server
 
-    body: JSON.stringify({username: username}),
+   // body: JSON.stringify({username: username}),
   });
   
-  let jobs = await response.json();
-  return jobs
+  let obj = await response.json();
+  return obj
 }
 
 /*  document.getElementById("joblistUpdate").addEventListener("click",async (e) => {

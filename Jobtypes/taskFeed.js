@@ -118,7 +118,7 @@ function checkPendingList(pending){
  * Function called when a job is done. Checks if the solutions are correct.
  * @param { job class} job is the job that is done
  */
-function jobDone(job){
+async function jobDone(job){
     console.log(job.numOfTasks)
     let Solution
     
@@ -127,13 +127,14 @@ function jobDone(job){
         job.solutions.forEach(element => { //concatenates the solutions into one array to combine matrix
             Solution = Solution.concat(element);
         });
-        console.log("Solution: " + Solution)
+        //console.log("Solution: " + Solution)
     }
     else if (job.jobType === "plus"){
         job.solutions.forEach(element => { //concatenates the solutions into one array to combine matrix
             Solution += element;
         });
-        console.log("Solution: " + Solution)
+
+        //console.log("Solution: " + Solution)
     }
 
 
@@ -147,5 +148,8 @@ function jobDone(job){
 
     writeFile(filename, Solution); //writes the solution to a file
 
-    //Update the Buyer database here!
+    //Update the job.completed in mongoDB
+    await Buyer.findOneAndUpdate({name: job.jobOwner },{$set: {"jobs_array.$[element].completed": true}}, 
+        {arrayFilters: [ { "element.jobID": job.jobId } ]});
+
 }
