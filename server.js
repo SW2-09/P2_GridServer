@@ -11,11 +11,10 @@ const host = "localhost";
 const port = 3000;
 const webSocketPort = 3443;
 
-
-
 import express from "express";
 import expressLayouts from "express-ejs-layouts";
 import mongoose from "mongoose";
+import mongoDBStore from "connect-mongodb-session";
 import session from "express-session";
 import passport from "passport";
 import flash from "connect-flash";
@@ -38,6 +37,7 @@ checkPassport(passport);
 
 //MongoDB atlas config
 import { MongoURI as db } from "./config/keys.js";
+import { sessionsURI } from "./config/keys.js";
 
 //Connect to MongoDB
 mongoose
@@ -45,13 +45,27 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
 
+//Storage for sessions
+const sessiontStore = mongoDBStore(session);
+const store = new sessiontStore({
+  uri: sessionsURI,
+  collection: "Gridserver",
+});
+
 //EJS setup
 app.use(expressLayouts);
 app.set("view engine", "ejs"); // Makes .ejs files possible to use
 app.use(flash());
 
 //Express session -  passport session (webpage)
-app.use(session({ secret: "secret", resave: true, saveUninitialized: true }));
+app.use(session({ 
+  name: "Gridserver",
+  secret: "GridSecret", 
+  resave: false, 
+  saveUninitialized: true,
+  store: store,
+  cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }, // 1 week
+}));
 
 //Bodyparser
 //app.use(express.urlencoded({ extended: false }));
