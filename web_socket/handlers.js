@@ -13,13 +13,13 @@ import { server } from "../server.js";
 
 let handlers={
   subtaskFeeder: subtaskFeeder,
-  sendSubtask: function send_subtask(ws) {
+  sendSubtask: function send_subtask(ws, workerId) {
     let next_task = handlers.subtaskFeeder(JobQueue);
     if (next_task !== null) { //if there is a subtask to send
       ws.send(JSON.stringify(next_task));
     }
     else{ //if there is no subtask to send
-      console.log("sending 0 to worker")
+      console.log("sending 0 to: " + workerId)
       ws.send("0");
     }
   },
@@ -31,7 +31,7 @@ let handlers={
       
       if (messageParse["data"] === "ready for work") { //if the worker is ready for work
       //send_subtask(ws, JobQueue); //send a subtask to the worker
-      handlers.sendSubtask(ws);
+      handlers.sendSubtask(ws, messageParse["workerId"]);
       
       }
       else {
@@ -70,14 +70,15 @@ let handlers={
         currentJob.pendingList.removeTask(messageParse["taskId"]); //remove the task from the pending list
         // console.log("job solutions" + JobQueue.tail.solutions.length);
         // console.log(messageParse["solution"]);
-        handlers.sendSubtask(ws);
+        handlers.sendSubtask(ws, messageParse["workerId"]);
       }
-        } catch (e) {
-            //if the message cannot be parsed to JSON
-            console.log(
-                `Something went wrong with the recieved message: ${e.message}`
-            );
-        }
+        } finally{}
+        // catch (e) {
+        //     //if the message cannot be parsed to JSON
+        //     console.log(
+        //         `Something went wrong with the recieved message: ${e.message}`
+        //     );
+        // }
 
     }}
     ,
@@ -85,14 +86,8 @@ let handlers={
         //callback for when a new client connects
         handlers.ws = ws;
         console.log("New client connected");
-        if (JobQueue.size > 0) {
-            //if the queue is not empty, send a subtask to the worker
-            handlers.sendSubtask(ws);
-        } else {
-            //if the queue is empty, send 0 to the worker
-            console.log("sending 0 to worker");
-            ws.send("0");
-        }
+
+        ws.send("0")
 
         ws.on("message", handlers.messageHandler(ws));
 
@@ -117,6 +112,7 @@ function startWebsocketserver(host, port) {
  **/
 
 function findJob(jobId){
+  console.log("!!!!i am finding job!!!!")
   let currentJob=JobQueue.tail;
   if (currentJob.jobId==jobId){
     return currentJob;

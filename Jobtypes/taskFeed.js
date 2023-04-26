@@ -55,7 +55,7 @@ function subtaskFeeder(JobQueue) {
                 data: currentJob.pendingList.tail.data,
             };
             //set the send time of the subtask to know when the task is outdated
-            currentJob.pendingList.head.sendTime = Date.now();
+            //currentJob.pendingList.head.sendTime = Date.now();
             console.log(
                 "sending job: " +
                     workerPack.jobId +
@@ -125,6 +125,7 @@ function checkPendingList(pending) {
     while (recent && head !== null) {
         if (Date.now() - head.sendTime > 10000) {
             //checking whether it is longer than 120 seconds since the task was sent
+            head.sendTime = Date.now();
             return head;   //if the task is outdated
         }
         head = head.next;

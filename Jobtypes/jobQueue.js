@@ -174,6 +174,8 @@ class Queue_linked_list_subtask {
     removeTask(TaskId) {
         //removes the task with the specific task id
         let x = this.head;
+        console.log("task id her________")
+        console.log(x.taskId)
         while (TaskId !== x.taskId) {
             x = x.next;
         }
