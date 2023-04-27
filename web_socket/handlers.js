@@ -80,8 +80,8 @@ let handlers={
         //     );
         // }
 
-    }}
-    ,
+    }
+  },
     connectionHandler: function (ws) {
         //callback for when a new client connects
         handlers.ws = ws;
@@ -121,7 +121,6 @@ function findJob(jobId){
   }
   return currentJob.previous;
 }
-
 
 /**
  * function to create a solution array the solution received from the worker
