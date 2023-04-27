@@ -17,14 +17,24 @@ adminRouter.post("/purge", (req, res) => {
 
 adminRouter.post("/lookup", (req, res) => {
     getItems(req.body.collection).then((items) => {
-        console.log(items);
         res.json({ message: items });
     });
 });
 
+adminRouter.post("/deleteone", (req, res) => {
+    deleteone(req.body.collection, req.body.name);
+    res.json({
+        message:
+            "Purged '" + req.body.collection + "' collection from database: ",  });});
+
+adminRouter.post("/updateone", (req, res) => {
+    updateone(req.body.collection, req.body.name);
+});
+
+
+
 async function deleteCollection(collection) {
     console.log("Deleting all '" + collection + "' from database");
-
     await mongoose.connection.db.dropCollection(
         collection,
         function (err, result) {
@@ -36,6 +46,23 @@ async function deleteCollection(collection) {
         }
     );
 }
+
+async function deleteone(collection, name) {
+    console.log("Deleting:" + name + " from " + collection);
+    const collections = mongoose.connection.db.collection(collection);
+    await collections.deleteOne(
+        {name: name},
+        function (err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log("Collection deleted");
+            }
+        }
+    );
+}
+
+
 
 async function getItems(collection) {
     const Items = await mongoose.connection.db

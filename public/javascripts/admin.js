@@ -150,51 +150,70 @@ purge.addEventListener("click", async () => {
     }
 });
 
-lookup.addEventListener("click", async () => {
+collection.addEventListener("change", async () => {
     clearInterval(chartinterval);
     let collectionvalue = document.getElementById("collection").value;
-    console.log(collectionvalue)
-    let responseJson
     try {
-        console.log("Looking up collection...");
-        const response = await fetch("/admin/lookup", {
+        dblookup(collectionvalue);
+    } catch (err) {
+        console.log("Error");
+    }
+});
+
+mainDiv.addEventListener("click", async (e) => {
+    let collectionvalue = document.getElementById("collection").value;
+    if (e.target.className === "delete") {
+        console.log("Delete user: " + e.target.value);
+        testd = await fetch("/admin/deleteone", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
+                name: e.target.value,
                 collection: collectionvalue,
             }),
         });
-        if (response.status === 200) {
-            responseJson = await response.json();
-            // console.log(responseJson.message);
-        }
-
-        if(collectionvalue === "users"){
-            generateTable(responseJson, collectionvalue)
-        }
-        if(collectionvalue === "buyers"){
-            // console.log("Buyers")
-            generateTable(responseJson, collectionvalue)
-            
-        }
-
-    } catch (err) {
-        console.log("Error");
+        dblookup(collectionvalue);
     }
 });
+
+
+async function dblookup(collectionvalue) {
+    let responseJson;
+    console.log("Looking up collection...");
+    const response = await fetch("/admin/lookup", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            collection: collectionvalue,
+        }),
+    });
+    if (response.status === 200) {
+        responseJson = await response.json();
+        // console.log(responseJson.message);
+    }
+
+    if (collectionvalue === "users") {
+        generateTable(responseJson, collectionvalue);
+    }
+    if (collectionvalue === "buyers") {
+        // console.log("Buyers")
+        generateTable(responseJson, collectionvalue);
+    }
+}
+
 
 
 async function generateTable(workerInfo, collectionvalue) {
     mainDiv.innerHTML = content.lookupTable;
     let jobTable = document.createElement("table");
     document.querySelector(".WorkerTable").append(jobTable);
-
-    console.log(Object.keys(workerInfo.message[0]))
     if (collectionvalue === "users") {
     let tableHeader =
-        `<th>Worker name</th><th>Computation status</th> <th>Computations done</th>`;
+        `<th>Worker name</th><th>Computation status</th> <th>Computations done</th> <th>Delete user</th>`;
 
     jobTable.insertRow(0).innerHTML = tableHeader;
     
@@ -203,6 +222,7 @@ async function generateTable(workerInfo, collectionvalue) {
         row.insertCell(0).innerHTML = element.name;
         row.insertCell(1).innerHTML = element.compute;
         row.insertCell(2).innerHTML = element.tasks_computed;
+        row.insertCell(3).innerHTML = `<button class="delete" id="delete${index}" value="${element.name}">Delete</button>`;
         // row.insertCell(3).innerHTML = element.type;
     });
 }   else{
@@ -233,10 +253,11 @@ async function generateTable(workerInfo, collectionvalue) {
 
         row.insertCell(1).append(wrapperDiv);
         row.insertCell(2).innerHTML = `<button class="moreInfo" id="moreInfo${index}">More info</button>`;
-        row.insertCell(3).innerHTML = `<button class="delete" id="delete${index}">Delete</button>`;
+        row.insertCell(3).innerHTML = `<button class="delete" id="delete${index}" value="${element.name}">Delete</button>`;
         row.insertCell(4).innerHTML = `<button class="reset" id="reset${index}">Reset data</button>`;
     });
+    }
 }
-}
+
 
 // Get the canvas element
