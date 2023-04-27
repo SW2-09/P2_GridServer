@@ -39,29 +39,130 @@ header {
 
 table {
     border-collapse: collapse;
-    width: 100%;
+    width: 50%;
     table-layout: fixed;
 }
 
-th, td {
+table th, td {
     border: 1px solid #ddd;
-    padding: 8px;
     text-align: left;
 }
 
-th {
+table th {
     background-color: #f2f2f2;
     color: black;
 }
 
-tr:nth-child(even) {
+table tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
-tr:hover {
+table tr:hover {
     background-color: #ddd;
 }
 
 .WorkerTable {
     margin: 20px 0;
 }
+
+.purgeButton{
+    background-color: crimson;
+}
+.lookupButton, .collection{
+    background-color: #333;
+}
+
+.lookupButton:hover {
+    background-color: #555;
+}
+
+
+.purgeButton, .lookupButton, .collection{
+    width: 80px;
+    height: 20px;
+    border: none;
+    color: #fff;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+/* Style the buttons */
+button.moreInfo,
+button.delete,
+button.reset {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 8px;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Change button background color on hover */
+button.moreInfo:hover,
+button.delete:hover,
+button.reset:hover {
+  background-color: #0056b3;
+}
+
+/* Different colors for delete and reset buttons */
+button.delete {
+  background-color: #dc3545;
+}
+
+button.delete:hover {
+  background-color: #c82333;
+}
+
+button.reset {
+  background-color: #28a745;
+}
+
+button.reset:hover {
+  background-color: #218838;
+}
+
+/* Style the table cells containing buttons */
+table td:nth-child(1),
+table td:nth-child(2),
+table td:nth-child(3),
+table td:nth-child(4),
+table td:nth-child(5) {
+  padding: 0;
+}
+
+
+
+/* Make the select element fill the cell */
+.dropdownElement {
+
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+box-sizing: border-box;
+}
+
+.taskchart {
+    height: 500px;
+    width: 500px;
+    max-width: 600px;
+    max-height: 600px;
+    margin: 0 auto;
+  }
+
+.workerchart{
+        height: 500px;
+        width: 500px;
+        max-width: 600px;
+        max-height: 600px;
+        margin: 0 auto;
+      }
+

@@ -2,6 +2,7 @@ export { adminRouter };
 
 import mongoose from "mongoose";
 import express from "express";
+import { serverdata } from "../server.js";
 import { Buyer } from "../models/Buyer.js";
 
 const adminRouter = express.Router();
@@ -43,3 +44,9 @@ async function getItems(collection) {
         .toArray();
     return Items;
 }
+
+adminRouter.get("/sessiondata", async (req, res) => {
+    console.log("Sending session data to client")
+    res.json({ serverdata });
+    
+});

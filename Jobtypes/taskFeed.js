@@ -2,6 +2,7 @@ export { subtaskFeeder, queueEmpty };
 
 import {Worker} from "../models/Workers.js";
 import { createFolder, writeFile } from "../utility.js";
+import { serverdata } from "../server.js";
 import { matrix_mult } from "./matrix_multiplication/Partitioner.js";
 import { matrix_A, matrix_B } from "./matrix_multiplication/matrixSplit.js";
 import { Buyer } from "../models/Buyer.js";
@@ -61,6 +62,8 @@ function subtaskFeeder(JobQueue) {
             };
             //set the send time of the subtask to know when the task is outdated
             failedJob.sendTime = Date.now();
+            serverdata.failedjobs++;
+
             console.log(
                 "sending job: " +
                     workerPack.jobId +

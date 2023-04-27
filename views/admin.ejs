@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Document</title>
     </head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <body>
         <header>
             <div class="header-content">
@@ -14,14 +15,18 @@
             </div>
         </header>
         <div class="content">
-            <button id="purge">Purge Users</button>
-            <select name="collection" id="collection">
+            <button class="purgeButton" id="purge">DB Purge</button>
+            <button class="lookupButton" id="Lookup">DB Lookup</button>
+            <select name="collection" class="collection" id="collection">
                 <option value="users">Users</option>
                 <option value="buyers">Buyers</option>
             </select>
-            <button id="Lookup">DB lookup</button>
+            <button class="sessiondata" id="sessiondata">DB Lookup</button>
         </div>
         <div id="mainDiv"></div>
+        
+
     </body>
+    
     <script src="javascripts/admin.js"></script>
 </html>

@@ -84,15 +84,39 @@ body {
     background-color: rgb(0, 174, 239);
 }
 
-.JobTable td,
-.JobTable th {
-    border: 1px solid #000000;
-    padding: 3px 7px 2px 7px;
+table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
 }
 
-.JobTable td,
-.JobTable th {
-    border: 1px solid #000000;
-    padding: 3px 7px 2px 7px;
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
 }
 
+th {
+    background-color: #f2f2f2;
+    color: black;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+.download_btn{
+    width:100%;
+    height: 100%;
+    display:block;
+}
+
+.delete_btn{
+    width:100%;
+    height: 100%;
+    display:block;
+}

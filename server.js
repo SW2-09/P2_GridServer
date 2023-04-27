@@ -4,7 +4,7 @@
 3. Use the "npm run devStart" command to start the server (see package.json) 
 nodemon can be acti
 */
-export { server };
+export { server, serverdata };
 import { startWebsocketserver, handlers } from "./web_socket/handlers.js";
 
 const host = "localhost";
@@ -93,6 +93,14 @@ This is great practice to get into. This way we can have different nested routes
 3. e.g. server.js -> routes/users.js -> routes/users/new.js
 */
 
+const serverstart = Date.now();
+
+const serverdata = {
+    failedjobs: 0,
+    jobsComputed: 0,
+    serverstart: serverstart,
+    connectedworkers: [],
+};
 const server = app.listen(port, () =>
     console.log(`Server has been started on http://localhost:${port}`)
 );
