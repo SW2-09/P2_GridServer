@@ -216,8 +216,6 @@ function addPlusToQue(jobID, jobType, jobOwner, entries) {
     }
 
     let arr = dividePlus(entriesCopy);
-    console.log(arr);
-    console.log(entries);
     // enqueue the job to the job queue
     JobQueue.enQueue(jobID, jobType, jobOwner, plus_str);
 
