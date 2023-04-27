@@ -61,7 +61,8 @@ buyerRouter.post("/upload", async (req, res) => {
             }
             case "plus": {
                 // in case the jobtype is plus
-                Jobdata = createPlusJob(req.body, name);
+
+                Jobdata = createPlusJob(req.body, req.user.name);
 
                 break;
             }
@@ -89,6 +90,7 @@ buyerRouter.post("/upload", async (req, res) => {
         //create folder in the PendingJobs folder if not exists, the folder name is the user name
         createFolder(dynamicDirPath);
         //write the file to the new folder created in the PendingJobs folder
+
         writeFile(uploadPath, Jobdata);
     } catch (error) {
         console.log("Uploading: " + error);
@@ -185,7 +187,6 @@ function createPlusJob(jobData, jobOwner) {
 
     console.log(JobQueue.size);
     console.log(JobQueue.head.numOfTasks);
-
     return Jobdata;
 }
 
@@ -222,7 +223,12 @@ function addMatrixToQue(jobID, jobType, jobOwner, matrix_A, matrix_B) {
  */
 
 function addPlusToQue(jobID, jobType, jobOwner, entries) {
-    let arr = dividePlus(entries);
+    let entriesCopy = [];
+    for (let i = 0; i < entries.length; i++) {
+        entriesCopy[i] = entries[i];
+    }
+
+    let arr = dividePlus(entriesCopy);
     // enqueue the job to the job queue
     JobQueue.enQueue(jobID, jobType, jobOwner, plus_str);
 
