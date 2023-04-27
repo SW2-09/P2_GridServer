@@ -22,10 +22,15 @@ function subtaskFeeder(JobQueue) {
         return null;
     } //if the queue is empty
     let currentJob = JobQueue.tail;
+    
     if (currentJob.subtaskList.tail === null) {
         //if there are no more subtasks in the subtask list
         console.log("No more subtasks to do. Checking pending list.");
         let failedJob = checkPendingList(currentJob.pendingList);
+        console.log("-------------------")
+        console.log(currentJob.numOfTasks)
+        console.log(currentJob.numOfSolutions)
+        console.log("-------------------")
         if (
             failedJob === null &&
             currentJob.numOfTasks === currentJob.numOfSolutions
@@ -37,29 +42,25 @@ function subtaskFeeder(JobQueue) {
             JobQueue.deQueue(); //remove the job from the queue
             console.log("JobQueue updated to size: " + JobQueue.size);
             currentJob = JobQueue.tail; //set the current job to the new tail
+            if (currentJob === null) {
+                //if the queue is empty
+                return null;
+            }
         } else if (failedJob !== null) {
             //if there are failed subtasks
             console.log("Job not done yet!");
-            console.log(
-                "currentJob: " +
-                    currentJob.jobId +
-                    " task: " +
-                    currentJob.pendingList.tail.taskId
-            );
+           
             let workerPack = {
                 //create a package to send to the worker
                 jobId: currentJob.jobId,
                 jobType: currentJob.jobType,
                 alg: currentJob.alg,
-                taskId: currentJob.pendingList.tail.taskId,
+                taskId: failedJob.taskId,
                 commonData: currentJob.commonData,
-                data: currentJob.pendingList.tail.data,
+                data: failedJob.data,
             };
             //set the send time of the subtask to know when the task is outdated
-            console.log("-----test------ " + currentJob.pendingList.tail.sendTime)
-            JobQueue.tail.pendingList.tail.sendTime = Date.now();
-            console.log("-----test------ " + currentJob.pendingList.tail.sendTime)
-
+            failedJob.sendTime = Date.now();
             console.log(
                 "sending job: " +
                     workerPack.jobId +
@@ -78,7 +79,7 @@ function subtaskFeeder(JobQueue) {
         }
     }
 
-    if (!(JobQueue.size > 0)) {
+    if ((JobQueue.size < 0)) {
         //if there are no jobs in the queue
         console.log("No work to do. Waiting for new job.");
         return 0;
@@ -108,6 +109,7 @@ function subtaskFeeder(JobQueue) {
                 workerPack.taskId +
                 " to worker \n"
         );
+        
         return workerPack;
     }
     return null; //if there are no more subtasks to do
@@ -121,6 +123,7 @@ function subtaskFeeder(JobQueue) {
  */
 function checkPendingList(pending) {
     if (pending.tail === null) {
+        console.log("failedjob = null")
         return null;    //if the list is empty
 
     }
@@ -128,20 +131,13 @@ function checkPendingList(pending) {
     let recent = true;
     while (recent && tail !== null) {
         if ((Date.now() - tail.sendTime) > 30000) {
-            //checking whether it is longer than 120 seconds since the task was sent
+            //if the task is outdated (30 seconds)
             
-            timeer = Date.now() - timeer;
-            console.log("Rigtig tid!!" + timeer);
-
-            console.log("Date.now(): " + Date.now());
-            console.log("head.sendTime: " + tail.sendTime);
-            console.log("Difference: " + (Date.now() - tail.sendTime));
-
             return tail;   //if the task is outdated
         }
         tail = tail.previous;
     }
-
+    console.log("failedjob = null")
     return null; //if there are no outdated tasks
 }
 

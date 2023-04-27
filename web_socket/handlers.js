@@ -36,7 +36,20 @@ let handlers={
       }
       else {
         let messageParse = JSON.parse(message);
+        
         let currentJob=findJob(messageParse["jobId"]);
+        if (currentJob === null) {
+          console.log("Job not found or already done.");
+          handlers.sendSubtask(ws, messageParse["workerId"]);
+          return;
+        }
+        let currentTask=findTask(currentJob, messageParse["taskId"]);
+        if (currentTask === null) {
+          console.log("task not found or already done.");
+          handlers.sendSubtask(ws, messageParse["workerId"]);
+          return;
+        }
+
         console.log("Solution recieved:");
         
         console.log("jobID: " + messageParse["jobId"]);
@@ -80,8 +93,8 @@ let handlers={
         //     );
         // }
 
-    }}
-    ,
+    }
+  },
     connectionHandler: function (ws) {
         //callback for when a new client connects
         handlers.ws = ws;
@@ -108,20 +121,23 @@ function startWebsocketserver(host, port) {
 /**
  * Function to find a job in the queue by its jobId
  * @param {number} jobId
- * @returns the job with the given jobId
+ * @returns the job with the given jobId or returns null if not found
  **/
-
 function findJob(jobId){
+  if(JobQueue.tail === null){
+    return null;
+  }
   let currentJob=JobQueue.tail;
-  if (currentJob.jobId==jobId){
+  if (currentJob.jobId === jobId){
     return currentJob;
   }
-  while(currentJob.previous.jobId!=jobId){
-    currentJob=currentJob.previous;
+  else if (currentJob.previous !== null){
+    while(currentJob.previous.jobId!=jobId){
+      currentJob=currentJob.previous;
+    }
   }
-  return currentJob.previous;
+  return currentJob.previous; //this will be null if the job is not found
 }
-
 
 /**
  * function to create a solution array the solution received from the worker
@@ -135,4 +151,24 @@ function createTaskSolution(input){
   });
   return solutionArray;
 }
+
+/**
+ * Function to find a task in the queue by its taskId
+ * @param {object} job the job in which to find the task
+ * @param {number} taskId the taskId of the task to find
+ * @returns the task with the given taskId returns null if not found
+ **/
+function findTask(job, taskId){
+  let currentTask=job.pendingList.tail;
+  if (currentTask.taskId === taskId){
+    return currentTask;
+  }
+  else if (currentTask.previous !== null){
+    while(currentTask.previous.taskId!=taskId){
+      currentTask=currentTask.previous;
+    }
+  }
+  return currentTask.previous; //this will be null if the job is not found
+}
+
 

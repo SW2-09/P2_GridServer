@@ -99,8 +99,14 @@ class Queue_linked_list_job {
     }
 
     removeJob(JobId) {
+        if (this.head === null) {//if the queue is empty
+            return;
+        } 
         let x = this.head;
         while (JobId !== x.jobId) {
+            if (x.next === null) {
+                return;
+            }
             x = x.next;
         }
         if (x === this.head && x === this.tail) {
@@ -108,9 +114,11 @@ class Queue_linked_list_job {
             this.head = this.tail = null;
         } else if (x === this.head) {
             //if the job is the head of the queue
+            x.next.previous = null;
             this.head = this.head.next;
         } else if (x === this.tail) {
             //if the job is the tail of the queue
+            x.previous.next = null;
             this.tail = this.tail.previous;
         } else {
             //if the job is in the middle of the queue
@@ -173,10 +181,15 @@ class Queue_linked_list_subtask {
 
     removeTask(TaskId) {
         //removes the task with the specific task id
+        if (this.head === null) {//if the queue is empty
+            return;
+        } 
         let x = this.head;
-        console.log("task id her________");
-        console.log(x.taskId);
+
         while (TaskId !== x.taskId) {
+            if (x.next === null) {
+                return;
+            }
             x = x.next;
         }
         if (x === this.head && x === this.tail) {
@@ -184,9 +197,11 @@ class Queue_linked_list_subtask {
             this.head = this.tail = null;
         } else if (x === this.head) {
             //if the job is the head of the queue
+            x.next.previous = null;
             this.head = this.head.next;
         } else if (x === this.tail) {
             //if the job is the tail of the queue
+            x.previous.next = null;
             this.tail = this.tail.previous;
         } else {
             //if the job is in the middle of the queue
