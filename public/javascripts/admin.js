@@ -31,7 +31,7 @@ purge.addEventListener("click", async () => {
 
         if (response.status === 200) {
             const responseJson = await response.json();
-            console.log(responseJson.message);
+            // console.log(responseJson.message);
         } else {
             console.log("Error");
         }
@@ -42,7 +42,7 @@ purge.addEventListener("click", async () => {
 
 lookup.addEventListener("click", async () => {
     let collectionvalue = document.getElementById("collection").value;
-    
+    console.log(collectionvalue)
     let responseJson
     try {
         console.log("Looking up collection...");
@@ -57,19 +57,22 @@ lookup.addEventListener("click", async () => {
         });
         if (response.status === 200) {
             responseJson = await response.json();
-            console.log(responseJson.message);
+            // console.log(responseJson.message);
         }
-        generateTable(responseJson)
+
+        if(collectionvalue === "users"){
+            generateTable(responseJson, collectionvalue)
+        }
+        if(collectionvalue === "buyers"){
+            // console.log("Buyers")
+            generateTable(responseJson, collectionvalue)
+            
+        }
+
     } catch (err) {
         console.log("Error");
     }
 });
-
-        //generateTable(responseJson); 
-
-
-
-
 
 
 async function generateTable(workerInfo) {
@@ -79,19 +82,17 @@ async function generateTable(workerInfo) {
 
     document.querySelector(".WorkerTable").append(jobTable);
 
+    console.log(Object.keys(workerInfo.message[0]))
     let tableHeader =
-        "<th>Index</th> <th>Title</th> <th>Description</th> <th> Type</th> <th> Download solution </th>";
+        `<th></th> <th>Title</th> <th>Computations done</th>`;
 
     jobTable.insertRow(0).innerHTML = tableHeader;
     
     workerInfo.message.forEach((element,index) => {
         let row = jobTable.insertRow(index + 1);
-        row.insertCell(0).innerHTML = index + 1;
+        row.insertCell(0).innerHTML = element.name;
         row.insertCell(1).innerHTML = element.compute;
         row.insertCell(2).innerHTML = element.tasks_computed;
         // row.insertCell(3).innerHTML = element.type;
     });
-    
-
-    
 }
