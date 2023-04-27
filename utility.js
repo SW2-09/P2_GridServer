@@ -22,4 +22,15 @@ export function writeFile(uploadPath, Jobdata) {
     });
 }
 
-export function sanitizeinput(string) {}
+//remove potentially dangerous/undesired characters 
+export function sanitize(str){
+  str=str
+.replace(/&/g, "")
+.replace(/</g, "")
+.replace(/>/g, "")
+.replace(/"/g, "")
+.replace(/'/g, "")
+.replace(/`/g, "")
+.replace(/\//g, "");
+return str.trim();
+}
