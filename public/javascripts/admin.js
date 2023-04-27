@@ -12,110 +12,12 @@ computationChart: ` <canvas class="taskchart" id="taskchart"></canvas>
                     <canvas class="workerchart" id="workerchart"></canvas>`,
 }
 
+onload = async () => {
+    loadSessionChart();
+}
 
 sessiondata.addEventListener("click", async () => {
-    try {
-        
-        
-        mainDiv.innerHTML = content.computationChart;
-        const taskchart = document.getElementById("taskchart");
-        const workerchart = document.getElementById("workerchart");
-
-
-        
-        const labels = []
-        const dataTasks = {
-          labels: labels,
-          datasets: [{
-            label: 'computations since serverstart',
-            data: [],
-            fill: false,
-            borderColor: 'rgb(75, 192, 192)',
-            hidden: false,
-            
-          },
-          { label: 'Subtasks failed since serverstart',
-            data: [],
-            fill: false,
-            borderColor: 'rgb(131, 0, 0)',
-            hidden: false,
-            }]
-        };
-
-        const dataWorker = {
-            labels: labels,
-            datasets: [{
-              label: 'Connected workers',
-              data: [],
-              fill: false,
-              borderColor: 'rgb(0, 133, 0)',
-              hidden: false,
-            },]
-          };
-
-        const options = {
-            scales: {
-              y: {
-                min: 0, // Set the minimum value of the y-axis to 0
-                ticks: {
-                    stepSize: 1,
-                    callback: function (value) {
-                    if (value >= 0) {
-                      return value;
-                    }
-                  },
-                },
-              },
-            },
-          };
-
-        const config = {
-            type: 'line',
-            data: dataTasks,
-            options: options
-          };
-
-        const config2 = {
-            type: 'line',
-            data: dataWorker,
-            options: options
-          };
-
-        const task_chart = new Chart(taskchart, config);
-        const worker_chart = new Chart(workerchart, config2);
-
-        chartinterval = setInterval(async function () {
-
-            console.log("Getting session data...");
-            const response = await fetch("/admin/sessiondata", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (response.status === 200) {
-            const responseJson = await response.json();
-
-            labels.push(Math.round((Date.now() - responseJson.serverdata.serverstart)/1000))
-            dataTasks.datasets[0].data.push(responseJson.serverdata.jobsComputed)
-            dataTasks.datasets[1].data.push(responseJson.serverdata.failedjobs)
-            dataWorker.datasets[0].data.push(responseJson.serverdata.connectedworkers.length)
-
-            task_chart.update();
-            worker_chart.update();
-
-        }
-        }, 5000);
-    //intervalOn = true;
-    //}
-    
-
-        
-
-    } catch (err) {
-        console.log(err);
-    }
+    loadSessionChart();
 });
 
 purge.addEventListener("click", async () => {
@@ -258,6 +160,111 @@ async function generateTable(workerInfo, collectionvalue) {
     });
     }
 }
+
+
+async function loadSessionChart() {
+try {
+    mainDiv.innerHTML = content.computationChart;
+    const taskchart = document.getElementById("taskchart");
+    const workerchart = document.getElementById("workerchart");
+
+
+    
+    const labels = []
+    const dataTasks = {
+      labels: labels,
+      datasets: [{
+        label: 'computations since serverstart',
+        data: [],
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        hidden: false,
+        
+      },
+      { label: 'Subtasks failed since serverstart',
+        data: [],
+        fill: false,
+        borderColor: 'rgb(131, 0, 0)',
+        hidden: false,
+        }]
+    };
+
+    const dataWorker = {
+        labels: labels,
+        datasets: [{
+          label: 'Connected workers',
+          data: [],
+          fill: false,
+          borderColor: 'rgb(0, 133, 0)',
+          hidden: false,
+        },]
+      };
+
+    const options = {
+        scales: {
+          y: {
+            min: 0, // Set the minimum value of the y-axis to 0
+            ticks: {
+                stepSize: 1,
+                callback: function (value) {
+                if (value >= 0) {
+                  return value;
+                }
+              },
+            },
+          },
+        },
+      };
+
+    const config = {
+        type: 'line',
+        data: dataTasks,
+        options: options
+      };
+
+    const config2 = {
+        type: 'line',
+        data: dataWorker,
+        options: options
+      };
+
+    const task_chart = new Chart(taskchart, config);
+    const worker_chart = new Chart(workerchart, config2);
+
+    chartinterval = setInterval(async function () {
+
+        console.log("Getting session data...");
+        const response = await fetch("/admin/sessiondata", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (response.status === 200) {
+        const responseJson = await response.json();
+
+        labels.push(Math.round((Date.now() - responseJson.serverdata.serverstart)/1000))
+        dataTasks.datasets[0].data.push(responseJson.serverdata.jobsComputed)
+        dataTasks.datasets[1].data.push(responseJson.serverdata.failedjobs)
+        dataWorker.datasets[0].data.push(responseJson.serverdata.connectedworkers.length)
+
+        task_chart.update();
+        worker_chart.update();
+
+    }
+    }, 5000);
+//intervalOn = true;
+//}
+
+
+    
+
+} catch (err) {
+    console.log(err);
+}
+};
+
 
 
 // Get the canvas element

@@ -70,7 +70,7 @@ table tr:hover {
 .purgeButton{
     background-color: crimson;
 }
-.lookupButton, .collection{
+.lookupButton, .collection,.sessiondata{
     background-color: #333;
 }
 
@@ -79,7 +79,7 @@ table tr:hover {
 }
 
 
-.purgeButton, .lookupButton, .collection{
+.purgeButton, .lookupButton, .collection,.sessiondata{
     width: 80px;
     height: 20px;
     border: none;
@@ -153,18 +153,20 @@ box-sizing: border-box;
 }
 
 .taskchart {
-    height: 500px;
+    padding-top: 20px;
+    height: 350px;
     width: 500px;
-    max-width: 600px;
-    max-height: 600px;
-    margin: 0 auto;
+    max-width: 500px;
+    max-height: 350px;
+    margin-left: 30px;
   }
 
 .workerchart{
-        height: 500px;
+        padding-top: 20px;
+        height: 350px;
         width: 500px;
-        max-width: 600px;
-        max-height: 600px;
-        margin: 0 auto;
+        max-width: 500px;
+        max-height: 350px;
+        margin-left: 30px;
       }
 
