@@ -1,5 +1,11 @@
 const purge = document.getElementById("purge");
 const lookup = document.getElementById("Lookup");
+const mainDiv = document.getElementById("mainDiv");
+
+const content = {
+lookupTable : ` <div class="WorkerTable" id="WorkerTable"> </div>`,
+}
+
 
 purge.addEventListener("click", async () => {
     let collectionvalue = document.getElementById("collection").value;
@@ -33,7 +39,7 @@ purge.addEventListener("click", async () => {
 });
 
 lookup.addEventListener("click", async () => {
-    let collectionvalue = document.getElementById("collection").value;
+    let responseJson
     try {
         console.log("Looking up collection...");
         const response = await fetch("/admin/lookup", {
@@ -46,10 +52,31 @@ lookup.addEventListener("click", async () => {
             }),
         });
         if (response.status === 200) {
-            const responseJson = await response.json();
+            responseJson = await response.json();
             console.log(responseJson.message);
         }
+
+        //generateTable(responseJson); 
+
+
+
+
     } catch (err) {
         console.log("Error");
     }
 });
+
+async function generateTable(workerInfo) {
+    mainDiv.innerHTML = content.lookupTable;
+
+    let jobTable = document.createElement("table");
+
+    document.querySelector(".WorkerTable").append(jobTable);
+
+    let tableHeader =
+        "<th>Index</th> <th>Title</th> <th>Description</th> <th> Type</th> <th> Download solution </th>";
+
+    jobTable.insertRow(0).innerHTML = tableHeader;
+
+    
+}
