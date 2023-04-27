@@ -1,5 +1,7 @@
 export { JobQueue };
 import { matrix_mult_str } from "./matrix_multiplication/calcAlgorithm.js";
+import fs from "fs";
+import  {addMatrixToQue, addPlusToQue} from "../routes/buyer.js";
 //import{ arr , matrix_A, matrix_B } from "./matrixSplit.js";
 
 class Job {
@@ -214,6 +216,52 @@ class Queue_linked_list_subtask {
 
 //Making a demo job queue
 let JobQueue = new Queue_linked_list_job();
+
+let dir = "./jobData";
+fs.readdirSync(dir).forEach((folder) => {
+    console.log("looking through: " + folder);
+    fs.readdirSync(dir + "/" + folder).forEach((file) => {
+        console.log("looking through: " + file);
+        fs.readdirSync(dir + "/" + folder + "/" + file).forEach((job) => {
+            console.log("found job: " + job);
+            let jobParsed = JSON.parse(fs.readFileSync(dir + "/" + folder + "/" + file + "/" + job));
+            console.log("creating job: ");
+            console.log(jobParsed);
+            let jobtype = jobParsed.type;
+            
+            switch (
+                jobtype 
+            ) {
+                case "matrixMult": { // in case the jobtype is matrix multiplication
+                    let matrix_A = {
+                        entries: jobParsed.arrA,
+                        columns: jobParsed.arrA[0].length,
+                        rows: jobParsed.arrA.length,
+                    };
+                    let matrix_B = {
+                        entries: jobParsed.arrB,
+                        columns: jobParsed.arrB[0].length,
+                        rows: jobParsed.arrB.length,
+                    };
+                    addMatrixToQue(jobParsed.JobId, jobtype, jobParsed.jobOwner, matrix_A, matrix_B);
+                    break;
+                }
+                case "plus": {
+                    // in case the jobtype is plus
+    
+                    addPlusToQue(jobParsed.JobId, jobtype, jobParsed.jobOwner, jobParsed.arr);
+    
+                    break;
+                }
+                default: {
+                    // in case the jobtype is not found
+                    throw new Error("Jobtype not found");
+                }
+            }
+
+        });
+    });
+});
 
 // JobQueue.enQueue(1, matrix_B);
 // for (let index = 0; index < arr.length; index++) {
