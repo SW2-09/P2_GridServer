@@ -89,3 +89,10 @@ body {
     border: 1px solid #000000;
     padding: 3px 7px 2px 7px;
 }
+
+.JobTable td,
+.JobTable th {
+    border: 1px solid #000000;
+    padding: 3px 7px 2px 7px;
+}
+

@@ -1,3 +1,5 @@
+
+
 const purge = document.getElementById("purge");
 const lookup = document.getElementById("Lookup");
 const mainDiv = document.getElementById("mainDiv");
@@ -39,6 +41,8 @@ purge.addEventListener("click", async () => {
 });
 
 lookup.addEventListener("click", async () => {
+    let collectionvalue = document.getElementById("collection").value;
+    
     let responseJson
     try {
         console.log("Looking up collection...");
@@ -55,16 +59,18 @@ lookup.addEventListener("click", async () => {
             responseJson = await response.json();
             console.log(responseJson.message);
         }
+        generateTable(responseJson)
+    } catch (err) {
+        console.log("Error");
+    }
+});
 
         //generateTable(responseJson); 
 
 
 
 
-    } catch (err) {
-        console.log("Error");
-    }
-});
+
 
 async function generateTable(workerInfo) {
     mainDiv.innerHTML = content.lookupTable;
@@ -77,6 +83,15 @@ async function generateTable(workerInfo) {
         "<th>Index</th> <th>Title</th> <th>Description</th> <th> Type</th> <th> Download solution </th>";
 
     jobTable.insertRow(0).innerHTML = tableHeader;
+    
+    workerInfo.message.forEach((element,index) => {
+        let row = jobTable.insertRow(index + 1);
+        row.insertCell(0).innerHTML = index + 1;
+        row.insertCell(1).innerHTML = element.compute;
+        row.insertCell(2).innerHTML = element.tasks_computed;
+        // row.insertCell(3).innerHTML = element.type;
+    });
+    
 
     
 }

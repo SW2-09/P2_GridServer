@@ -17,7 +17,7 @@ adminRouter.post("/purge", (req, res) => {
 adminRouter.post("/lookup", (req, res) => {
     getItems(req.body.collection).then((items) => {
         console.log(items);
-        res.json({ message: "Items: " + items });
+        res.json({ message: items });
     });
 });
 
