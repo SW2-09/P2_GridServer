@@ -273,7 +273,7 @@ mainDiv.addEventListener("click", async (e) => {
                         console.log("error jobtype not supported");
                         break;
                 }
-                console.log(formData);
+
                 const response = await fetch("/buyer/upload", {
                     method: "POST",
                     headers: {
