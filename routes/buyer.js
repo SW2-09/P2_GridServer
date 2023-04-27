@@ -89,26 +89,13 @@ buyerRouter.post("/upload", async (req, res) => {
 });
 
 buyerRouter.post("/jobinfo", async (req, res) => {
-    //<
-    //console.log(req.body)
-    //console.log("name:" + req.user.name)
-
     const buyer = await Buyer.findOne({ name: req.user.name });
     res.json({ jobs: buyer.jobs_array, name: req.user.name });
 });
-//Find the buyer in the database
 
 buyerRouter.post("/download", async (req, res) => {
-    //const options = { root: path.join(__dirname) };
-    //let filePath = `/JobData/Solutions/${req.user.name}/${req.body}`;
-
     let relativePath = `JobData/Solutions/${req.user.name}/${req.body.id}.json`;
     let absolutePath = path.resolve(relativePath);
-
-    //res.sendFile(`JobData/Solutions/${req.user.name}/${req.body.id}`, {
-    //    root: __dirname,
-    //});
-    //console.log(res);
     res.sendFile(absolutePath, function (err) {
         if (err) {
             console.log(err);
@@ -117,19 +104,22 @@ buyerRouter.post("/download", async (req, res) => {
         }
     });
 });
-
+// Delete Job
 buyerRouter.post("/delete", async (req, res) => {
-    //Delete job from DB:
-    await Buyer.findOneAndUpdate(
-        { name: req.user.name }, //filter
-        { $pull: { jobs_array: { jobID: req.body.id } } } //
-    );
+    try {
+        //Delete from DB
+        await Buyer.findOneAndUpdate(
+            { name: req.user.name }, //filter
+            { $pull: { jobs_array: { jobID: req.body.id } } },
+            { new: true }
+        );
 
-    // Slet job fra job-koe
-    //
+        // Delete from jobQueue
+        JobQueue.removeJob(req.body.id);
+    } catch (err) {
+        console.log(err);
+    }
 });
-
-//{ $pull: { fruits: { $in: [ "apples", "oranges" ] }, vegetables: "carrots" } }
 
 /**
  * function to create a job of type matrix multiplication and enqueue it to the job queue
