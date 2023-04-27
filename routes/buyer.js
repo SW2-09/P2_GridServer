@@ -118,6 +118,19 @@ buyerRouter.post("/download", async (req, res) => {
     });
 });
 
+buyerRouter.post("/delete", async (req, res) => {
+    //Delete job from DB:
+    await Buyer.findOneAndUpdate(
+        { name: req.user.name }, //filter
+        { $pull: { jobs_array: { jobID: req.body.id } } } //
+    );
+
+    // Slet job fra job-koe
+    //
+});
+
+//{ $pull: { fruits: { $in: [ "apples", "oranges" ] }, vegetables: "carrots" } }
+
 /**
  * function to create a job of type matrix multiplication and enqueue it to the job queue
  * @param {object} jobData object holding the data used to create the job
@@ -205,16 +218,19 @@ function addMatrixToQue(jobID, jobType, jobOwner, matrix_A, matrix_B) {
  * @param {array} entries the array which holds the numbers to be added
  */
 
-function addPlusToQue(jobID, jobType, jobOwner, entries){
-  
-  let arr = dividePlus(entries);
-  // enqueue the job to the job queue
-  JobQueue.enQueue(jobID, jobType, jobOwner, plus_str);
+function addPlusToQue(jobID, jobType, jobOwner, entries) {
+    let arr = dividePlus(entries);
+    // enqueue the job to the job queue
+    JobQueue.enQueue(jobID, jobType, jobOwner, plus_str);
 
-  for (let index = 0; index < arr.length; index++) {
-      JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
-      JobQueue.head.numOfTasks++;
-  }
+    for (let index = 0; index < arr.length; index++) {
+        JobQueue.head.subtaskList.enQueue(
+            JobQueue.head.jobId,
+            index,
+            arr[index]
+        );
+        JobQueue.head.numOfTasks++;
+    }
 }
 
 /**
@@ -254,19 +270,18 @@ function divideMatrices(A, B, ARows) {
  * @returns new array of smaller subtasks
  */
 
-function dividePlus(entries){
-
-  let arr = []; // the array which will hold the smaller problems
-  let index = 0
-  for (index; 1 < entries.length; index++) {
-    arr[index] = [];
-    arr[index][0] = entries.pop();
-    arr[index][1] = entries.pop();
-  }
-  if (entries.length == 1) {
-      arr[index] = [];
-      arr[index][0] = entries.pop();
-      arr[index][1] = 0;
-  }
-  return arr;
+function dividePlus(entries) {
+    let arr = []; // the array which will hold the smaller problems
+    let index = 0;
+    for (index; 1 < entries.length; index++) {
+        arr[index] = [];
+        arr[index][0] = entries.pop();
+        arr[index][1] = entries.pop();
+    }
+    if (entries.length == 1) {
+        arr[index] = [];
+        arr[index][0] = entries.pop();
+        arr[index][1] = 0;
+    }
+    return arr;
 }

@@ -110,8 +110,21 @@ async function generateTable() {
         } else {
             row.insertCell(4).innerHTML = "<p>Not completed</p>";
         }
+        row.insertCell(
+            5
+        ).innerHTML = `<button class=delete_btn id=${job.jobID}> Delete job </button>`;
     });
 }
+
+mainDiv.addEventListener("click", async (e) => {
+    if (e.target.classList.contains("delete_btn")) {
+        const response = await fetch("/buyer/delete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: e.target.id }),
+        });
+    }
+});
 
 mainDiv.addEventListener("click", async (e) => {
     if (e.target.classList.contains("download_btn")) {
