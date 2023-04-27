@@ -185,7 +185,7 @@ class Queue_linked_list_subtask {
             return;
         } 
         let x = this.head;
-        
+
         while (TaskId !== x.taskId) {
             if (x.next === null) {
                 return;

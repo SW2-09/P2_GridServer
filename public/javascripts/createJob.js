@@ -29,7 +29,7 @@ const content = {
 </form>
 <div class="buttons">
 <input class="createjob-button" id="submit" type="submit" value="Create Job">
-<button id="cancelJob" class="cancelJob">Cancel</button>
+<button id="goBack-btn" class="cancelJob">Cancel</button>
 </div>
 </div>
 `,
@@ -42,7 +42,8 @@ const content = {
 
     </div>
     <div>
-    <button id="jobInfo-button">Update joblist</button>
+    <button id="jobInfo-button" class="JobsOverviewButtons">Update joblist</button>
+    <button id="goBack-btn" class="JobsOverviewButtons">Go back</button>
     </div>
   </div>
 </div>`,
@@ -83,36 +84,31 @@ const content = {
 </div>`,
 };
 
-async function generateTable() {
-    let infoObject = await getJobarrayFromDB();
+mainDiv.innerHTML = content.FrontPage;
 
-    let jobTable = document.createElement("table");
+// ************** //
+// Eventlisteners //
+// ************** //
 
-    document.querySelector(".JobTable").append(jobTable);
+// Delete Job
+mainDiv.addEventListener("click", async (e) => {
+    if (e.target.classList.contains("delete_btn")) {
+        try {
+            const response = await fetch("/buyer/delete", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: e.target.id }),
+            }).then(generateTable());
 
-    let tableHeader =
-        "<th>Index</th> <th>Title</th> <th>Description</th> <th> Type</th> <th> Download solution </th>";
-
-    jobTable.insertRow(0).innerHTML = tableHeader;
-
-    infoObject.jobs.forEach((job, index) => {
-        let row = jobTable.insertRow(index + 1);
-        row.insertCell(0).innerHTML = index + 1;
-        row.insertCell(1).innerHTML = job.jobID;
-        row.insertCell(2).innerHTML = job.Des;
-        row.insertCell(3).innerHTML = job.type;
-        //console.log(job);
-        if (job.completed) {
-            row.insertCell(
-                4
-            ).innerHTML = `<button class=download_btn id=${job.jobID}> 
-             Prepare download</button>`;
-        } else {
-            row.insertCell(4).innerHTML = "<p>Not completed</p>";
+            if (!response.ok) {
+                throw new Error(`HTTP post error! ${response.status}`);
+            }
+        } catch (err) {
+            console.error("Error: " + err);
         }
-    });
-}
-
+    }
+});
+// Download Job
 mainDiv.addEventListener("click", async (e) => {
     if (e.target.classList.contains("download_btn")) {
         const response = await fetch("/buyer/download", {
@@ -132,23 +128,23 @@ mainDiv.addEventListener("click", async (e) => {
     }
 });
 
-//!fs.existsSync(`../JobData/Solutions/${jobsObject.name}/${job.jobID}`)
 // Create job button
 mainDiv.addEventListener("click", (e) => {
     if (e.target.id === "createJob-button") {
         mainDiv.innerHTML = content.CreateJob;
     }
 });
+
 // Jobs overview button
 mainDiv.addEventListener("click", (e) => {
     if (e.target.id === "jobInfo-button") {
-        mainDiv.innerHTML = content.JobsOverview;
         generateTable();
     }
 });
-// Cancel job button
+
+// Back to homepage
 mainDiv.addEventListener("click", (e) => {
-    if (e.target.id === "cancelJob") {
+    if (e.target.id === "goBack-btn") {
         mainDiv.innerHTML = content.FrontPage;
     }
 });
@@ -167,7 +163,9 @@ mainDiv.addEventListener("change", (e) => {
     }
 });
 
-mainDiv.innerHTML = content.FrontPage;
+// ******************** //
+// Upload functionality //
+// ******************** //
 
 mainDiv.addEventListener("click", async (e) => {
     if (e.target.id === "submit") {
@@ -262,6 +260,23 @@ mainDiv.addEventListener("click", async (e) => {
     }
 });
 
+document.getElementById("testbutton").addEventListener("click", () => {
+    console.log("test");
+    fetch("/buyer/test", {
+        method: "POST",
+    });
+});
+
+// ***************** //
+// Helper functions: //
+// ***************** //
+
+/**
+ *
+ * @param {file.csv} file .csv file to be passed as json
+ * @param {string} jobType
+ * @returns The file in json
+ */
 function parseCsvToJson(file, jobType) {
     return new Promise((resolve, reject) => {
         let data = [];
@@ -303,41 +318,50 @@ function parseCsvToJson(file, jobType) {
     });
 }
 
-/*
-mainDiv.addEventListener("click", async (e) => {
-  if (e.target.id === "joblistUpdate") {
-  console.log("jobinfo wip")
-
-  getJobarrayFromDB("QWERT")
-
-  }
-})
-*/
-
+/**
+ *@returns an object containing an array with information about the buyer's jobs and the buyers username
+ * */
 async function getJobarrayFromDB() {
     const response = await fetch("/buyer/jobinfo", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        //Send username to server
-
-        // body: JSON.stringify({username: username}),
     });
 
-    let obj = await response.json();
-    return obj;
+    return await response.json();
 }
+// Generate JobList table for the buyer
 
-/*  document.getElementById("joblistUpdate").addEventListener("click",async (e) => {
-        console.log("jobinfo wip")
-        const repsonse=await fetch("/buyer/joblist")
-  })
-  */
+async function generateTable() {
+    mainDiv.innerHTML = content.JobsOverview;
+    let infoObject = await getJobarrayFromDB();
 
-document.getElementById("testbutton").addEventListener("click", () => {
-    console.log("test");
-    fetch("/buyer/test", {
-        method: "POST",
+    let jobTable = document.createElement("table");
+
+    document.querySelector(".JobTable").append(jobTable);
+
+    let tableHeader =
+        "<th>Index</th> <th>Title</th> <th>Description</th> <th> Type</th> <th> Download solution </th>";
+
+    jobTable.insertRow(0).innerHTML = tableHeader;
+
+    infoObject.jobs.forEach((job, index) => {
+        let row = jobTable.insertRow(index + 1);
+        row.insertCell(0).innerHTML = index + 1;
+        row.insertCell(1).innerHTML = job.jobID;
+        row.insertCell(2).innerHTML = job.Des;
+        row.insertCell(3).innerHTML = job.type;
+        if (job.completed) {
+            row.insertCell(
+                4
+            ).innerHTML = `<button class=download_btn id=${job.jobID}> 
+             Prepare download</button>`;
+        } else {
+            row.insertCell(4).innerHTML = "<p>Not completed</p>";
+        }
+        row.insertCell(
+            5
+        ).innerHTML = `<button class=delete_btn id=${job.jobID}> Delete job </button>`;
     });
-});
+}
