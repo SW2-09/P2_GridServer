@@ -42,7 +42,10 @@ buyerRouter.use(fileUpload());
 
 buyerRouter.post("/upload", async (req, res) => {
     try {
-        const name = sanitize(req.body.name);
+        console.log("går igang")
+        console.log(req.user.name)
+        const name = sanitize(req.user.name);
+        console.log("Uploading: " + name)
         const jobTitle = sanitize(req.body.jobTitle);
         const jobDescription = sanitize(req.body.jobDescription);
         let dynamicDirPath = dirPath + name + "/";
@@ -50,9 +53,9 @@ buyerRouter.post("/upload", async (req, res) => {
         let Jobdata;
 
         switch (
-            jobtype // in case the jobtype is matrix multiplication
+            jobtype 
         ) {
-            case "matrixMult": {
+            case "matrixMult": { // in case the jobtype is matrix multiplication
                 Jobdata = createMatrixMultJob(req.body, name);
                 break;
             }
@@ -69,7 +72,7 @@ buyerRouter.post("/upload", async (req, res) => {
         }
 
         let jobInfo = {
-            jobID: jobTitle,
+            jobID: (jobTitle + "-" + (Date.now())),
             Des: jobDescription,
             type: jobtype,
             completed: false,
@@ -81,7 +84,7 @@ buyerRouter.post("/upload", async (req, res) => {
             { $push: { jobs_array: jobInfo } }
         );
 
-        let uploadPath = dynamicDirPath + Jobdata.jobID + ".json";
+        let uploadPath = dynamicDirPath + jobInfo.jobID + ".json";
 
         //create folder in the PendingJobs folder if not exists, the folder name is the user name
         createFolder(dynamicDirPath);
@@ -94,7 +97,7 @@ buyerRouter.post("/upload", async (req, res) => {
 });
 
 buyerRouter.post("/jobinfo", async (req, res) => {
-    const name = sanitize(req.body.name);
+    const name = sanitize(req.user.name);
     const buyer = await Buyer.findOne({ name: name });
     res.json({ jobs: buyer.jobs_array, name: name });
 });
