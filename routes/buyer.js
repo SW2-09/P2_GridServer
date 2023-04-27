@@ -4,6 +4,7 @@ import { matrix_mult_str } from "../Jobtypes/matrix_multiplication/calcAlgorithm
 import { plus_str } from "../Jobtypes/plus/calcPlusAlgorithm.js";
 import { createFolder, writeFile } from "../utility.js";
 import path from "path";
+import { sanitize } from "../utility.js";
 
 import express from "express";
 import fileUpload from "express-fileupload";
@@ -40,20 +41,25 @@ buyerRouter.use(fileUpload());
 
 buyerRouter.post("/upload", async (req, res) => {
     try {
-        let dynamicDirPath = dirPath + req.user.name + "/";
-        let jobtype = req.body.jobType;
+        const name = sanitize(req.user.name);
+        const jobTitle = sanitize(req.body.jobTitle);
+        const jobDescription = sanitize(req.body.jobDescription); 
+        const jobType = sanitize(req.body.jobType);
+        
+        let dynamicDirPath = dirPath + name + "/";
+        
         let Jobdata;
 
         switch (
             jobtype // in case the jobtype is matrix multiplication
         ) {
             case "matrixMult": {
-                Jobdata = createMatrixMultJob(req.body, req.user.name);
+                Jobdata = createMatrixMultJob(req.body, name);
                 break;
             }
             case "plus": {
                 // in case the jobtype is plus
-                Jobdata = createPlusJob(req.body, req.user.name);
+                Jobdata = createPlusJob(req.body, name);
 
                 break;
             }
@@ -64,15 +70,15 @@ buyerRouter.post("/upload", async (req, res) => {
         }
 
         let jobInfo = {
-            jobID: req.body.jobTitle,
-            Des: req.body.jobDescription,
-            type: jobtype,
+            jobID: jobTitle,
+            Des: jobDescription,
+            type: jobType,
             completed: false,
         };
         //Update DB:
         //console.log(Buyer.findOne({name: req.user.name}))
         await Buyer.findOneAndUpdate(
-            { name: req.user.name },
+            { name: name },
             { $push: { jobs_array: jobInfo } }
         );
 
@@ -92,17 +98,18 @@ buyerRouter.post("/jobinfo", async (req, res) => {
     //<
     //console.log(req.body)
     //console.log("name:" + req.user.name)
-
-    const buyer = await Buyer.findOne({ name: req.user.name });
-    res.json({ jobs: buyer.jobs_array, name: req.user.name });
+    const name = sanitize(req.user.name);
+    const buyer = await Buyer.findOne({ name: name });
+    res.json({ jobs: buyer.jobs_array, name: name });
 });
 //Find the buyer in the database
 
 buyerRouter.post("/download", async (req, res) => {
     //const options = { root: path.join(__dirname) };
     //let filePath = `/JobData/Solutions/${req.user.name}/${req.body}`;
-
-    let relativePath = `JobData/Solutions/${req.user.name}/${req.body.id}.json`;
+    const name = sanitize(req.user.name);
+    const id = sanitize(req.body.id);
+    let relativePath = `JobData/Solutions/${name}/${id}.json`;
     let absolutePath = path.resolve(relativePath);
 
     //res.sendFile(`JobData/Solutions/${req.user.name}/${req.body.id}`, {

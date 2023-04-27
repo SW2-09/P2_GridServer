@@ -8,6 +8,7 @@ import {
 import passport from "passport";
 import bcrypt from "bcryptjs";
 import { Buyer } from "../models/Buyer.js";
+import { sanitize } from "../utility.js";
 
 const router = express.Router();
 
@@ -24,16 +25,22 @@ router.get("/register", checkLoggedIn, (req, res) => {
 
 // buyer pag
 router.get("/buyer", ensureAuthenticated, (req, res) => {
-    res.render("buyer", { name: req.user.name });
+    const name = sanitize(req.user.name);
+    res.render("buyer", { name: name });
 });
 
 //admin page
 router.get("/admin", ensureAuthenticated, (req, res) => {
-    res.render("admin", { name: req.user.name });
+    const name = sanitize(req.user.name);
+    res.render("admin", { name: name });
 });
 
 router.post("/register", (req, res) => {
-    const { name, password, password2 } = req.body;
+    const name = sanitize(req.body.name);
+    
+    const password = req.body.password;
+    const password2 = req.body.password2;
+        
     let errors = [];
 
     if (!name || !password || !password2) {
@@ -94,8 +101,9 @@ router.post("/register", (req, res) => {
 
 //Login handle
 router.post("/login", (req, res, next) => {
+    const name = sanitize(req.body.name);
     console.log(req.body);
-    if (req.body.name == "admin") {
+    if (name == "admin") {
         passport.authenticate("local", {
             failureFlash: true,
             successRedirect: "/admin",
