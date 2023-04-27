@@ -174,88 +174,119 @@ mainDiv.addEventListener("click", async (e) => {
         const jobTitle = document.getElementById("jobTitle").value;
         const jobDescription = document.getElementById("jobDescription").value;
 
-        if (!Uploadform.checkValidity() || jobType === "none") {
-            Uploadform.reportValidity();
-            e.preventDefault();
-        } else {
-            let formData;
-            switch (jobType) {
-                case "matrixMult": {
-                    e.preventDefault();
-                    const fileInput1 = document.getElementById("uploadFile");
-                    const fileInput2 = document.getElementById("uploadFile2");
+        try {
+            if (!Uploadform.checkValidity() || jobType === "none") {
+                Uploadform.reportValidity();
+                e.preventDefault();
+            } else {
+                let formData;
+                switch (jobType) {
+                    case "matrixMult": {
+                        e.preventDefault();
+                        const fileInput1 =
+                            document.getElementById("uploadFile");
+                        const fileInput2 =
+                            document.getElementById("uploadFile2");
 
-                    const allowedFileFormat = ["text/csv", "application/json"]; //allows JSON and csv formats
-                    const maxFileSize = 10 * 1024 * 1024; // 10 MB
+                        const allowedFileFormat = [
+                            "text/csv",
+                            "application/json",
+                        ]; //allows JSON and csv formats
+                        const maxFileSize = 10 * 1024 * 1024; // 10 MB
 
-                    if (
-                        !allowedFileFormat.includes(fileInput1.files[0].type) ||
-                        !allowedFileFormat.includes(fileInput2.files[0].type)
-                    ) {
-                        alert("Please choose a valid file format(csv or json)");
-                        return;
+                        if (
+                            !allowedFileFormat.includes(
+                                fileInput1.files[0].type
+                            ) ||
+                            !allowedFileFormat.includes(
+                                fileInput2.files[0].type
+                            )
+                        ) {
+                            alert(
+                                "Please choose a valid file format(csv or json)"
+                            );
+                            return;
+                        }
+
+                        const file1 = await parseCsvToJson(
+                            fileInput1.files[0],
+                            jobType
+                        );
+                        const file2 = await parseCsvToJson(
+                            fileInput2.files[0],
+                            jobType
+                        );
+
+                        if (!validateMatrix(file1, file2)) {
+                            throw new Error("Error in validation");
+                        }
+
+                        formData = {
+                            jobTitle: jobTitle,
+                            jobDescription: jobDescription,
+                            jobType: jobType,
+                            uploadFile: file1,
+                            uploadFile2: file2,
+                        };
+
+                        break;
                     }
+                    case "plus": {
+                        e.preventDefault();
+                        const fileInput = document.getElementById("uploadFile");
 
-                    const file1 = await parseCsvToJson(
-                        fileInput1.files[0],
-                        jobType
-                    );
-                    const file2 = await parseCsvToJson(
-                        fileInput2.files[0],
-                        jobType
-                    );
+                        const allowedFileFormat = [
+                            "text/csv",
+                            "application/json",
+                        ]; //allows JSON and csv formats
+                        const maxFileSize = 10 * 1024 * 1024; // 10 MB
 
-                    formData = {
-                        jobTitle: jobTitle,
-                        jobDescription: jobDescription,
-                        jobType: jobType,
-                        uploadFile: file1,
-                        uploadFile2: file2,
-                    };
+                        if (
+                            !allowedFileFormat.includes(fileInput.files[0].type)
+                        ) {
+                            alert(
+                                "Please choose a valid file format(csv or json)"
+                            );
+                            return;
+                        }
 
-                    break;
-                }
-                case "plus": {
-                    e.preventDefault();
-                    const fileInput = document.getElementById("uploadFile");
+                        const file = await parseCsvToJson(
+                            fileInput.files[0],
+                            jobType
+                        );
 
-                    const allowedFileFormat = ["text/csv", "application/json"]; //allows JSON and csv formats
-                    const maxFileSize = 10 * 1024 * 1024; // 10 MB
+                        console.log(file);
+                        if (!validateList(file)) {
+                            throw new Error("Error in validation");
+                        }
 
-                    if (!allowedFileFormat.includes(fileInput.files[0].type)) {
-                        alert("Please choose a valid file format(csv or json)");
-                        return;
+                        formData = {
+                            jobTitle: jobTitle,
+                            jobDescription: jobDescription,
+                            jobType: jobType,
+                            uploadFile: file,
+                        };
+
+                        break;
                     }
-
-                    const file = await parseCsvToJson(
-                        fileInput.files[0],
-                        jobType
-                    );
-
-                    formData = {
-                        jobTitle: jobTitle,
-                        jobDescription: jobDescription,
-                        jobType: jobType,
-                        uploadFile: file,
-                    };
-
-                    break;
+                    default:
+                        console.log("error jobtype not supported");
+                        break;
                 }
-                default:
-                    console.log("error jobtype not supported");
-                    break;
+                console.log(formData);
+                const response = await fetch("/buyer/upload", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                const result = await response.text();
+                console.log("server response:" + result);
             }
-            console.log(formData);
-            const response = await fetch("/buyer/upload", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            });
-
-            const result = await response.text();
-            console.log("server response:" + result);
+        } catch (err) {
+            console.log(err);
         }
     }
 });
@@ -364,4 +395,53 @@ async function generateTable() {
             5
         ).innerHTML = `<button class=delete_btn id=${job.jobID}> Delete job </button>`;
     });
+}
+
+/**
+ *
+ * @param {array} matrixA
+ * @param {array} matrixB
+ * @returns Boolean if succesfuly
+ */
+function validateMatrix(matrixA, matrixB) {
+    try {
+        //Check dimensions of matricies
+        if (matrixA[0].length !== matrixB.length) {
+            throw new Error("Matrix dimensions do not match.");
+        }
+        // Check MatrixA
+        for (let rowA = 0; rowA < matrixA.length; rowA++) {
+            for (let colA = 0; colA < matrixA[rowA].length; colA++) {
+                if (isNaN(matrixA[rowA][colA])) {
+                    throw new Error("Matrix A is corrupted.");
+                }
+            }
+        }
+        // Check MatrixB
+        for (let rowB = 0; rowB < matrixB.length; rowB++) {
+            for (let colB = 0; colB < matrixB[rowB].length; colB++) {
+                if (isNaN(matrixB[rowB][colB])) {
+                    throw new Error("Matrix B is corrupted.");
+                }
+            }
+        }
+    } catch (err) {
+        alert(err + " Please choose valid matricies.");
+        return false;
+    }
+    return true;
+}
+
+function validateList(list) {
+    try {
+        for (let i = 0; i < list.length; i++) {
+            if (isNaN(list[i])) {
+                throw new Error("File is corrupt.");
+            }
+        }
+    } catch (err) {
+        alert(err + "Please try again");
+        return false;
+    }
+    return true;
 }
