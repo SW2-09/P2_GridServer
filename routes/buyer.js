@@ -1,10 +1,12 @@
 export { buyerRouter };
+export {addMatrixToQue, addPlusToQue}
 import { JobQueue } from "../Jobtypes/jobQueue.js";
 import { matrix_mult_str } from "../Jobtypes/matrix_multiplication/calcAlgorithm.js";
 import { plus_str } from "../Jobtypes/plus/calcPlusAlgorithm.js";
 import { createFolder, writeFile } from "../utility.js";
 import path from "path";
 import { sanitize } from "../utility.js";
+
 
 
 import express from "express";
@@ -43,6 +45,7 @@ buyerRouter.use(fileUpload());
 buyerRouter.post("/upload", async (req, res) => {
     try {
         console.log("går igang")
+        console.log(req.body)
         console.log(req.user.name)
         const name = sanitize(req.user.name);
         console.log("Uploading: " + name)
@@ -62,7 +65,7 @@ buyerRouter.post("/upload", async (req, res) => {
             case "plus": {
                 // in case the jobtype is plus
 
-                Jobdata = createPlusJob(req.body, req.user.name);
+                Jobdata = createPlusJob(req.body, name);
 
                 break;
             }
@@ -73,7 +76,7 @@ buyerRouter.post("/upload", async (req, res) => {
         }
 
         let jobInfo = {
-            jobID: (jobTitle + "-" + (Date.now())),
+            jobId: (jobTitle + "-" + (Date.now())),
             Des: jobDescription,
             type: jobtype,
             completed: false,
@@ -85,7 +88,7 @@ buyerRouter.post("/upload", async (req, res) => {
             { $push: { jobs_array: jobInfo } }
         );
 
-        let uploadPath = dynamicDirPath + jobInfo.jobID + ".json";
+        let uploadPath = dynamicDirPath + jobInfo.jobId + ".json";
 
         //create folder in the PendingJobs folder if not exists, the folder name is the user name
         createFolder(dynamicDirPath);
@@ -143,7 +146,8 @@ buyerRouter.post("/delete", async (req, res) => {
  */
 function createMatrixMultJob(jobData, jobOwner) {
     const Jobdata = {
-        jobID: jobData.jobTitle,
+        jobId: jobData.jobTitle,
+        jobOwner: jobOwner,
         Des: jobData.jobDescription,
         type: jobData.jobType,
         arrA: jobData.uploadFile,
@@ -161,7 +165,7 @@ function createMatrixMultJob(jobData, jobOwner) {
     };
 
     // adding the job to the job queue
-    addMatrixToQue(Jobdata.jobID, Jobdata.type, jobOwner, matrix_A, matrix_B);
+    addMatrixToQue(Jobdata.jobId, Jobdata.type, jobOwner, matrix_A, matrix_B);
 
     console.log(JobQueue.size);
     console.log(JobQueue.head.numOfTasks);
@@ -176,14 +180,15 @@ function createMatrixMultJob(jobData, jobOwner) {
  */
 function createPlusJob(jobData, jobOwner) {
     const Jobdata = {
-        jobID: jobData.jobTitle,
+        jobId: jobData.jobTitle,
+        jobOwner: jobOwner,
         Des: jobData.jobDescription,
         type: jobData.jobType,
         arr: jobData.uploadFile,
     };
 
     // adding the job to the job queue
-    addPlusToQue(Jobdata.jobID, Jobdata.type, jobOwner, Jobdata.arr);
+    addPlusToQue(Jobdata.jobId, Jobdata.type, jobOwner, Jobdata.arr);
 
     console.log(JobQueue.size);
     console.log(JobQueue.head.numOfTasks);
@@ -192,19 +197,19 @@ function createPlusJob(jobData, jobOwner) {
 
 /**
  * function for adding the matrix multiplication job to the job queue
- * @param {string} jobID the id of the job
+ * @param {string} jobId the id of the job
  * @param {string} jobType the type of the job
  * @param {matrix} matrix_A the matrix A
  * @param {matrix} matrix_B the matrix B
  */
-function addMatrixToQue(jobID, jobType, jobOwner, matrix_A, matrix_B) {
+function addMatrixToQue(jobId, jobType, jobOwner, matrix_A, matrix_B) {
     let ARows = matrix_A.rows;
     let A = matrix_A.entries;
 
     let arr = divideMatrices(A, matrix_B, ARows);
 
     // enqueue the job to the job queue
-    JobQueue.enQueue(jobID, jobType, jobOwner, matrix_mult_str, matrix_B);
+    JobQueue.enQueue(jobId, jobType, jobOwner, matrix_mult_str, matrix_B);
     for (let index = 0; index < arr.length; index++) {
         JobQueue.head.subtaskList.enQueue(
             JobQueue.head.jobId,
@@ -217,12 +222,12 @@ function addMatrixToQue(jobID, jobType, jobOwner, matrix_A, matrix_B) {
 
 /**
  * function which will enqueue the plus job to the job queue
- * @param {string} jobID the id of the job
+ * @param {string} jobId the id of the job
  * @param {string} jobType the type of the job
  * @param {array} entries the array which holds the numbers to be added
  */
 
-function addPlusToQue(jobID, jobType, jobOwner, entries) {
+function addPlusToQue(jobId, jobType, jobOwner, entries) {
     let entriesCopy = [];
     for (let i = 0; i < entries.length; i++) {
         entriesCopy[i] = entries[i];
@@ -230,7 +235,7 @@ function addPlusToQue(jobID, jobType, jobOwner, entries) {
 
     let arr = dividePlus(entriesCopy);
     // enqueue the job to the job queue
-    JobQueue.enQueue(jobID, jobType, jobOwner, plus_str);
+    JobQueue.enQueue(jobId, jobType, jobOwner, plus_str);
 
     for (let index = 0; index < arr.length; index++) {
         JobQueue.head.subtaskList.enQueue(
