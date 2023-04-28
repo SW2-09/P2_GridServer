@@ -97,7 +97,7 @@ let handlers={
   },
     connectionHandler: function (ws) {
         //callback for when a new client connects
-        handlers.ws = ws;
+        
         console.log("New client connected");
         serverdata.connectedworkers.push(ws);
 
@@ -106,6 +106,7 @@ let handlers={
         ws.on("message", handlers.messageHandler(ws));
 
         ws.on("close", () => {
+            console.log(serverdata.connectedworkers.indexOf(ws))
             serverdata.connectedworkers.splice(serverdata.connectedworkers.indexOf(ws), 1);
             //when the worker disconnects
             console.log("Client has disconnected");
@@ -166,7 +167,10 @@ function findTask(job, taskId){
     return currentTask;
   }
   else if (currentTask.previous !== null){
-    while(currentTask.previous.taskId!=taskId){
+    console.log("-----------------------------")
+    console.log(currentTask.previous.taskId)
+    console.log(taskId)
+    while(currentTask.previous !== null && currentTask.previous.taskId !== taskId){
       currentTask=currentTask.previous;
     }
   }
