@@ -93,7 +93,12 @@ buyerRouter.post("/upload", async (req, res) => {
 
         writeFile(uploadPath, Jobdata);
 
+
+
+
+
         res.send("File uploaded to: " + uploadPath);
+
     } catch (error) {
         console.log("Uploading: " + error);
         res.send("Uploading: " + error);
