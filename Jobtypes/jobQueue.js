@@ -219,14 +219,11 @@ let JobQueue = new Queue_linked_list_job();
 
 let dir = "./jobData";
 fs.readdirSync(dir).forEach((folder) => {
-    console.log("looking through: " + folder);
+    
     fs.readdirSync(dir + "/" + folder).forEach((file) => {
-        console.log("looking through: " + file);
+        
         fs.readdirSync(dir + "/" + folder + "/" + file).forEach((job) => {
-            console.log("found job: " + job);
             let jobParsed = JSON.parse(fs.readFileSync(dir + "/" + folder + "/" + file + "/" + job));
-            console.log("creating job: ");
-            console.log(jobParsed);
             let jobtype = jobParsed.type;
             
             switch (

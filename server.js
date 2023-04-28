@@ -18,6 +18,8 @@ import mongoDBStore from "connect-mongodb-session";
 import session from "express-session";
 import passport from "passport";
 import flash from "connect-flash";
+import process from "process";
+
 
 //const express = require("express");
 const app = express();
@@ -106,3 +108,12 @@ const server = app.listen(port, () =>
 );
 
 startWebsocketserver(host, webSocketPort);
+
+setInterval(() => {
+    console.log("----------------------------------")
+for (const [key,value] of Object.entries(process.memoryUsage())){
+    console.log(`Memory usage by ${key}, ${value/1000000}MB `)
+    
+}
+console.log("----------------------------------")
+} , 10000);

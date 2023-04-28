@@ -44,9 +44,6 @@ buyerRouter.use(fileUpload());
 
 buyerRouter.post("/upload", async (req, res) => {
     try {
-        console.log("går igang")
-        console.log(req.body)
-        console.log(req.user.name)
         const name = sanitize(req.user.name);
         console.log("Uploading: " + name)
         const jobTitle = sanitize(req.body.jobTitle);
@@ -95,6 +92,8 @@ buyerRouter.post("/upload", async (req, res) => {
         //write the file to the new folder created in the PendingJobs folder
 
         writeFile(uploadPath, Jobdata);
+
+        res.send("File uploaded to: " + uploadPath);
     } catch (error) {
         console.log("Uploading: " + error);
         res.send("Uploading: " + error);
