@@ -225,6 +225,7 @@ let dir = "./jobData/PendingJobs";
             let jobParsed = JSON.parse(fs.readFileSync(dir + "/" + "/" + file + "/" + job));
             console.log("creating job: ");
             // console.log(jobParsed);
+
             let jobtype = jobParsed.type;
             console.log(jobtype)
             

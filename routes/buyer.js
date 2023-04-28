@@ -44,22 +44,6 @@ buyerRouter.use(fileUpload());
 
 buyerRouter.post("/upload", async (req, res) => {
     try {
-        console.log("går igang")
-        const formatMemoryUsage = (data) => `${Math.round(data / 1024 / 1024 * 100) / 100} MB`;
-
-        const memoryData = process.memoryUsage();
-
-        const memoryUsage = {
-        rss: `${formatMemoryUsage(memoryData.rss)} -> Resident Set Size - total memory allocated for the process execution`,
-        heapTotal: `${formatMemoryUsage(memoryData.heapTotal)} -> total size of the allocated heap`,
-        heapUsed: `${formatMemoryUsage(memoryData.heapUsed)} -> actual memory used during the execution`,
-        external: `${formatMemoryUsage(memoryData.external)} -> V8 external memory`,
-        };
-        console.log("-----------------------------------------------------------")
-        console.log(memoryUsage);
-        console.log("-----------------------------------------------------------")
-        // console.log(req.body)
-        // console.log(req.user.name)
         const name = sanitize(req.user.name);
         console.log("Uploading: " + name)
         const jobTitle = sanitize(req.body.jobTitle);
@@ -111,18 +95,9 @@ buyerRouter.post("/upload", async (req, res) => {
 
 
 
-        const memoryData2 = process.memoryUsage();
 
-        const memoryUsage2 = {
-        rss: `${formatMemoryUsage(memoryData2.rss)} -> Resident Set Size - total memory allocated for the process execution`,
-        heapTotal: `${formatMemoryUsage(memoryData2.heapTotal)} -> total size of the allocated heap`,
-        heapUsed: `${formatMemoryUsage(memoryData2.heapUsed)} -> actual memory used during the execution`,
-        external: `${formatMemoryUsage(memoryData2.external)} -> V8 external memory`,
-        };
-        console.log("-----------------------------------------------------------")
-        console.log(memoryUsage2);
-        console.log("-----------------------------------------------------------")
 
+        res.send("File uploaded to: " + uploadPath);
 
     } catch (error) {
         console.log("Uploading: " + error);

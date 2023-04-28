@@ -20,6 +20,7 @@ import passport from "passport";
 import flash from "connect-flash";
 import status from "express-status-monitor";
 
+
 //const express = require("express");
 const app = express();
 
@@ -109,6 +110,3 @@ const server = app.listen(port, () =>
 );
 
 startWebsocketserver(host, webSocketPort);
-
-const formatMemoryUsage = (data) => `${Math.round(data / 1024 / 1024 * 100) / 100} MB`;
-

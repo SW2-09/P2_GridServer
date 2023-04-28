@@ -255,7 +255,6 @@ mainDiv.addEventListener("click", async (e) => {
                             jobType
                         );
 
-                        console.log(file);
                         if (!validateList(file)) {
                             throw new Error("Error in validation");
                         }
@@ -273,7 +272,6 @@ mainDiv.addEventListener("click", async (e) => {
                         console.log("error jobtype not supported");
                         break;
                 }
-
                 const response = await fetch("/buyer/upload", {
                     method: "POST",
                     headers: {
