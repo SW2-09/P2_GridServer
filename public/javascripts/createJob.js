@@ -386,14 +386,14 @@ async function generateTable() {
         if (job.completed) {
             row.insertCell(
                 4
-            ).innerHTML = `<button class=download_btn id=${job.jobID}> 
+            ).innerHTML = `<button class="download_btn" id="${job.jobID}"> 
              Prepare download</button>`;
         } else {
             row.insertCell(4).innerHTML = "<p>Not completed</p>";
         }
         row.insertCell(
             5
-        ).innerHTML = `<button class=delete_btn id=${job.jobID}> Delete job </button>`;
+        ).innerHTML = `<button class="delete_btn" id="${job.jobID}"> Delete job </button>`;
     });
 }
 

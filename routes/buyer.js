@@ -16,7 +16,7 @@ import { Buyer } from "../models/Buyer.js";
 
 const buyerRouter = express.Router();
 
-const calcMax = Math.pow(1500, 3);
+const calcMax = Math.pow(1000, 3);
 
 /* ********************** *
  *    Logout handling     *
