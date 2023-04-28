@@ -18,9 +18,12 @@ import mongoDBStore from "connect-mongodb-session";
 import session from "express-session";
 import passport from "passport";
 import flash from "connect-flash";
+import status from "express-status-monitor";
 
 //const express = require("express");
 const app = express();
+
+app.use(status());
 
 app.use(express.static("public")); // Middleware function that serves static files (e.g. css files) https://expressjs.com/en/starter/static-files.html
 app.use(express.urlencoded({ extended: true })); // Middleware function that parses the body of a request (e.g. form data)
@@ -106,3 +109,6 @@ const server = app.listen(port, () =>
 );
 
 startWebsocketserver(host, webSocketPort);
+
+const formatMemoryUsage = (data) => `${Math.round(data / 1024 / 1024 * 100) / 100} MB`;
+
