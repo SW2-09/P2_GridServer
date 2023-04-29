@@ -227,11 +227,13 @@ mainDiv.addEventListener("click", async (e) => {
 
                         formData = {
                             jobTitle: jobTitle,
+                            jobId: jobTitle + "-" + Date.now(),
                             jobDescription: jobDescription,
                             jobType: jobType,
                             uploadFile: file1,
                             uploadFile2: file2,
                         };
+                        console.log(formData.jobId);
 
                         break;
                     }
@@ -265,6 +267,7 @@ mainDiv.addEventListener("click", async (e) => {
 
                         formData = {
                             jobTitle: jobTitle,
+                            jobId: jobTitle+ "-" + Date.now(),
                             jobDescription: jobDescription,
                             jobType: jobType,
                             uploadFile: file,
@@ -382,20 +385,20 @@ async function generateTable() {
     infoObject.jobs.forEach((job, index) => {
         let row = jobTable.insertRow(index + 1);
         row.insertCell(0).innerHTML = index + 1;
-        row.insertCell(1).innerHTML = job.jobID;
+        row.insertCell(1).innerHTML = job.jobTitle;
         row.insertCell(2).innerHTML = job.Des;
         row.insertCell(3).innerHTML = job.type;
         if (job.completed) {
             row.insertCell(
                 4
-            ).innerHTML = `<button class="download_btn" id="${job.jobID}"> 
+            ).innerHTML = `<button class="download_btn" id="${job.jobId}"> 
              Prepare download</button>`;
         } else {
             row.insertCell(4).innerHTML = "<p>Not completed</p>";
         }
         row.insertCell(
             5
-        ).innerHTML = `<button class="delete_btn" id="${job.jobID}"> Delete job </button>`;
+        ).innerHTML = `<button class="delete_btn" id="${job.jobId}"> Delete job </button>`;
     });
 }
 

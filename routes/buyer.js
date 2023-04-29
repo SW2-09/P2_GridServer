@@ -1,13 +1,11 @@
 export { buyerRouter };
-export {addMatrixToQue, addPlusToQue}
+export { addMatrixToQue, addPlusToQue };
 import { JobQueue } from "../Jobtypes/jobQueue.js";
 import { matrix_mult_str } from "../Jobtypes/matrix_multiplication/calcAlgorithm.js";
 import { plus_str } from "../Jobtypes/plus/calcPlusAlgorithm.js";
 import { createFolder, writeFile } from "../utility.js";
 import path from "path";
 import { sanitize } from "../utility.js";
-
-
 
 import express from "express";
 import fileUpload from "express-fileupload";
@@ -45,17 +43,17 @@ buyerRouter.use(fileUpload());
 buyerRouter.post("/upload", async (req, res) => {
     try {
         const name = sanitize(req.user.name);
-        console.log("Uploading: " + name)
+        console.log("Uploading: " + name);
         const jobTitle = sanitize(req.body.jobTitle);
+        const jobId = sanitize(req.body.jobId);
         const jobDescription = sanitize(req.body.jobDescription);
         let dynamicDirPath = dirPath + name + "/";
         let jobtype = req.body.jobType;
         let Jobdata;
 
-        switch (
-            jobtype 
-        ) {
-            case "matrixMult": { // in case the jobtype is matrix multiplication
+        switch (jobtype) {
+            case "matrixMult": {
+                // in case the jobtype is matrix multiplication
                 Jobdata = createMatrixMultJob(req.body, name);
                 break;
             }
@@ -73,13 +71,13 @@ buyerRouter.post("/upload", async (req, res) => {
         }
 
         let jobInfo = {
-            jobId: (jobTitle + "-" + (Date.now())),
+            jobTitle: jobTitle,
+            jobId: jobId,
             Des: jobDescription,
             type: jobtype,
             completed: false,
         };
         //Update DB:
-        //console.log(Buyer.findOne({name: req.user.name}))
         await Buyer.findOneAndUpdate(
             { name: name },
             { $push: { jobs_array: jobInfo } }
@@ -92,10 +90,8 @@ buyerRouter.post("/upload", async (req, res) => {
         //write the file to the new folder created in the PendingJobs folder
 
         writeFile(uploadPath, Jobdata);
-
-
+        
         res.send("File uploaded to: " + uploadPath);
-
     } catch (error) {
         console.log("Uploading: " + error);
         res.send("Uploading: " + error);
@@ -109,7 +105,7 @@ buyerRouter.post("/jobinfo", async (req, res) => {
 });
 
 buyerRouter.post("/download", async (req, res) => {
-    const name = sanitize(req.body.name);
+    const name = sanitize(req.user.name);
     const id = sanitize(req.body.id);
     let relativePath = `JobData/Solutions/${name}/${id}.json`;
     let absolutePath = path.resolve(relativePath);
@@ -129,7 +125,7 @@ buyerRouter.post("/delete", async (req, res) => {
         //Delete from DB
         await Buyer.findOneAndUpdate(
             { name: name }, //filter
-            { $pull: { jobs_array: { jobID: id } } },
+            { $pull: { jobs_array: { jobId: id } } },
             { new: true }
         );
 
@@ -149,7 +145,7 @@ buyerRouter.post("/delete", async (req, res) => {
  */
 function createMatrixMultJob(jobData, jobOwner) {
     const Jobdata = {
-        jobId: jobData.jobTitle,
+        jobId: jobData.jobId,
         jobOwner: jobOwner,
         Des: jobData.jobDescription,
         type: jobData.jobType,
