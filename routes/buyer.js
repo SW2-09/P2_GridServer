@@ -105,7 +105,7 @@ buyerRouter.post("/jobinfo", async (req, res) => {
 });
 
 buyerRouter.post("/download", async (req, res) => {
-    const name = sanitize(req.body.name);
+    const name = sanitize(req.user.name);
     const id = sanitize(req.body.id);
     let relativePath = `JobData/Solutions/${name}/${id}.json`;
     let absolutePath = path.resolve(relativePath);
@@ -121,7 +121,6 @@ buyerRouter.post("/download", async (req, res) => {
 buyerRouter.post("/delete", async (req, res) => {
     try {
         const name = sanitize(req.user.name);
-        console.log(name);
         const id = sanitize(req.body.id);
         //Delete from DB
         await Buyer.findOneAndUpdate(
@@ -131,9 +130,7 @@ buyerRouter.post("/delete", async (req, res) => {
         );
 
         // Delete from jobQueue
-        console.log(JobQueue.size);
         JobQueue.removeJob(id);
-        console.log(JobQueue.size);
     } catch (err) {
         console.log(err);
     }

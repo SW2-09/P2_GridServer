@@ -59,7 +59,6 @@ let handlers = {
                     console.log("jobID: " + messageParse["jobId"]);
                     console.log("taskID: " + messageParse["taskId"]);
 
-                    console.log(messageParse);
                     //find the job in the queue
                     let currentSolution = messageParse["solution"];
                     let workerFound = false;
