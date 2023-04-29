@@ -450,15 +450,19 @@ function validateList(list) {
 }
 
 function doneUploading() {
-    mainDiv.innerHTML = content.CreateJob;
+    mainDiv.innerHTML = content.JobsOverview;
     let alert = document.createElement("div");
     let alertClose = document.createElement("button");
     
     alertClose.classList.add("alertclosebtn");
-
+    document.querySelector(".alert").style.display = "flex";
+    setTimeout(() => {
+    document.querySelector(".alert").style.opacity = "1";
+    }, 100);
     document.querySelector(".alert").append(alert);
     document.querySelector(".alert").append(alertClose);
 
     alert.innerHTML = `Job has been uploaded`;
+    alertClose.innerHTML = `X`;
 
     }
