@@ -6,11 +6,13 @@ import { plus_str } from "../Jobtypes/plus/calcPlusAlgorithm.js";
 import { createFolder, writeFile } from "../utility.js";
 import path from "path";
 import { sanitize } from "../utility.js";
+import fs from "fs";
 
 import express from "express";
 import fileUpload from "express-fileupload";
 
 import { Buyer } from "../models/Buyer.js";
+import { Console } from "console";
 
 const buyerRouter = express.Router();
 
@@ -90,7 +92,7 @@ buyerRouter.post("/upload", async (req, res) => {
         //write the file to the new folder created in the PendingJobs folder
 
         writeFile(uploadPath, Jobdata);
-        
+
         res.send("File uploaded to: " + uploadPath);
     } catch (error) {
         console.log("Uploading: " + error);
@@ -132,7 +134,26 @@ buyerRouter.post("/delete", async (req, res) => {
         // Delete from jobQueue
         JobQueue.removeJob(id);
 
-        res.json({ message : "Job deleted"})
+        // Delete from directory
+        let absolutePathSolutions = path.resolve(
+            `JobData/Solutions/${name}/${id}.json`
+        );
+        let absolutePathPending = path.resolve(
+            `JobData/PendingJobs/${name}/${id}.json`
+        );
+        fs.unlink(absolutePathPending, (err) => {
+            if (err) {
+                throw new Error(err);
+            }
+        });
+        fs.unlink(absolutePathSolutions, (err) => {
+            if (err) {
+                console.log("An attempt was made to delete a file");
+                console.log(err);
+            }
+        });
+
+        res.json({ message: "Job deleted" });
     } catch (err) {
         console.log(err);
     }
