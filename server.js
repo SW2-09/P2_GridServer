@@ -4,8 +4,8 @@
 3. Use the "npm run devStart" command to start the server (see package.json) 
 nodemon can be acti
 */
-export { server, serverdata };
-import { startWebsocketserver, handlers } from "./web_socket/handlers.js";
+export { serverdata };
+import { startWebsocketserver } from "./web_socket/handlers.js";
 
 const host = "localhost";
 const port = 3000;
@@ -30,8 +30,6 @@ app.use(express.static("public")); // Middleware function that serves static fil
 app.use(express.urlencoded({ extended: true })); // Middleware function that parses the body of a request (e.g. form data)
 app.use(express.json({ limit: "50mb" })); // This allows us to parse json data
 
-//Buyer model
-import { Buyer } from "./models/Buyer.js";
 
 //Passport config
 import { checkPassport } from "./config/passport.js";
@@ -78,15 +76,15 @@ app.use(
 app.use(passport.initialize()); //This is needed to initialize passport
 app.use(passport.session()); //This is needed to keep the user logged in
 
-//Buyer page
+//Buyer page routing
 import { buyerRouter } from "./routes/buyer.js";
 app.use("/buyer", buyerRouter);
 
-//Index page
+//Index page routing
 import { router } from "./routes/index.js";
 app.use("/", router);
 
-//Admin page
+//Admin page routing
 import { adminRouter } from "./routes/admin.js";
 app.use("/admin", adminRouter);
 
@@ -105,7 +103,7 @@ const serverdata = {
     serverstart: serverstart,
     connectedworkers: [],
 };
-const server = app.listen(port, () =>
+app.listen(port, () =>
     console.log(`Server has been started on http://localhost:${port}`)
 );
 

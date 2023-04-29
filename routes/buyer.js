@@ -94,9 +94,6 @@ buyerRouter.post("/upload", async (req, res) => {
         writeFile(uploadPath, Jobdata);
 
 
-
-
-
         res.send("File uploaded to: " + uploadPath);
 
     } catch (error) {
@@ -127,7 +124,7 @@ buyerRouter.post("/download", async (req, res) => {
 // Delete Job
 buyerRouter.post("/delete", async (req, res) => {
     try {
-        const name = sanitize(req.body.name);
+        const name = sanitize(req.user.name);
         const id = sanitize(req.body.id);
         //Delete from DB
         await Buyer.findOneAndUpdate(
@@ -138,6 +135,8 @@ buyerRouter.post("/delete", async (req, res) => {
 
         // Delete from jobQueue
         JobQueue.removeJob(id);
+
+        res.json({ message : "Job deleted"})
     } catch (err) {
         console.log(err);
     }
