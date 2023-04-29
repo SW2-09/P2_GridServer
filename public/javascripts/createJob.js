@@ -1,7 +1,7 @@
 const mainDiv = document.getElementById("mainDiv");
 
 const content = {
-    CreateJob: `<div>
+    CreateJob: `<div class=createJobSubheader>
 <h1>Job creation</h1>
 </div>
 
@@ -32,6 +32,7 @@ const content = {
 <button id="goBack-btn" class="cancelJob">Cancel</button>
 </div>
 </div>
+<div class=alert></div>
 `,
 
     JobsOverview: `
@@ -173,6 +174,7 @@ mainDiv.addEventListener("change", (e) => {
 
 mainDiv.addEventListener("click", async (e) => {
     if (e.target.id === "submit") {
+        e.target.disabled = true;
         const jobType = document.getElementById("jobType").value;
         const Uploadform = document.getElementById("uploadForm");
         const jobTitle = document.getElementById("jobTitle").value;
@@ -289,18 +291,14 @@ mainDiv.addEventListener("click", async (e) => {
 
                 const result = await response.text();
                 console.log(result);
+                e.target.disabled = false;
+                doneUploading();
             }
         } catch (err) {
             console.log(err);
+            e.target.disabled = false;
         }
     }
-});
-
-document.getElementById("testbutton").addEventListener("click", () => {
-    console.log("test");
-    fetch("/buyer/test", {
-        method: "POST",
-    });
 });
 
 // ***************** //
@@ -450,3 +448,17 @@ function validateList(list) {
     }
     return true;
 }
+
+function doneUploading() {
+    mainDiv.innerHTML = content.CreateJob;
+    let alert = document.createElement("div");
+    let alertClose = document.createElement("button");
+    
+    alertClose.classList.add("alertclosebtn");
+
+    document.querySelector(".alert").append(alert);
+    document.querySelector(".alert").append(alertClose);
+
+    alert.innerHTML = `Job has been uploaded`;
+
+    }
