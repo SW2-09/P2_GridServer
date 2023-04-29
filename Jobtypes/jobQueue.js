@@ -1,6 +1,6 @@
 export { JobQueue };
 import fs from "fs";
-import  {addMatrixToQue, addPlusToQue} from "../routes/buyer.js";
+import { addMatrixToQue, addPlusToQue } from "../routes/buyer.js";
 //import{ arr , matrix_A, matrix_B } from "./matrixSplit.js";
 
 class Job {
@@ -100,9 +100,10 @@ class Queue_linked_list_job {
     }
 
     removeJob(JobId) {
-        if (this.head === null) {//if the queue is empty
+        if (this.head === null) {
+            //if the queue is empty
             return;
-        } 
+        }
         let x = this.head;
         while (JobId !== x.jobId) {
             if (x.next === null) {
@@ -184,9 +185,10 @@ class Queue_linked_list_subtask {
 
     removeTask(TaskId) {
         //removes the task with the specific task id
-        if (this.head === null) {//if the queue is empty
+        if (this.head === null) {
+            //if the queue is empty
             return;
-        } 
+        }
         let x = this.head;
 
         while (TaskId !== x.taskId) {
@@ -219,43 +221,54 @@ class Queue_linked_list_subtask {
 let JobQueue = new Queue_linked_list_job();
 
 let dir = "./jobData/PendingJobs";
-    fs.readdirSync(dir).forEach((file) => {
-        fs.readdirSync(dir + "/" + file).forEach((job) => {
-            let jobParsed = JSON.parse(fs.readFileSync(dir + "/" + "/" + file + "/" + job));
-            console.log("creating job: ");
+fs.readdirSync(dir).forEach((folder) => {
+    fs.readdirSync(dir + "/" + folder).forEach((job) => {
+        let jobParsed = JSON.parse(
+            fs.readFileSync(dir + "/" + "/" + folder + "/" + job)
+        );
+        console.log("creating job: ");
 
-            let jobtype = jobParsed.type;
-            console.log(jobtype)
-            
-            switch (
-                jobtype 
-            ) {
-                case "matrixMult": { // in case the jobtype is matrix multiplication
-                    let matrix_A = {
-                        entries: jobParsed.arrA,
-                        columns: jobParsed.arrA[0].length,
-                        rows: jobParsed.arrA.length,
-                    };
-                    let matrix_B = {
-                        entries: jobParsed.arrB,
-                        columns: jobParsed.arrB[0].length,
-                        rows: jobParsed.arrB.length,
-                    };
-                    addMatrixToQue(jobParsed.JobId, jobtype, jobParsed.jobOwner, matrix_A, matrix_B);
-                    break;
-                }
-                case "plus": {
-                    // in case the jobtype is plus
-    
-                    addPlusToQue(jobParsed.JobId, jobtype, jobParsed.jobOwner, jobParsed.arr);
-    
-                    break;
-                }
-                default: {
-                    // in case the jobtype is not found
-                    throw new Error("Jobtype not found");
-                }
+        let jobtype = jobParsed.type;
+        console.log(jobtype);
+
+        switch (jobtype) {
+            case "matrixMult": {
+                // in case the jobtype is matrix multiplication
+                let matrix_A = {
+                    entries: jobParsed.arrA,
+                    columns: jobParsed.arrA[0].length,
+                    rows: jobParsed.arrA.length,
+                };
+                let matrix_B = {
+                    entries: jobParsed.arrB,
+                    columns: jobParsed.arrB[0].length,
+                    rows: jobParsed.arrB.length,
+                };
+                addMatrixToQue(
+                    jobParsed.jobId,
+                    jobtype,
+                    jobParsed.jobOwner,
+                    matrix_A,
+                    matrix_B
+                );
+                break;
             }
+            case "plus": {
+                // in case the jobtype is plus
 
-        });
+                addPlusToQue(
+                    jobParsed.JobId,
+                    jobtype,
+                    jobParsed.jobOwner,
+                    jobParsed.arr
+                );
+
+                break;
+            }
+            default: {
+                // in case the jobtype is not found
+                throw new Error("Jobtype not found");
+            }
+        }
     });
+});

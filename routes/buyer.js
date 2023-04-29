@@ -143,7 +143,8 @@ buyerRouter.post("/delete", async (req, res) => {
         );
         fs.unlink(absolutePathPending, (err) => {
             if (err) {
-                throw new Error(err);
+                console.log("An attempt was made to delete a file");
+                console.log(err);
             }
         });
         fs.unlink(absolutePathSolutions, (err) => {
