@@ -3,7 +3,6 @@ export { adminRouter };
 import mongoose from "mongoose";
 import express from "express";
 import { serverdata } from "../server.js";
-import { Buyer } from "../models/Buyer.js";
 
 const adminRouter = express.Router();
 

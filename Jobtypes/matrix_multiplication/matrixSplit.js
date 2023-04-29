@@ -33,7 +33,6 @@ let matrix_B = {
 let arr = []; // the array which will hold the sliced matrixes of matrix A
 let ARows = matrix_A.rows;
 let A = matrix_A.entries;
-//console.log(A);
 
 /**
  * @param {Matrix} A the array containing the matrix A

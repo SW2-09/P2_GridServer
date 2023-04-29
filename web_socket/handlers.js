@@ -59,7 +59,6 @@ let handlers = {
                     console.log("jobID: " + messageParse["jobId"]);
                     console.log("taskID: " + messageParse["taskId"]);
 
-                    console.log(messageParse);
                     //find the job in the queue
                     let currentSolution = messageParse["solution"];
                     let workerFound = false;
@@ -133,7 +132,7 @@ let handlers = {
 
 function startWebsocketserver(host, port) {
     const wss = new WebSocketServer({ host: host, port: port });
-    console.log(`There are ${JobQueue.size} jobs in the queue.`);
+    // console.log(`There are ${JobQueue.size} jobs in the queue.`);
 
     wss.on("connection", handlers.connectionHandler);
 }

@@ -1,5 +1,4 @@
 export { JobQueue };
-import { matrix_mult_str } from "./matrix_multiplication/calcAlgorithm.js";
 import fs from "fs";
 import  {addMatrixToQue, addPlusToQue} from "../routes/buyer.js";
 //import{ arr , matrix_A, matrix_B } from "./matrixSplit.js";
@@ -176,7 +175,9 @@ class Queue_linked_list_subtask {
             this.head = this.tail = null;
         } else {
             this.tail.previous.next = null;
+            // const oldTail = this.tail;
             this.tail = this.tail.previous;
+            // oldTail.previous = null;
         }
         this.size--;
     }
@@ -219,12 +220,9 @@ let JobQueue = new Queue_linked_list_job();
 
 let dir = "./jobData/PendingJobs";
     fs.readdirSync(dir).forEach((file) => {
-        console.log("looking through: " + file);
         fs.readdirSync(dir + "/" + file).forEach((job) => {
-            // console.log("found job: " + job);
             let jobParsed = JSON.parse(fs.readFileSync(dir + "/" + "/" + file + "/" + job));
             console.log("creating job: ");
-            // console.log(jobParsed);
 
             let jobtype = jobParsed.type;
             console.log(jobtype)
@@ -261,39 +259,3 @@ let dir = "./jobData/PendingJobs";
 
         });
     });
-
-
-const formatMemoryUsage = (data) => `${Math.round(data / 1024 / 1024 * 100) / 100} MB`;
-
-const memoryData = process.memoryUsage();
-
-const memoryUsage = {
-  rss: `${formatMemoryUsage(memoryData.rss)} -> Resident Set Size - total memory allocated for the process execution`,
-  heapTotal: `${formatMemoryUsage(memoryData.heapTotal)} -> total size of the allocated heap`,
-  heapUsed: `${formatMemoryUsage(memoryData.heapUsed)} -> actual memory used during the execution`,
-  external: `${formatMemoryUsage(memoryData.external)} -> V8 external memory`,
-};
-
-console.log(memoryUsage);
-
-/*
-{
-  "rss": "177.54 MB -> Resident Set Size - total memory allocated for the process execution",
-  "heapTotal": "102.3 MB -> total size of the allocated heap",
-  "heapUsed": "94.3 MB -> actual memory used during the execution",
-  "external": "3.03 MB -> V8 external memory"
-}
-*/
-
-
-// JobQueue.enQueue(1, matrix_B);
-// for (let index = 0; index < arr.length; index++) {
-//     JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
-//     JobQueue.head.numOfTasks++;
-// }
-
-// JobQueue.enQueue(2, matrix_B);
-// for (let index = 0; index < arr.length; index++) {
-//     JobQueue.head.subtaskList.enQueue(JobQueue.head.jobId, index, arr[index]);
-//     JobQueue.head.numOfTasks++;
-// }
