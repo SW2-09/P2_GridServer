@@ -3,8 +3,6 @@ export { subtaskFeeder, queueEmpty };
 import { Worker } from "../models/Workers.js";
 import { createFolder, writeFile } from "../utility.js";
 import { serverdata } from "../server.js";
-import { matrix_mult } from "./matrix_multiplication/Partitioner.js";
-import { matrix_A, matrix_B } from "./matrix_multiplication/matrixSplit.js";
 import { Buyer } from "../models/Buyer.js";
 
 //token for signifying that the queue is empty
@@ -155,6 +153,7 @@ async function jobDone(job) {
         //if the job is a matrix multiplication job
         final = [];
 
+
         job.solutions.forEach((element) => {
             //concatenates the solutions into one array to combine matrix
             console.log(element);
@@ -165,6 +164,7 @@ async function jobDone(job) {
 
             element.workerSolutions.forEach((e) => {
                 Solution[e.taskId] = e.solution;
+
             });
         });
         countWork(workerArr);
@@ -238,8 +238,9 @@ function countWork(contributors) {
                 newWorker.save();
             }
         });
-        console.log(element.workerId);
-        console.log(element.computed);
-    });
+
+        // console.log(element.workerId);
+        // console.log(element.computed);
+    }); 
     console.log("done counting work");
 }

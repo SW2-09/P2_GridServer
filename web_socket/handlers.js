@@ -132,7 +132,7 @@ let handlers = {
 
 function startWebsocketserver(host, port) {
     const wss = new WebSocketServer({ host: host, port: port });
-    console.log(`There are ${JobQueue.size} jobs in the queue.`);
+    // console.log(`There are ${JobQueue.size} jobs in the queue.`);
 
     wss.on("connection", handlers.connectionHandler);
 }

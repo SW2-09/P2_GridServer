@@ -98,11 +98,15 @@ mainDiv.addEventListener("click", async (e) => {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: e.target.id }),
-            }).then(generateTable());
+            });
 
             if (!response.ok) {
                 throw new Error(`HTTP post error! ${response.status}`);
             }
+            const result = await response.text();
+            console.log(result);
+            generateTable()
+
         } catch (err) {
             console.error("Error: " + err);
         }
@@ -284,7 +288,7 @@ mainDiv.addEventListener("click", async (e) => {
                 });
 
                 const result = await response.text();
-                console.log("server response:" + result);
+                console.log(result);
             }
         } catch (err) {
             console.log(err);

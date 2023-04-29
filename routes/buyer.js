@@ -90,7 +90,7 @@ buyerRouter.post("/upload", async (req, res) => {
         //write the file to the new folder created in the PendingJobs folder
 
         writeFile(uploadPath, Jobdata);
-
+        
         res.send("File uploaded to: " + uploadPath);
     } catch (error) {
         console.log("Uploading: " + error);
@@ -131,6 +131,8 @@ buyerRouter.post("/delete", async (req, res) => {
 
         // Delete from jobQueue
         JobQueue.removeJob(id);
+
+        res.json({ message : "Job deleted"})
     } catch (err) {
         console.log(err);
     }
