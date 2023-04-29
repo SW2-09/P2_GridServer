@@ -156,7 +156,6 @@ async function jobDone(job) {
 
         job.solutions.forEach((element) => {
             //concatenates the solutions into one array to combine matrix
-            console.log(element);
             workerArr.push({
                 workerId: element.workerId,
                 computed: element.workerSolutions.length,

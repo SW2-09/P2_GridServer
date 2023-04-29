@@ -143,8 +143,8 @@ async function generateTable(workerInfo, collectionvalue) {
 
         element.jobs_array.forEach((job, index) => {
             let option = document.createElement("option");
-            option.value = job.jobID;
-            option.text = job.jobID;
+            option.value = job.jobId;
+            option.text = job.jobId;
             dropdownElement.add(option);
             
         });
