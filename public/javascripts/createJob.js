@@ -200,34 +200,11 @@ mainDiv.addEventListener("click", async (e) => {
                         const fileInput2 =
                             document.getElementById("uploadFile2");
 
-                        const allowedFileFormat = [
-                            "text/csv",
-                            "application/json",
-                        ]; //allows JSON and csv formats
-                        const maxFileSize = 10 * 1024 * 1024; // 10 MB
 
-                        if (
-                            !allowedFileFormat.includes(
-                                fileInput1.files[0].type
-                            ) ||
-                            !allowedFileFormat.includes(
-                                fileInput2.files[0].type
-                            )
-                        ) {
-                            alert(
-                                "Please choose a valid file format(csv or json)"
-                            );
-                            return;
-                        }
+                        const file1 = await validateAndParse(fileInput1.files[0], jobType);
+                        const file2 = await validateAndParse(fileInput2.files[0], jobType);
 
-                        const file1 = await parseCsvToJson(
-                            fileInput1.files[0],
-                            jobType
-                        );
-                        const file2 = await parseCsvToJson(
-                            fileInput2.files[0],
-                            jobType
-                        );
+                        console.log(file1);
 
                         if (!validateMatrix(file1, file2)) {
                             throw new Error("Error in validation");
@@ -249,25 +226,7 @@ mainDiv.addEventListener("click", async (e) => {
                         e.preventDefault();
                         const fileInput = document.getElementById("uploadFile");
 
-                        const allowedFileFormat = [
-                            "text/csv",
-                            "application/json",
-                        ]; //allows JSON and csv formats
-                        const maxFileSize = 10 * 1024 * 1024; // 10 MB
-
-                        if (
-                            !allowedFileFormat.includes(fileInput.files[0].type)
-                        ) {
-                            alert(
-                                "Please choose a valid file format(csv or json)"
-                            );
-                            return;
-                        }
-
-                        const file = await parseCsvToJson(
-                            fileInput.files[0],
-                            jobType
-                        );
+                        const file = await validateAndParse(fileInput.files[0], jobType);
 
                         if (!validateList(file)) {
                             throw new Error("Error in validation");
@@ -478,4 +437,29 @@ function doneUploading() {
         }, 1000);
     }, 4000);
 
+}
+
+async function validateAndParse(file, jobType) {
+    const allowedFileFormat = [
+        "csv",
+        "json",
+    ]; //allows JSON and csv formats
+    const maxFileSize = 50 * 1024 * 1024; // 50 MB
+    const fileEnding = file.name.split(".").pop().toLowerCase();
+    
+    if (!allowedFileFormat.includes(fileEnding)) {
+        alert("Please choose a valid file format(csv or json)");
+        return;
+    }
+
+    if (file.size > maxFileSize) {
+        alert("Please choose a file smaller than 50 MB");
+        return;
+    }
+
+    let result = await parseCsvToJson(
+        file,
+        jobType
+    );
+    return result;
 }
