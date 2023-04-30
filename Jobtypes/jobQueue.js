@@ -275,5 +275,6 @@ function addJobsToQueServerstart(dir) {
             }
         }
     });
+});
 }
 
