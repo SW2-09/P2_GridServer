@@ -16,7 +16,7 @@ import { Console } from "console";
 
 const buyerRouter = express.Router();
 const calcMax = Math.pow(1000, 3);
-const maxQueueSize = 2;
+const maxQueueSize = 10;
 
 /* ********************** *
  *    Logout handling     *
@@ -153,12 +153,14 @@ buyerRouter.post("/delete", async (req, res) => {
                 `JobData/ActiveJobs/${id}.json`
             )}; 
 
+        if(fs.existsSync(absolutePathPending)){
         fs.unlink(absolutePathPending, (err) => {
             if (err) {
                 console.log("An attempt was made to delete a file");
                 console.log(err);
             }
         });
+    }
         if(fs.existsSync(absolutePathSolutions)){
         fs.unlink(absolutePathSolutions, (err) => {
             if (err) {

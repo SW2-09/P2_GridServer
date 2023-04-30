@@ -9,7 +9,7 @@ import fs from "fs";
 
 //token for signifying that the queue is empty
 let queueEmpty = "empty";
-let QueMaxSize = 2;
+const maxQueueSize = 10;
 
 // && JobQueue.tail.numOfTasks === JobQueue.tail.numOfSolutions)
 
@@ -42,7 +42,7 @@ function subtaskFeeder(JobQueue) {
             console.log("job done and finished");
             JobQueue.deQueue(); //remove the job from the queue
             console.log("JobQueue updated to size: " + JobQueue.size);
-            if(JobQueue.size === QueMaxSize - 1){
+            if(JobQueue.size === maxQueueSize - 1){
                 console.log("JobQueue is no longer full checking for pending jobs");
                 checkForPendingJobs(JobQueue);
             }
@@ -265,16 +265,17 @@ function checkForPendingJobs(Que){
     if(PendingFolder.length===0){
         return;
     }
-    PendingFolder.forEach((element) => {
-        if(Que.size < 10){
-            let path = "./JobData/PendingJobs/" + element;
-            let jobParsed = JSON.parse(fs.readFileSync(path));
 
-            let jobtype = jobParsed.type;
-            console.log(jobtype);
-            addJobToQue(jobtype, jobParsed);
+    let firstEntry = PendingFolder[0]
+    
+    let path = "./JobData/PendingJobs/" + firstEntry;
+    let jobParsed = JSON.parse(fs.readFileSync(path));
+
+    let jobtype = jobParsed.type;
+    console.log(jobtype);
+    addJobToQue(jobtype, jobParsed);
             
-            fs.renameSync(path, "./JobData/ActiveJobs/" + jobParsed.jobId + ".json");            
-        }
-    });
+    fs.renameSync(path, "./JobData/ActiveJobs/" + jobParsed.jobId + ".json");            
 }
+    
+
