@@ -471,4 +471,11 @@ function doneUploading() {
     alert.innerHTML = `Job has been uploaded`;
     alertClose.innerHTML = `x`;
 
+    setTimeout(() => {
+        document.querySelector(".alert").style.opacity = "0";
+        setTimeout(() => {
+            document.querySelector(".alert").style.display = "none";
+        }, 1000);
+    }, 4000);
+
 }
