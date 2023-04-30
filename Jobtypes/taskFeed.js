@@ -4,6 +4,7 @@ import { Worker } from "../models/Workers.js";
 import { createFolder, writeFile } from "../utility.js";
 import { serverdata } from "../server.js";
 import { Buyer } from "../models/Buyer.js";
+import fs from "fs";
 
 //token for signifying that the queue is empty
 let queueEmpty = "empty";
@@ -153,7 +154,6 @@ async function jobDone(job) {
         //if the job is a matrix multiplication job
         final = [];
 
-
         job.solutions.forEach((element) => {
             //concatenates the solutions into one array to combine matrix
             workerArr.push({
@@ -163,7 +163,6 @@ async function jobDone(job) {
 
             element.workerSolutions.forEach((e) => {
                 Solution[e.taskId] = e.solution;
-
             });
         });
         countWork(workerArr);
@@ -205,11 +204,13 @@ async function jobDone(job) {
 
     writeFile(filename, Solution); //writes the solution to a file
 
+    deletePendingfile(job.jobOwner, job.jobId);
+
     //Update the job.completed in mongoDB
     await Buyer.findOneAndUpdate(
         { name: job.jobOwner }, //filter
         { $set: { "jobs_array.$[element].completed": true } }, //Update
-        { arrayFilters: [{ "element.jobID": job.jobId }] } //Arrayfiler
+        { arrayFilters: [{ "element.jobId": job.jobId }] } //Arrayfiler
     );
 }
 
@@ -240,6 +241,16 @@ function countWork(contributors) {
 
         // console.log(element.workerId);
         // console.log(element.computed);
-    }); 
+    });
     console.log("done counting work");
+}
+
+function deletePendingfile(jobOwner, jobId) {
+    let path = "./JobData/PendingJobs/" + jobOwner + "/" + jobId + ".json";
+    fs.unlink(path, (err) => {
+        if (err) {
+            console.log("An attempt was made to delete a file");
+            console.log(err);
+        }
+    });
 }
