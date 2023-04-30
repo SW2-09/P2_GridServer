@@ -1,5 +1,6 @@
 export { subtaskFeeder, queueEmpty };
 
+import { addJobToQue } from "./jobQueue.js";
 import { Worker } from "../models/Workers.js";
 import { createFolder, writeFile } from "../utility.js";
 import { serverdata } from "../server.js";
@@ -8,7 +9,7 @@ import fs from "fs";
 
 //token for signifying that the queue is empty
 let queueEmpty = "empty";
-let timeer = Date.now();
+let QueMaxSize = 2;
 
 // && JobQueue.tail.numOfTasks === JobQueue.tail.numOfSolutions)
 
@@ -41,6 +42,10 @@ function subtaskFeeder(JobQueue) {
             console.log("job done and finished");
             JobQueue.deQueue(); //remove the job from the queue
             console.log("JobQueue updated to size: " + JobQueue.size);
+            if(JobQueue.size === QueMaxSize - 1){
+                console.log("JobQueue is no longer full checking for pending jobs");
+                checkForPendingJobs(JobQueue);
+            }
             currentJob = JobQueue.tail; //set the current job to the new tail
             if (currentJob === null) {
                 //if the queue is empty
@@ -204,7 +209,7 @@ async function jobDone(job) {
 
     writeFile(filename, Solution); //writes the solution to a file
 
-    deletePendingfile(job.jobOwner, job.jobId);
+    deletePendingfile(job.jobId);
 
     //Update the job.completed in mongoDB
     await Buyer.findOneAndUpdate(
@@ -245,12 +250,31 @@ function countWork(contributors) {
     console.log("done counting work");
 }
 
-function deletePendingfile(jobOwner, jobId) {
-    let path = "./JobData/PendingJobs/" + jobOwner + "/" + jobId + ".json";
+function deletePendingfile(jobId) {
+    let path = "./JobData/ActiveJobs/" + jobId + ".json";
     fs.unlink(path, (err) => {
         if (err) {
             console.log("An attempt was made to delete a file");
             console.log(err);
+        }
+    });
+}
+
+function checkForPendingJobs(Que){
+    let PendingFolder = fs.readdirSync("./JobData/PendingJobs/");
+    if(PendingFolder.length===0){
+        return;
+    }
+    PendingFolder.forEach((element) => {
+        if(Que.size < 10){
+            let path = "./JobData/PendingJobs/" + element;
+            let jobParsed = JSON.parse(fs.readFileSync(path));
+
+            let jobtype = jobParsed.type;
+            console.log(jobtype);
+            addJobToQue(jobtype, jobParsed);
+            
+            fs.renameSync(path, "./JobData/ActiveJobs/" + jobParsed.jobId + ".json");            
         }
     });
 }

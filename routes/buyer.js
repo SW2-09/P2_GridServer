@@ -15,8 +15,8 @@ import { Buyer } from "../models/Buyer.js";
 import { Console } from "console";
 
 const buyerRouter = express.Router();
-
 const calcMax = Math.pow(1000, 3);
+const maxQueueSize = 2;
 
 /* ********************** *
  *    Logout handling     *
@@ -38,18 +38,25 @@ buyerRouter.get("/logout", (req, res) => {
  *      File upload       *
  * ********************** */
 
-const dirPath = "./JobData/PendingJobs/";
+const pathActiveJobs = "./JobData/ActiveJobs/";
+const pathPendingJobs = "./JobData/PendingJobs/";
 
 buyerRouter.use(fileUpload());
 
 buyerRouter.post("/upload", async (req, res) => {
+    let dirPath = "";
+    if(JobQueue.size >= maxQueueSize){
+        dirPath = pathPendingJobs;
+    }else{
+        dirPath = pathActiveJobs;
+    }
+
     try {
         const name = sanitize(req.user.name);
-        console.log("Uploading: " + name);
         const jobTitle = sanitize(req.body.jobTitle);
         const jobId = sanitize(req.body.jobId);
+        console.log("Uploading: " + jobId);
         const jobDescription = sanitize(req.body.jobDescription);
-        let dynamicDirPath = dirPath + name + "/";
         let jobtype = req.body.jobType;
         let Jobdata;
 
@@ -85,10 +92,10 @@ buyerRouter.post("/upload", async (req, res) => {
             { $push: { jobs_array: jobInfo } }
         );
 
-        let uploadPath = dynamicDirPath + jobInfo.jobId + ".json";
+        let uploadPath = dirPath + jobInfo.jobId + ".json";
 
         //create folder in the PendingJobs folder if not exists, the folder name is the user name
-        createFolder(dynamicDirPath);
+        createFolder(dirPath);
         //write the file to the new folder created in the PendingJobs folder
 
         writeFile(uploadPath, Jobdata);
@@ -139,20 +146,28 @@ buyerRouter.post("/delete", async (req, res) => {
             `JobData/Solutions/${name}/${id}.json`
         );
         let absolutePathPending = path.resolve(
-            `JobData/PendingJobs/${name}/${id}.json`
+            `JobData/PendingJobs/${id}.json`
         );
+        if(!fs.existsSync(absolutePathPending)){
+            absolutePathPending = path.resolve(
+                `JobData/ActiveJobs/${id}.json`
+            )}; 
+
         fs.unlink(absolutePathPending, (err) => {
             if (err) {
                 console.log("An attempt was made to delete a file");
                 console.log(err);
             }
         });
+        if(fs.existsSync(absolutePathSolutions)){
         fs.unlink(absolutePathSolutions, (err) => {
             if (err) {
                 console.log("An attempt was made to delete a file");
                 console.log(err);
             }
         });
+    }
+
 
         res.json({ message: "Job deleted" });
     } catch (err) {
@@ -186,8 +201,9 @@ function createMatrixMultJob(jobData, jobOwner) {
     };
 
     // adding the job to the job queue
+    if(JobQueue.size < maxQueueSize){
     addMatrixToQue(Jobdata.jobId, Jobdata.type, jobOwner, matrix_A, matrix_B);
-
+    }
     console.log(JobQueue.size);
     console.log(JobQueue.head.numOfTasks);
 
@@ -209,8 +225,9 @@ function createPlusJob(jobData, jobOwner) {
     };
 
     // adding the job to the job queue
+    if(JobQueue.size < maxQueueSize){
     addPlusToQue(Jobdata.jobId, Jobdata.type, jobOwner, Jobdata.arr);
-
+    }
     console.log(JobQueue.size);
     console.log(JobQueue.head.numOfTasks);
     return Jobdata;

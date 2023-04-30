@@ -235,7 +235,7 @@ mainDiv.addEventListener("click", async (e) => {
 
                         formData = {
                             jobTitle: jobTitle,
-                            jobId: jobTitle + "-" + Date.now(),
+                            jobId: Date.now() + "_" + jobTitle,
                             jobDescription: jobDescription,
                             jobType: jobType,
                             uploadFile: file1,
@@ -275,7 +275,7 @@ mainDiv.addEventListener("click", async (e) => {
 
                         formData = {
                             jobTitle: jobTitle,
-                            jobId: jobTitle+ "-" + Date.now(),
+                            jobId: Date.now() + "_" + jobTitle,
                             jobDescription: jobDescription,
                             jobType: jobType,
                             uploadFile: file,
