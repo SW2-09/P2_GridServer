@@ -80,12 +80,12 @@ table tr:hover {
 
 
 .purgeButton, .lookupButton, .collection,.sessiondata{
-    width: 80px;
-    height: 20px;
+    width: 120px;
+    height: 35px;
     border: none;
     color: #fff;
     border-radius: 3px;
-    font-size: 10px;
+    font-size: 15px;
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;

@@ -221,13 +221,17 @@ class Queue_linked_list_subtask {
 let JobQueue = new Queue_linked_list_job();
 
 let dir = "./jobData/PendingJobs";
-fs.readdirSync(dir).forEach((folder) => {
-    fs.readdirSync(dir + "/" + folder).forEach((job) => {
-        let jobParsed = JSON.parse(
-            fs.readFileSync(dir + "/" + "/" + folder + "/" + job)
-        );
-        console.log("creating job: ");
 
+if (fs.existsSync(dir)) {
+    addJobsToQueServerstart(dir);
+}
+
+//adding all the jobs in the pending jobs folder to the queue
+function addJobsToQueServerstart(dir) {
+    fs.readdirSync(dir).forEach((file) => {
+        fs.readdirSync(dir + "/" + file).forEach((job) => {
+            let jobParsed = JSON.parse(fs.readFileSync(dir + "/" + "/" + file + "/" + job));
+            console.log("creating job: ");
         let jobtype = jobParsed.type;
         console.log(jobtype);
 
@@ -271,4 +275,5 @@ fs.readdirSync(dir).forEach((folder) => {
             }
         }
     });
-});
+}
+

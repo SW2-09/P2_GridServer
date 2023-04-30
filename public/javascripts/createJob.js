@@ -147,6 +147,11 @@ mainDiv.addEventListener("click", (e) => {
     }
 });
 
+mainDiv.addEventListener("click", (e) => {
+    if (e.target.classList.contains("alertclosebtn")) {
+        document.querySelector(".alert").style.display = "none";
+    }
+});
 // Back to homepage
 mainDiv.addEventListener("click", (e) => {
     if (e.target.id === "goBack-btn") {
@@ -174,7 +179,6 @@ mainDiv.addEventListener("change", (e) => {
 
 mainDiv.addEventListener("click", async (e) => {
     if (e.target.id === "submit") {
-        e.target.disabled = true;
         const jobType = document.getElementById("jobType").value;
         const Uploadform = document.getElementById("uploadForm");
         const jobTitle = document.getElementById("jobTitle").value;
@@ -185,10 +189,12 @@ mainDiv.addEventListener("click", async (e) => {
                 Uploadform.reportValidity();
                 e.preventDefault();
             } else {
+                e.target.disabled = true;
                 let formData;
                 switch (jobType) {
                     case "matrixMult": {
                         e.preventDefault();
+                        e.target.style.backgroundColor = "grey";
                         const fileInput1 =
                             document.getElementById("uploadFile");
                         const fileInput2 =
@@ -455,10 +461,14 @@ function doneUploading() {
     let alertClose = document.createElement("button");
     
     alertClose.classList.add("alertclosebtn");
-
+    document.querySelector(".alert").style.display = "flex";
+    setTimeout(() => {
+    document.querySelector(".alert").style.opacity = "1";
+    }, 100);
     document.querySelector(".alert").append(alert);
     document.querySelector(".alert").append(alertClose);
 
     alert.innerHTML = `Job has been uploaded`;
+    alertClose.innerHTML = `x`;
 
-    }
+}

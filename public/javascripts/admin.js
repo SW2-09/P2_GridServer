@@ -16,13 +16,13 @@ onload = async () => {
     loadSessionChart();
 }
 
-sessiondata.addEventListener("click", async () => {
-    loadSessionChart();
-});
-
 purge.addEventListener("click", async () => {
     clearInterval(chartinterval);
     let collectionvalue = document.getElementById("collection").value;
+    if (collectionvalue === "status") {
+        alert("Please select a collection in database");
+        return;
+    }
     if (
         confirm(
             "Are you sure you want to purge the collection: " + collectionvalue
@@ -56,6 +56,9 @@ collection.addEventListener("change", async () => {
     clearInterval(chartinterval);
     let collectionvalue = document.getElementById("collection").value;
     try {
+        if (collectionvalue === "status") {
+            loadSessionChart();
+        }
         dblookup(collectionvalue);
     } catch (err) {
         console.log("Error");
