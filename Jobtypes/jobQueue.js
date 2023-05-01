@@ -220,61 +220,66 @@ class Queue_linked_list_subtask {
 //Making a demo job queue
 let JobQueue = new Queue_linked_list_job();
 
-let dir = "./jobData/PendingJobs";
+let dirActive = "./jobData/ActiveJobs";
+let dirPending = "./jobData/PendingJobs";
 
-if (fs.existsSync(dir)) {
-    addJobsToQueServerstart(dir);
+if (fs.existsSync(dirActive)) {
+    addJobsToQueServerstart(dirActive);
+}
+if (fs.existsSync(dirPending)) {
+    addJobsToQueServerstart(dirPending);
 }
 
 //adding all the jobs in the pending jobs folder to the queue
-function addJobsToQueServerstart(dir) {
-    fs.readdirSync(dir).forEach((file) => {
-        fs.readdirSync(dir + "/" + file).forEach((job) => {
-            let jobParsed = JSON.parse(fs.readFileSync(dir + "/" + "/" + file + "/" + job));
-            console.log("creating job: ");
+function addJobsToQueServerstart(dir) {    
+        fs.readdirSync(dir).forEach((job) => {
+        let jobParsed = JSON.parse(fs.readFileSync(dir + "/" + job));
+        console.log("creating job: ");
         let jobtype = jobParsed.type;
         console.log(jobtype);
+        addJobToQue(jobtype, jobParsed);
 
-        switch (jobtype) {
-            case "matrixMult": {
-                // in case the jobtype is matrix multiplication
-                let matrix_A = {
-                    entries: jobParsed.arrA,
-                    columns: jobParsed.arrA[0].length,
-                    rows: jobParsed.arrA.length,
-                };
-                let matrix_B = {
-                    entries: jobParsed.arrB,
-                    columns: jobParsed.arrB[0].length,
-                    rows: jobParsed.arrB.length,
-                };
-                addMatrixToQue(
-                    jobParsed.jobId,
-                    jobtype,
-                    jobParsed.jobOwner,
-                    matrix_A,
-                    matrix_B
-                );
-                break;
-            }
-            case "plus": {
-                // in case the jobtype is plus
-
-                addPlusToQue(
-                    jobParsed.JobId,
-                    jobtype,
-                    jobParsed.jobOwner,
-                    jobParsed.arr
-                );
-
-                break;
-            }
-            default: {
-                // in case the jobtype is not found
-                throw new Error("Jobtype not found");
-            }
-        }
+        
     });
-});
 }
 
+export function addJobToQue(jobtype, jobParsed){
+switch (jobtype) {
+    case "matrixMult": {
+        // in case the jobtype is matrix multiplication
+        let matrix_A = {
+            entries: jobParsed.arrA,
+            columns: jobParsed.arrA[0].length,
+            rows: jobParsed.arrA.length,
+        };
+        let matrix_B = {
+            entries: jobParsed.arrB,
+            columns: jobParsed.arrB[0].length,
+            rows: jobParsed.arrB.length,
+        };
+        addMatrixToQue(
+            jobParsed.jobId,
+            jobtype,
+            jobParsed.jobOwner,
+            matrix_A,
+            matrix_B
+        );
+        break;
+    }
+    case "plus": {
+        // in case the jobtype is plus
+
+        addPlusToQue(
+            jobParsed.JobId,
+            jobtype,
+            jobParsed.jobOwner,
+            jobParsed.arr
+        );
+
+        break;
+    }
+    default: {
+        // in case the jobtype is not found
+        throw new Error("Jobtype not found");
+    }
+}}
