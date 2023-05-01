@@ -150,7 +150,8 @@ function findJob(jobId) {
     if (currentJob.jobId === jobId) {
         return currentJob;
     } else if (currentJob.previous !== null) {
-        while (currentJob.previous.jobId != jobId) {
+        while (currentJob.previous !== null &&
+            currentJob.previous.jobId != jobId) {
             currentJob = currentJob.previous;
         }
     }

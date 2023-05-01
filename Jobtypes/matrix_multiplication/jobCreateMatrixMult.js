@@ -34,7 +34,7 @@ let matrix_mult_str = `let AColumns = A[0].length;
  * @param {object} jobData object holding the data used to create the job
  * @returns the object holding the data used to create the job
  */
-function createMatrixMultJob(jobData, jobOwner, JobQueue, calcMax) {
+function createMatrixMultJob(jobData, jobOwner, JobQueue) {
     const Jobdata = {
         jobId: jobData.jobId,
         jobOwner: jobOwner,
@@ -114,8 +114,8 @@ function divideMatrices(A, B, ARows, calcMax) {
 
     // Concatenate the returned arrays from the recursive calls
     arr = arr.concat(
-        divideMatrices(slicedMatrixA, B, Math.floor(ARows / 2)),
-        divideMatrices(slicedMatrixA2, B, Math.floor(ARows / 2))
+        divideMatrices(slicedMatrixA, B, Math.floor(ARows / 2), calcMax),
+        divideMatrices(slicedMatrixA2, B, Math.floor(ARows / 2), calcMax)
     );
     return arr;
 }

@@ -57,7 +57,7 @@ class Queue_linked_list_job {
         this.tail = null;
         this.size = 0;
         this.MaxSize = 10;
-        this.calcMax = Math.pow(1000, 3);
+        this.calcMax = Math.pow(1500, 3);
     }
 
     enQueue(jobId, jobType, jobOwner, algorithm, commonData = null) {
@@ -271,7 +271,8 @@ switch (jobtype) {
             jobtype,
             jobParsed.jobOwner,
             matrix_A,
-            matrix_B
+            matrix_B,
+            JobQueue
         );
         break;
     }
