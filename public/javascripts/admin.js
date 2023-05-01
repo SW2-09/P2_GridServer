@@ -116,8 +116,9 @@ async function generateTable(workerInfo, collectionvalue) {
     mainDiv.innerHTML = content.lookupTable;
     let jobTable = document.createElement("table");
     document.querySelector(".WorkerTable").append(jobTable);
-    if (collectionvalue === "users") {
-    let tableHeader =
+    switch (collectionvalue) {
+        case "users": {
+            let tableHeader =
         `<th>Worker name</th><th>Computation status</th> <th>Computations done</th> <th>Delete user</th>`;
 
     jobTable.insertRow(0).innerHTML = tableHeader;
@@ -128,41 +129,58 @@ async function generateTable(workerInfo, collectionvalue) {
         row.insertCell(1).innerHTML = element.compute;
         row.insertCell(2).innerHTML = element.tasks_computed;
         row.insertCell(3).innerHTML = `<button class="delete" id="delete${index}" value="${element.name}">Delete</button>`;
-        // row.insertCell(3).innerHTML = element.type;
     });
-}   else{
-    let tableHeader =
+            break;
+        }
+        case "workers": {
+            let tableHeader =
+        `<th>Worker name</th><th>Computations done</th><th>Delete user</th>`;
+
+    jobTable.insertRow(0).innerHTML = tableHeader;
+    
+    workerInfo.message.forEach((element,index) => {
+        let row = jobTable.insertRow(index + 1);
+        row.insertCell(0).innerHTML = element.workerId;
+        row.insertCell(1).innerHTML = element.jobs_computed;
+        row.insertCell(2).innerHTML = `<button class="delete" id="delete${index}" value="${element.workerId}">Delete</button>`;
+    });
+            break;
+        }
+        case "buyers": {
+            let tableHeader =
     `<th>Buyer name</th><th>Jobs array</th><th>More info</th><th>Delete Buyer</th><th>Reset data</th>`;
 
     jobTable.insertRow(0).innerHTML = tableHeader;
     workerInfo.message.forEach((element,index) => {
         let row = jobTable.insertRow(index + 1);
         row.insertCell(0).innerHTML = element.name;
-        
-        
+
         let dropdownElement = document.createElement("select");
         dropdownElement.className = "dropdownElement";
-        
 
         element.jobs_array.forEach((job, index) => {
             let option = document.createElement("option");
             option.value = job.jobId;
             option.text = job.jobId;
             dropdownElement.add(option);
-            
         });
-         // Create a wrapper div
-    let wrapperDiv = document.createElement("div");
-    wrapperDiv.className = "selectWrapper";
-    wrapperDiv.appendChild(dropdownElement);
+        // Create a wrapper div
+        let wrapperDiv = document.createElement("div");
+        wrapperDiv.className = "selectWrapper";
+        wrapperDiv.appendChild(dropdownElement);
 
         row.insertCell(1).append(wrapperDiv);
         row.insertCell(2).innerHTML = `<button class="moreInfo" id="moreInfo${index}">More info</button>`;
         row.insertCell(3).innerHTML = `<button class="delete" id="delete${index}" value="${element.name}">Delete</button>`;
         row.insertCell(4).innerHTML = `<button class="reset" id="reset${index}">Reset data</button>`;
     });
+            break;
+
+
+}
     }
 }
+
 
 
 async function loadSessionChart() {

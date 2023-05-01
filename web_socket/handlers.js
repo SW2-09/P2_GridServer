@@ -54,10 +54,12 @@ let handlers = {
                         return;
                     }
 
+                    console.log("----------------------------------------")
                     console.log("Solution recieved:");
                     serverdata.jobsComputed++;
                     console.log("jobID: " + messageParse["jobId"]);
                     console.log("taskID: " + messageParse["taskId"]);
+                    console.log("----------------------------------------")
 
                     //find the job in the queue
                     let currentSolution = messageParse["solution"];

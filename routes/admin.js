@@ -49,16 +49,28 @@ async function deleteCollection(collection) {
 async function deleteone(collection, name) {
     console.log("Deleting:" + name + " from " + collection);
     const collections = mongoose.connection.db.collection(collection);
+
+    if(collection === "workers") {
+        await collections.deleteOne(
+            {workerId: name},
+            function (err, result) {
+                if (err) {
+                    console.log(err);
+                }
+            }
+        );
+    } else {
+
+
     await collections.deleteOne(
         {name: name},
         function (err, result) {
             if (err) {
                 console.log(err);
-            } else {
-                console.log("Collection deleted");
             }
         }
     );
+    }
 }
 
 

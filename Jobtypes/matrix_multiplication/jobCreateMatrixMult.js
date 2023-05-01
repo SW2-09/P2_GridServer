@@ -6,7 +6,6 @@ let matrix_mult_str = `let AColumns = A[0].length;
     let Bcolumns = B[0].length;
     let Brows = B.length;
     if (AColumns !== Brows){
-        console.log("Matrix multiplication not possible with given matrices");
         return false;
     }
     let matrix_AxB = new Array(Arows);

@@ -183,82 +183,81 @@ mainDiv.addEventListener("click", async (e) => {
         const Uploadform = document.getElementById("uploadForm");
         const jobTitle = document.getElementById("jobTitle").value;
         const jobDescription = document.getElementById("jobDescription").value;
-
+        
+        if (!Uploadform.checkValidity() || jobType === "none") {
+            Uploadform.reportValidity();
+            e.target.disabled = false;
+            return
+        }
         try {
-            if (!Uploadform.checkValidity() || jobType === "none") {
-                Uploadform.reportValidity();
-                e.preventDefault();
-            } else {
-                e.target.disabled = true;
-                let formData;
-                switch (jobType) {
-                    case "matrixMult": {
-                        e.preventDefault();
-                        e.target.style.backgroundColor = "grey";
-                        const fileInput1 =
-                            document.getElementById("uploadFile");
-                        const fileInput2 =
-                            document.getElementById("uploadFile2");
+            e.target.disabled = true;
+            let formData;
+            switch (jobType) {
+                case "matrixMult": {
+                    e.preventDefault();
+                    e.target.style.backgroundColor = "grey";
+                    const fileInput1 =
+                        document.getElementById("uploadFile");
+                    const fileInput2 =
+                        document.getElementById("uploadFile2");
 
 
-                        const file1 = await validateAndParse(fileInput1.files[0], jobType);
-                        const file2 = await validateAndParse(fileInput2.files[0], jobType);
+                    const file1 = await validateAndParse(fileInput1.files[0], jobType);
+                    const file2 = await validateAndParse(fileInput2.files[0], jobType);
 
-                        console.log(file1);
 
-                        if (!validateMatrix(file1, file2)) {
-                            throw new Error("Error in validation");
-                        }
-
-                        formData = {
-                            jobTitle: jobTitle,
-                            jobId: Date.now() + "_" + jobTitle,
-                            jobDescription: jobDescription,
-                            jobType: jobType,
-                            uploadFile: file1,
-                            uploadFile2: file2,
-                        };
-                        console.log(formData.jobId);
-
-                        break;
+                    if (!validateMatrix(file1, file2)) {
+                        throw new Error("Error in validation");
                     }
-                    case "plus": {
-                        e.preventDefault();
-                        const fileInput = document.getElementById("uploadFile");
 
-                        const file = await validateAndParse(fileInput.files[0], jobType);
+                    formData = {
+                        jobTitle: jobTitle,
+                        jobId: Date.now() + "_" + jobTitle,
+                        jobDescription: jobDescription,
+                        jobType: jobType,
+                        uploadFile: file1,
+                        uploadFile2: file2,
+                    };
+                    console.log(formData.jobId);
 
-                        if (!validateList(file)) {
-                            throw new Error("Error in validation");
-                        }
-
-                        formData = {
-                            jobTitle: jobTitle,
-                            jobId: Date.now() + "_" + jobTitle,
-                            jobDescription: jobDescription,
-                            jobType: jobType,
-                            uploadFile: file,
-                        };
-
-                        break;
-                    }
-                    default:
-                        console.log("error jobtype not supported");
-                        break;
+                    break;
                 }
-                const response = await fetch("/buyer/upload", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(formData),
-                });
+                case "plus": {
+                    e.preventDefault();
+                    const fileInput = document.getElementById("uploadFile");
 
-                const result = await response.text();
-                console.log(result);
-                e.target.disabled = false;
-                doneUploading();
+                    const file = await validateAndParse(fileInput.files[0], jobType);
+
+                    if (!validateList(file)) {
+                        throw new Error("Error in validation");
+                    }
+
+                    formData = {
+                        jobTitle: jobTitle,
+                        jobId: Date.now() + "_" + jobTitle,
+                        jobDescription: jobDescription,
+                        jobType: jobType,
+                        uploadFile: file,
+                    };
+
+                    break;
+                }
+                default:
+                    console.log("error jobtype not supported");
+                    break;
             }
+            const response = await fetch("/buyer/upload", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.text();
+            console.log(result);
+            e.target.disabled = false;
+            doneUploading();
         } catch (err) {
             console.log(err);
             e.target.disabled = false;
