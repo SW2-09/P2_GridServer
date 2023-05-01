@@ -1,13 +1,15 @@
 export { buyerRouter };
-export { addMatrixToQue, addPlusToQue };
+
 import { checkForPendingJobs } from "../Jobtypes/taskFeed.js";
 import { JobQueue } from "../Jobtypes/jobQueue.js";
-import { matrix_mult_str } from "../Jobtypes/matrix_multiplication/calcAlgorithm.js";
-import { plus_str } from "../Jobtypes/plus/calcPlusAlgorithm.js";
+import { matrix_mult_str } from "../Jobtypes/matrix_multiplication/jobCreateMatrixMult.js";
+import { plus_str } from "../Jobtypes/plus/jobCreatePlus.js";
 import { createFolder, writeFile } from "../utility.js";
 import path from "path";
 import { sanitize } from "../utility.js";
 import fs from "fs";
+import { createMatrixMultJob } from "../Jobtypes/matrix_multiplication/jobCreateMatrixMult.js";
+import { createPlusJob } from "../Jobtypes/plus/jobCreatePlus.js";
 
 import express from "express";
 import fileUpload from "express-fileupload";
@@ -16,8 +18,8 @@ import { Buyer } from "../models/Buyer.js";
 import { Console } from "console";
 
 const buyerRouter = express.Router();
-const calcMax = Math.pow(1000, 3);
-const maxQueueSize = 10;
+
+
 
 /* ********************** *
  *    Logout handling     *
@@ -46,7 +48,7 @@ buyerRouter.use(fileUpload());
 
 buyerRouter.post("/upload", async (req, res) => {
     let dirPath = "";
-    if(JobQueue.size >= maxQueueSize){
+    if(JobQueue.size >= JobQueue.MaxSize){
         dirPath = pathPendingJobs;
     }else{
         dirPath = pathActiveJobs;
@@ -64,13 +66,13 @@ buyerRouter.post("/upload", async (req, res) => {
         switch (jobtype) {
             case "matrixMult": {
                 // in case the jobtype is matrix multiplication
-                Jobdata = createMatrixMultJob(req.body, name);
+                Jobdata = createMatrixMultJob(req.body, name, JobQueue);
                 break;
             }
             case "plus": {
                 // in case the jobtype is plus
 
-                Jobdata = createPlusJob(req.body, name);
+                Jobdata = createPlusJob(req.body, name, JobQueue);
 
                 break;
             }
@@ -180,163 +182,3 @@ buyerRouter.post("/delete", async (req, res) => {
     }
 });
 
-/**
- * function to create a job of type matrix multiplication and enqueue it to the job queue
- * @param {object} jobData object holding the data used to create the job
- * @returns the object holding the data used to create the job
- */
-function createMatrixMultJob(jobData, jobOwner) {
-    const Jobdata = {
-        jobId: jobData.jobId,
-        jobOwner: jobOwner,
-        Des: jobData.jobDescription,
-        type: jobData.jobType,
-        arrA: jobData.uploadFile,
-        arrB: jobData.uploadFile2,
-    };
-    let matrix_A = {
-        entries: Jobdata.arrA,
-        columns: Jobdata.arrA[0].length,
-        rows: Jobdata.arrA.length,
-    };
-    let matrix_B = {
-        entries: Jobdata.arrB,
-        columns: Jobdata.arrB[0].length,
-        rows: Jobdata.arrB.length,
-    };
-
-    // adding the job to the job queue
-    if(JobQueue.size < maxQueueSize){
-    addMatrixToQue(Jobdata.jobId, Jobdata.type, jobOwner, matrix_A, matrix_B);
-    }
-    console.log(JobQueue.size);
-    console.log(JobQueue.head.numOfTasks);
-
-    return Jobdata;
-}
-
-/**
- * function to create a job of type plus and enqueue it to the job queue
- * @param {object} jobData object holding the data for the job
- * @returns the object used to create the job
- */
-function createPlusJob(jobData, jobOwner) {
-    const Jobdata = {
-        jobId: jobData.jobTitle,
-        jobOwner: jobOwner,
-        Des: jobData.jobDescription,
-        type: jobData.jobType,
-        arr: jobData.uploadFile,
-    };
-
-    // adding the job to the job queue
-    if(JobQueue.size < maxQueueSize){
-    addPlusToQue(Jobdata.jobId, Jobdata.type, jobOwner, Jobdata.arr);
-    }
-    console.log(JobQueue.size);
-    console.log(JobQueue.head.numOfTasks);
-    return Jobdata;
-}
-
-/**
- * function for adding the matrix multiplication job to the job queue
- * @param {string} jobId the id of the job
- * @param {string} jobType the type of the job
- * @param {matrix} matrix_A the matrix A
- * @param {matrix} matrix_B the matrix B
- */
-function addMatrixToQue(jobId, jobType, jobOwner, matrix_A, matrix_B) {
-    let ARows = matrix_A.rows;
-    let A = matrix_A.entries;
-
-    let arr = divideMatrices(A, matrix_B, ARows);
-
-    // enqueue the job to the job queue
-    JobQueue.enQueue(jobId, jobType, jobOwner, matrix_mult_str, matrix_B);
-    for (let index = 0; index < arr.length; index++) {
-        JobQueue.head.subtaskList.enQueue(
-            JobQueue.head.jobId,
-            index,
-            arr[index]
-        );
-        JobQueue.head.numOfTasks++;
-    }
-}
-
-/**
- * function which will enqueue the plus job to the job queue
- * @param {string} jobId the id of the job
- * @param {string} jobType the type of the job
- * @param {array} entries the array which holds the numbers to be added
- */
-function addPlusToQue(jobId, jobType, jobOwner, entries) {
-    let entriesCopy = [];
-    for (let i = 0; i < entries.length; i++) {
-        entriesCopy[i] = entries[i];
-    }
-
-    let arr = dividePlus(entriesCopy);
-    // enqueue the job to the job queue
-    JobQueue.enQueue(jobId, jobType, jobOwner, plus_str);
-
-    for (let index = 0; index < arr.length; index++) {
-        JobQueue.head.subtaskList.enQueue(
-            JobQueue.head.jobId,
-            index,
-            arr[index]
-        );
-        JobQueue.head.numOfTasks++;
-    }
-}
-
-/**
- * recursive function to divide the matrix A into smaller matrices to fit desired calculation sizes for subtasks
- * @param {matrix} A the matrix A
- * @param {matrix} B the matrix B
- * @param {number} ARows the number of rows in the matrix A
- * @returns the array which will hold the sliced matrices of matrix A
- */
-function divideMatrices(A, B, ARows) {
-    let arr = []; // the array which will hold the sliced matrices of matrix A
-
-    if (ARows * B.rows * B.columns < calcMax) {
-        arr.push(A);
-        return arr;
-    }
-
-    if (ARows < 2) {
-        arr.push(A);
-        return arr;
-    }
-
-    let slicedMatrixA = A.slice(0, Math.floor(A.length / 2));
-    let slicedMatrixA2 = A.slice(Math.floor(A.length / 2), A.length);
-
-    // Concatenate the returned arrays from the recursive calls
-    arr = arr.concat(
-        divideMatrices(slicedMatrixA, B, Math.floor(ARows / 2)),
-        divideMatrices(slicedMatrixA2, B, Math.floor(ARows / 2))
-    );
-    return arr;
-}
-
-/**
- * function to divide the array of entries into smaller arrays to fit desired calculation sizes for subtasks
- * @param {array} entries the array holding the entries to be added toghether
- * @returns new array of smaller subtasks
- */
-function dividePlus(entries) {
-    let arr = []; // the array which will hold the smaller problems
-    let index = 0;
-    for (index; 1 < entries.length; index++) {
-        arr[index] = [];
-        arr[index][0] = entries.pop();
-        arr[index][1] = entries.pop();
-    }
-    if (entries.length == 1) {
-        arr[index] = [];
-        arr[index][0] = entries.pop();
-        arr[index][1] = 0;
-    }
-    return arr;
-}
