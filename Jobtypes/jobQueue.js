@@ -1,7 +1,10 @@
 export { JobQueue };
 import fs from "fs";
-import { addMatrixToQue, addPlusToQue } from "../routes/buyer.js";
+
 import { createFolder } from "../utility.js";
+import { addMatrixToQue} from "./matrix_multiplication/jobCreateMatrixMult.js";
+import { addPlusToQue } from "./plus/jobCreatePlus.js";
+
 //import{ arr , matrix_A, matrix_B } from "./matrixSplit.js";
 
 class Job {
@@ -53,6 +56,8 @@ class Queue_linked_list_job {
         this.head = null;
         this.tail = null;
         this.size = 0;
+        this.MaxSize = 10;
+        this.calcMax = Math.pow(1000, 3);
     }
 
     enQueue(jobId, jobType, jobOwner, algorithm, commonData = null) {

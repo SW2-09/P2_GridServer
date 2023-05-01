@@ -1,16 +1,18 @@
 export { subtaskFeeder, queueEmpty };
 export {checkForPendingJobs}
 
-import { addJobToQue } from "./jobQueue.js";
+import { JobQueue, addJobToQue } from "./jobQueue.js";
 import { Worker } from "../models/Workers.js";
 import { createFolder, writeFile } from "../utility.js";
 import { serverdata } from "../server.js";
 import { Buyer } from "../models/Buyer.js";
+import { combineMatrixResult } from "./matrix_multiplication/combineMatrixMult.js";
+import { combinePlusResult } from "./plus/combinePlus.js";
 import fs from "fs";
 
 //token for signifying that the queue is empty
 let queueEmpty = "empty";
-const maxQueueSize = 10;
+
 const subtaskTimeout = 30000; // 30 seconds
 
 // && JobQueue.tail.numOfTasks === JobQueue.tail.numOfSolutions)
@@ -44,7 +46,7 @@ function subtaskFeeder(JobQueue) {
             console.log("job done and finished");
             JobQueue.deQueue(); //remove the job from the queue
             console.log("JobQueue updated to size: " + JobQueue.size);
-            if (JobQueue.size <= maxQueueSize - 1) {
+            if (JobQueue.size <= JobQueue.MaxSize - 1) {
                 console.log(
                     "JobQueue is no longer full checking for pending jobs"
                 );
@@ -155,55 +157,25 @@ function checkPendingList(pending) {
  */
 
 async function jobDone(job) {
-    let Solution = [];
-    let workerArr = [];
-    let final;
+    
+    let finalResult;
 
-    if (job.jobType === "matrixMult") {
-        //if the job is a matrix multiplication job
-        final = [];
-
-        job.solutions.forEach((element) => {
-            //concatenates the solutions into one array to combine matrix
-            workerArr.push({
-                workerId: element.workerId,
-                computed: element.workerSolutions.length,
-            });
-
-            element.workerSolutions.forEach((e) => {
-                Solution[e.taskId] = e.solution;
-            });
-        });
-        countWork(workerArr);
-
-        Solution.forEach((e) => {
-            e.forEach((i) => {
-                final.push(i);
-            });
-        });
-    } else if (job.jobType === "plus") {
-        job.solutions.forEach((element) => {
-            workerArr.push({
-                workerId: element.workerId,
-                computed: element.workerSolutions.length,
-            });
-            for (
-                let index = 0;
-                index < element.workerSolutions.length;
-                index++
-            ) {
-                Solution[element.workerSolutions[index].taskId] =
-                    element.workerSolutions[index].solution[0];
-            }
-        });
-        countWork(workerArr);
-
-        final = 0;
-        Solution.forEach((e) => {
-            final += e;
-        });
+    switch (job.jobType) {
+        case "matrixMult":{
+            finalResult = combineMatrixResult(job);
+            break;
+        }
+        case "plus":{
+            finalResult = combinePlusResult(job);
+            break;
+        }
+        default:
+            console.log("job type not found - how can an unknown jobType be done?")
+            break;
     }
 
+    countWork(finalResult.workerArr);
+    
     //path for file
     let path = "./JobData/Solutions/" + job.jobOwner + "/";
 
@@ -211,7 +183,7 @@ async function jobDone(job) {
 
     let filename = path + job.jobId + ".json"; //creates a filename for the solution
 
-    writeFile(filename, Solution); //writes the solution to a file
+    writeFile(filename, finalResult.final); //writes the solution to a file
 
     deletePendingfile(job.jobId);
 
@@ -280,7 +252,7 @@ function checkForPendingJobs(Que) {
     addJobToQue(jobtype, jobParsed);
 
     fs.renameSync(path, "./JobData/ActiveJobs/" + jobParsed.jobId + ".json");
-    if (Que.size < maxQueueSize) {
+    if (Que.size < JobQueue.MaxSize) {
         checkForPendingJobs(Que);
     }
 }
