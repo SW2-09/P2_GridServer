@@ -11,15 +11,11 @@
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <body>
         <header>
-            <div class="header-content">
-                <span class="welcome-message">Welcome <%= name%></span>
-            </div>
-
             <div class="header-logo">
                 <label class="logo">GridFlix</label>
             </div>
             <div class="header-content">
-                <button id="nameButton">Welcome <%= name %></button>
+                <button id="nameButton"><%= name %></button>
                 <a href="/buyer/logout">Logout</a>
             </div>
         </header>
