@@ -11,7 +11,6 @@
 }
 
 body {
-    background-color: #f2f2f2;
     margin: 0;
     padding: 0;
     font-family: Arial, Helvetica, sans-serif;
@@ -69,7 +68,7 @@ body {
 .frontPageButtons,
 .JobsOverviewButtons {
     height: 20px;
-    background-color: rgb(10, 13, 59);
+    background-color: #333;
     border: none;
     color: #fff;
     border-radius: 3px;
@@ -79,9 +78,11 @@ body {
     transition: background-color 0.3s ease;
 }
 
+.JobsOverviewButtons:hover,
+.frontPageButtons:hover,
 .createjob-button:hover,
 .cancelJob:hover {
-    background-color: rgb(0, 174, 239);
+    background-color: #555;
 }
 
 table {
@@ -90,7 +91,8 @@ table {
     table-layout: fixed;
 }
 
-th, td {
+th,
+td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
@@ -109,20 +111,20 @@ tr:hover {
     background-color: #ddd;
 }
 
-.download_btn{
-    width:100%;
+.download_btn {
+    width: 100%;
     height: 100%;
-    display:block;
+    display: block;
 }
 
-.delete_btn{
-    width:100%;
+.delete_btn {
+    width: 100%;
     height: 100%;
-    display:block;
+    display: block;
 }
 
 .alert {
-    width:390px ;
+    width: 390px;
     padding: 20px;
     display: none;
     overflow: hidden;
@@ -134,7 +136,7 @@ tr:hover {
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
 }
-  
+
 .alertclosebtn {
     margin-left: 15px;
     color: black;
