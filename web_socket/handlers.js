@@ -181,9 +181,6 @@ function findTask(job, taskId) {
     if (currentTask.taskId === taskId) {
         return currentTask;
     } else if (currentTask.previous !== null) {
-        console.log("-----------------------------");
-        console.log(currentTask.previous.taskId);
-        console.log(taskId);
         while (
             currentTask.previous !== null &&
             currentTask.previous.taskId !== taskId

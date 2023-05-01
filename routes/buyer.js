@@ -1,5 +1,6 @@
 export { buyerRouter };
 export { addMatrixToQue, addPlusToQue };
+import { checkForPendingJobs } from "../Jobtypes/taskFeed.js";
 import { JobQueue } from "../Jobtypes/jobQueue.js";
 import { matrix_mult_str } from "../Jobtypes/matrix_multiplication/calcAlgorithm.js";
 import { plus_str } from "../Jobtypes/plus/calcPlusAlgorithm.js";
@@ -140,6 +141,8 @@ buyerRouter.post("/delete", async (req, res) => {
 
         // Delete from jobQueue
         JobQueue.removeJob(id);
+        checkForPendingJobs(JobQueue);
+
 
         // Delete from directory
         let absolutePathSolutions = path.resolve(

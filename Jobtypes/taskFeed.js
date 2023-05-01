@@ -1,4 +1,5 @@
 export { subtaskFeeder, queueEmpty };
+export {checkForPendingJobs}
 
 import { addJobToQue } from "./jobQueue.js";
 import { Worker } from "../models/Workers.js";
@@ -43,7 +44,7 @@ function subtaskFeeder(JobQueue) {
             console.log("job done and finished");
             JobQueue.deQueue(); //remove the job from the queue
             console.log("JobQueue updated to size: " + JobQueue.size);
-            if (JobQueue.size === maxQueueSize - 1) {
+            if (JobQueue.size <= maxQueueSize - 1) {
                 console.log(
                     "JobQueue is no longer full checking for pending jobs"
                 );
@@ -279,4 +280,7 @@ function checkForPendingJobs(Que) {
     addJobToQue(jobtype, jobParsed);
 
     fs.renameSync(path, "./JobData/ActiveJobs/" + jobParsed.jobId + ".json");
+    if (Que.size < maxQueueSize) {
+        checkForPendingJobs(Que);
+    }
 }
