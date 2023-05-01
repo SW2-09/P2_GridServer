@@ -101,7 +101,7 @@ async function dblookup(collectionvalue) {
         // console.log(responseJson.message);
     }
 
-    if (collectionvalue === "users") {
+    if (collectionvalue === "users" || collectionvalue === "workers") {
         generateTable(responseJson, collectionvalue);
     }
     if (collectionvalue === "buyers") {
