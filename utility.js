@@ -31,6 +31,7 @@ export function sanitize(str){
         .replace(/"/g, "")
         .replace(/'/g, "")
         .replace(/`/g, "")
-        .replace(/\//g, "");
+        .replace(/\//g, "")
+        .replace(/ /g, "_");
     return str.trim();
 }
