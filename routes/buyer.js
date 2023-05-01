@@ -266,7 +266,6 @@ function addMatrixToQue(jobId, jobType, jobOwner, matrix_A, matrix_B) {
  * @param {string} jobType the type of the job
  * @param {array} entries the array which holds the numbers to be added
  */
-
 function addPlusToQue(jobId, jobType, jobOwner, entries) {
     let entriesCopy = [];
     for (let i = 0; i < entries.length; i++) {
@@ -323,7 +322,6 @@ function divideMatrices(A, B, ARows) {
  * @param {array} entries the array holding the entries to be added toghether
  * @returns new array of smaller subtasks
  */
-
 function dividePlus(entries) {
     let arr = []; // the array which will hold the smaller problems
     let index = 0;
