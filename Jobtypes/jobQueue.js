@@ -1,7 +1,10 @@
 export { JobQueue };
 import fs from "fs";
+
+import { createFolder } from "../utility.js";
 import { addMatrixToQue} from "./matrix_multiplication/jobCreateMatrixMult.js";
 import { addPlusToQue } from "./plus/jobCreatePlus.js";
+
 //import{ arr , matrix_A, matrix_B } from "./matrixSplit.js";
 
 class Job {
@@ -226,12 +229,15 @@ let JobQueue = new Queue_linked_list_job();
 let dirActive = "./jobData/ActiveJobs";
 let dirPending = "./jobData/PendingJobs";
 
-if (fs.existsSync(dirActive)) {
-    addJobsToQueServerstart(dirActive);
+if (!fs.existsSync(dirActive)) {
+    createFolder(dirActive);
 }
-if (fs.existsSync(dirPending)) {
-    addJobsToQueServerstart(dirPending);
+if (!fs.existsSync(dirPending)) {
+    createFolder(dirPending);
 }
+
+addJobsToQueServerstart(dirActive);
+addJobsToQueServerstart(dirPending);
 
 //adding all the jobs in the pending jobs folder to the queue
 function addJobsToQueServerstart(dir) {    
