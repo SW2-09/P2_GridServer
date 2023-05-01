@@ -10,6 +10,7 @@ import fs from "fs";
 //token for signifying that the queue is empty
 let queueEmpty = "empty";
 const maxQueueSize = 10;
+const subtaskTimeout = 30000; // 30 seconds
 
 // && JobQueue.tail.numOfTasks === JobQueue.tail.numOfSolutions)
 
@@ -42,8 +43,10 @@ function subtaskFeeder(JobQueue) {
             console.log("job done and finished");
             JobQueue.deQueue(); //remove the job from the queue
             console.log("JobQueue updated to size: " + JobQueue.size);
-            if(JobQueue.size === maxQueueSize - 1){
-                console.log("JobQueue is no longer full checking for pending jobs");
+            if (JobQueue.size === maxQueueSize - 1) {
+                console.log(
+                    "JobQueue is no longer full checking for pending jobs"
+                );
                 checkForPendingJobs(JobQueue);
             }
             currentJob = JobQueue.tail; //set the current job to the new tail
@@ -133,7 +136,7 @@ function checkPendingList(pending) {
     let tail = pending.tail;
     let recent = true;
     while (recent && tail !== null) {
-        if (Date.now() - tail.sendTime > 30000) {
+        if (Date.now() - tail.sendTime > subtaskTimeout) {
             //if the task is outdated (30 seconds)
             serverdata.failedjobs++;
             tail.sendTime = Date.now();
@@ -260,22 +263,20 @@ function deletePendingfile(jobId) {
     });
 }
 
-function checkForPendingJobs(Que){
+function checkForPendingJobs(Que) {
     let PendingFolder = fs.readdirSync("./JobData/PendingJobs/");
-    if(PendingFolder.length===0){
+    if (PendingFolder.length === 0) {
         return;
     }
 
-    let firstEntry = PendingFolder[0]
-    
+    let firstEntry = PendingFolder[0];
+
     let path = "./JobData/PendingJobs/" + firstEntry;
     let jobParsed = JSON.parse(fs.readFileSync(path));
 
     let jobtype = jobParsed.type;
     console.log(jobtype);
     addJobToQue(jobtype, jobParsed);
-            
-    fs.renameSync(path, "./JobData/ActiveJobs/" + jobParsed.jobId + ".json");            
-}
-    
 
+    fs.renameSync(path, "./JobData/ActiveJobs/" + jobParsed.jobId + ".json");
+}
