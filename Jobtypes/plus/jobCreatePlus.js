@@ -19,7 +19,7 @@ return result;`;
  */
 function createPlusJob(jobData, jobOwner, JobQueue) {
     const Jobdata = {
-        jobId: jobData.jobTitle,
+        jobId: jobData.jobId,
         jobOwner: jobOwner,
         Des: jobData.jobDescription,
         type: jobData.jobType,
