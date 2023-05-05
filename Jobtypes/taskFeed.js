@@ -29,6 +29,7 @@ function subtaskFeeder(JobQueue) {
     let currentJob = JobQueue.tail;
 
     if (currentJob.subtaskList.tail === null) {
+        //processEmptySubtaskQueue(currentJob);
         //if there are no more subtasks in the subtask list
         console.log("No more subtasks to do. Checking pending list.");
         let failedJob = checkPendingList(currentJob.pendingList);
@@ -59,28 +60,7 @@ function subtaskFeeder(JobQueue) {
             }
         } else if (failedJob !== null) {
             //if there are failed subtasks
-            console.log("Job not done yet!");
-
-            let workerPack = {
-                //create a package to send to the worker
-                jobId: currentJob.jobId,
-                jobType: currentJob.jobType,
-                alg: currentJob.alg,
-                taskId: failedJob.taskId,
-                commonData: currentJob.commonData,
-                data: failedJob.data,
-            };
-            //set the send time of the subtask to know when the task is outdated
-            //failedJob.sendTime = Date.now();
-
-            console.log(
-                "sending job: " +
-                    workerPack.jobId +
-                    " task: " +
-                    workerPack.taskId +
-                    " to worker \n"
-            );
-            return workerPack;
+            return assignFailedSubtask(currentJob, failedJob);
         } else {
             //if there are no failed subtasks
             if (currentJob.previous !== null) {
@@ -95,32 +75,7 @@ function subtaskFeeder(JobQueue) {
         return null;
     }
     if (currentJob.subtaskList.tail !== null) {
-        let workerPack = {
-            //create a package to send to the worker
-            jobId: currentJob.jobId,
-            jobType: currentJob.jobType,
-            alg: currentJob.alg,
-            taskId: currentJob.subtaskList.tail.taskId,
-            commonData: currentJob.commonData,
-            data: currentJob.subtaskList.tail.data,
-        };
-        currentJob.pendingList.enQueue(
-            currentJob.jobId,
-            currentJob.subtaskList.tail.taskId,
-            currentJob.subtaskList.tail.data
-        ); //add the subtask to the pending list
-        //add the matrixA to the job in the pending list
-        currentJob.pendingList.head.sendTime = Date.now(); //set the send time of the subtask to know when the task is outdated
-        currentJob.subtaskList.deQueue(); //remove the subtask from the subtask list
-        console.log(
-            "sending job: " +
-                workerPack.jobId +
-                " task: " +
-                workerPack.taskId +
-                " to worker \n"
-        );
-
-        return workerPack;
+        return assignNewSubtask(currentJob);
     }
     return null; //if there are no more subtasks to do
 }
@@ -255,4 +210,58 @@ function checkForPendingJobs(Que) {
     if (Que.size < JobQueue.MaxSize) {
         checkForPendingJobs(Que);
     }
+}
+
+function assignNewSubtask(currentJob){
+    let workerPack = {
+        //create a package to send to the worker
+        jobId: currentJob.jobId,
+        jobType: currentJob.jobType,
+        alg: currentJob.alg,
+        taskId: currentJob.subtaskList.tail.taskId,
+        commonData: currentJob.commonData,
+        data: currentJob.subtaskList.tail.data,
+    };
+    currentJob.pendingList.enQueue(
+        currentJob.jobId,
+        currentJob.subtaskList.tail.taskId,
+        currentJob.subtaskList.tail.data
+    ); //add the subtask to the pending list
+    //add the matrixA to the job in the pending list
+    currentJob.pendingList.head.sendTime = Date.now(); //set the send time of the subtask to know when the task is outdated
+    currentJob.subtaskList.deQueue(); //remove the subtask from the subtask list
+    console.log(
+        "sending job: " +
+            workerPack.jobId +
+            " task: " +
+            workerPack.taskId +
+            " to worker \n"
+    );
+
+    return workerPack;
+}
+
+function assignFailedSubtask(currentJob, failedJob){
+    console.log("Job not done yet!");
+
+            let workerPack = {
+                //create a package to send to the worker
+                jobId: currentJob.jobId,
+                jobType: currentJob.jobType,
+                alg: currentJob.alg,
+                taskId: failedJob.taskId,
+                commonData: currentJob.commonData,
+                data: failedJob.data,
+            };
+            //set the send time of the subtask to know when the task is outdated
+            //failedJob.sendTime = Date.now();
+
+            console.log(
+                "sending job: " +
+                    workerPack.jobId +
+                    " task: " +
+                    workerPack.taskId +
+                    " to worker \n"
+            );
+            return workerPack;
 }

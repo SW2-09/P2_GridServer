@@ -30,7 +30,7 @@ let handlers = {
         return (message) => {
             try {
                 let messageParse = JSON.parse(message);
-                if (messageParse["data"] === "init") {
+                if (messageParse["data"] === "connected") {
                     console.log(
                         "worker connected: " + messageParse["workerId"]
                     );
@@ -124,7 +124,7 @@ let handlers = {
 
         console.log("New client connected");
 
-        ws.send("init");
+        ws.send("connected");
 
         ws.on("message", handlers.messageHandler(ws));
 
