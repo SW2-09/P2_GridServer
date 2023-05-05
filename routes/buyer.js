@@ -2,8 +2,6 @@ export { buyerRouter };
 
 import { checkForPendingJobs } from "../Jobtypes/taskFeed.js";
 import { JobQueue } from "../Jobtypes/jobQueue.js";
-import { matrix_mult_str } from "../Jobtypes/matrix_multiplication/jobCreateMatrixMult.js";
-import { plus_str } from "../Jobtypes/plus/jobCreatePlus.js";
 import { createFolder, writeFile } from "../utility.js";
 import path from "path";
 import { sanitize } from "../utility.js";
@@ -15,7 +13,6 @@ import express from "express";
 import fileUpload from "express-fileupload";
 
 import { Buyer } from "../models/Buyer.js";
-import { Console } from "console";
 
 const buyerRouter = express.Router();
 
