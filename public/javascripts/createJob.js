@@ -400,14 +400,18 @@ function validateMatrix(matrixA, matrixB) {
 }
 
 function validateList(list) {
+    console.log(list);
     try {
+        if(list.length > 100) {
+            throw new Error("List is too long, this is a slow algorithm.");
+        }
         for (let i = 0; i < list.length; i++) {
             if (isNaN(list[i])) {
                 throw new Error("File is corrupt.");
             }
         }
     } catch (err) {
-        alert(err + "Please try again");
+        alert(err + " Please try again");
         return false;
     }
     return true;

@@ -283,7 +283,8 @@ switch (jobtype) {
             jobParsed.JobId,
             jobtype,
             jobParsed.jobOwner,
-            jobParsed.arr
+            jobParsed.arr,
+            JobQueue
         );
 
         break;
