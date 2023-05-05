@@ -123,14 +123,13 @@ let handlers = {
         //callback for when a new client connects
 
         console.log("New client connected");
-        serverdata.connectedworkers.push(ws);
 
         ws.send("init");
 
         ws.on("message", handlers.messageHandler(ws));
 
         ws.on("close", () => {
-            console.log(serverdata.connectedworkers.indexOf(ws));
+            //remove the worker from the connected workers list
             serverdata.connectedworkers.splice(
                 serverdata.connectedworkers.indexOf(ws),
                 1

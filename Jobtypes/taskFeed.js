@@ -89,10 +89,10 @@ function subtaskFeeder(JobQueue) {
         }
     }
 
-    if (JobQueue.size < 0) {
+    if (JobQueue.size === 0) {
         //if there are no jobs in the queue
         console.log("No work to do. Waiting for new job.");
-        return 0;
+        return null;
     }
     if (currentJob.subtaskList.tail !== null) {
         let workerPack = {
