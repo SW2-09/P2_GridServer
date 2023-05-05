@@ -1,5 +1,6 @@
 const mainDiv = document.getElementById("mainDiv");
 
+// HTML content for the main div, used for navigation between pages when logged in a buyer
 const content = {
     CreateJob: `<div class=createJobSubheader>
 <h1>Job creation</h1>
@@ -40,7 +41,6 @@ const content = {
   <div>
     <h1>Your jobs</h1>
     <div class="JobTable">
-
     </div>
     <div>
     <button id="jobInfo-button" class="JobsOverviewButtons">Update joblist</button>
@@ -87,78 +87,41 @@ const content = {
 
 mainDiv.innerHTML = content.FrontPage;
 
-// ************** //
-// Eventlisteners //
-// ************** //
-
-// Delete Job
-mainDiv.addEventListener("click", async (e) => {
-    if (e.target.classList.contains("delete_btn")) {
-        try {
-            const response = await fetch("/buyer/delete", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: e.target.id }),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP post error! ${response.status}`);
-            }
-            const result = await response.text();
-            console.log(result);
-            generateTable()
-
-        } catch (err) {
-            console.error("Error: " + err);
-        }
-    }
-});
-// Download Job
-mainDiv.addEventListener("click", async (e) => {
-    if (e.target.classList.contains("download_btn")) {
-        const response = await fetch("/buyer/download", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ id: e.target.id }),
-        });
-        let blob = await response.blob();
-        //creates tempoary URL
-        let fileURL = window.URL.createObjectURL(blob);
-
-        document.getElementById(
-            e.target.id
-        ).innerHTML = `<a href=${fileURL} download=${e.target.id}> Download</a>`;
-    }
-});
-
-// Create job button
+// Click event listener for the main div
 mainDiv.addEventListener("click", (e) => {
     if (e.target.id === "createJob-button") {
         mainDiv.innerHTML = content.CreateJob;
     }
-});
-
-// Jobs overview button
-mainDiv.addEventListener("click", (e) => {
+    // Jobs overview button
     if (e.target.id === "jobInfo-button") {
         generateTable();
     }
-});
-
-mainDiv.addEventListener("click", (e) => {
+    // Cancel job button
     if (e.target.classList.contains("alertclosebtn")) {
         document.querySelector(".alert").style.display = "none";
     }
-});
-// Back to homepage
-mainDiv.addEventListener("click", (e) => {
+    // go back button
     if (e.target.id === "goBack-btn") {
         mainDiv.innerHTML = content.FrontPage;
     }
+
+    //create job button
+    if (e.target.id === "submit") {
+        createJob(e);
+    }
+
+    //download solution button
+    if (e.target.classList.contains("download_btn")) {
+        downloadJob(e);
+    }
+
+    //delete job button
+    if (e.target.classList.contains("delete_btn")) {
+        deleteJob(e);
+    }
 });
 
+// Change event listener for the main div
 mainDiv.addEventListener("change", (e) => {
     if (e.target.id === "jobType") {
         if (e.target.value === "matrixMult") {
@@ -169,98 +132,6 @@ mainDiv.addEventListener("change", (e) => {
                 content.plusUpload;
         } else {
             document.getElementById("Uploadtype").innerHTML = "";
-        }
-    }
-});
-
-// ******************** //
-// Upload functionality //
-// ******************** //
-
-mainDiv.addEventListener("click", async (e) => {
-    if (e.target.id === "submit") {
-        const jobType = document.getElementById("jobType").value;
-        const Uploadform = document.getElementById("uploadForm");
-        const jobTitle = document.getElementById("jobTitle").value;
-        const jobDescription = document.getElementById("jobDescription").value;
-        
-        if (!Uploadform.checkValidity() || jobType === "none") {
-            Uploadform.reportValidity();
-            e.target.disabled = false;
-            return
-        }
-        try {
-            e.target.disabled = true;
-            let formData;
-            switch (jobType) {
-                case "matrixMult": {
-                    e.preventDefault();
-                    e.target.style.backgroundColor = "grey";
-                    const fileInput1 =
-                        document.getElementById("uploadFile");
-                    const fileInput2 =
-                        document.getElementById("uploadFile2");
-
-
-                    const file1 = await validateAndParse(fileInput1.files[0], jobType);
-                    const file2 = await validateAndParse(fileInput2.files[0], jobType);
-
-
-                    if (!validateMatrix(file1, file2)) {
-                        throw new Error("Error in validation");
-                    }
-
-                    formData = {
-                        jobTitle: jobTitle,
-                        jobId: Date.now() + "_" + jobTitle,
-                        jobDescription: jobDescription,
-                        jobType: jobType,
-                        uploadFile: file1,
-                        uploadFile2: file2,
-                    };
-                    console.log(formData.jobId);
-
-                    break;
-                }
-                case "plus": {
-                    e.preventDefault();
-                    const fileInput = document.getElementById("uploadFile");
-
-                    const file = await validateAndParse(fileInput.files[0], jobType);
-
-                    if (!validateList(file)) {
-                        throw new Error("Error in validation");
-                    }
-
-                    formData = {
-                        jobTitle: jobTitle,
-                        jobId: Date.now() + "_" + jobTitle,
-                        jobDescription: jobDescription,
-                        jobType: jobType,
-                        uploadFile: file,
-                    };
-
-                    break;
-                }
-                default:
-                    console.log("error jobtype not supported");
-                    break;
-            }
-            const response = await fetch("/buyer/upload", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData),
-            });
-
-            const result = await response.text();
-            console.log(result);
-            e.target.disabled = false;
-            doneUploading();
-        } catch (err) {
-            console.log(err);
-            e.target.disabled = false;
         }
     }
 });
@@ -314,6 +185,98 @@ function parseCsvToJson(file, jobType) {
             },
         });
     });
+}
+
+async function createJob(e) {
+    const jobType = document.getElementById("jobType").value;
+    const Uploadform = document.getElementById("uploadForm");
+    const jobTitle = document.getElementById("jobTitle").value;
+    const jobDescription = document.getElementById("jobDescription").value;
+
+    if (!Uploadform.checkValidity() || jobType === "none") {
+        Uploadform.reportValidity();
+        e.target.disabled = false;
+        return;
+    }
+    try {
+        e.target.disabled = true;
+        let formData;
+        switch (jobType) {
+            case "matrixMult": {
+                e.preventDefault();
+                e.target.style.backgroundColor = "grey";
+                const fileInput1 = document.getElementById("uploadFile");
+                const fileInput2 = document.getElementById("uploadFile2");
+
+                const file1 = await validateAndParse(
+                    fileInput1.files[0],
+                    jobType
+                );
+                const file2 = await validateAndParse(
+                    fileInput2.files[0],
+                    jobType
+                );
+
+                if (!validateMatrix(file1, file2)) {
+                    throw new Error("Error in validation");
+                }
+
+                formData = {
+                    jobTitle: jobTitle,
+                    jobId: Date.now() + "_" + jobTitle,
+                    jobDescription: jobDescription,
+                    jobType: jobType,
+                    uploadFile: file1,
+                    uploadFile2: file2,
+                };
+                console.log(formData.jobId);
+
+                break;
+            }
+            case "plus": {
+                e.preventDefault();
+                const fileInput = document.getElementById("uploadFile");
+
+                const file = await validateAndParse(
+                    fileInput.files[0],
+                    jobType
+                );
+
+                if (!validateList(file)) {
+                    throw new Error("Error in validation");
+                }
+
+                formData = {
+                    jobTitle: jobTitle,
+                    jobId: Date.now() + "_" + jobTitle,
+                    jobDescription: jobDescription,
+                    jobType: jobType,
+                    uploadFile: file,
+                };
+
+                break;
+            }
+            default:
+                console.log("error jobtype not supported");
+                break;
+        }
+        const response = await fetch("/buyer/upload", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
+
+        const result = await response.text();
+        console.log(result);
+        e.target.disabled = false;
+        doneUploading();
+    } catch (err) {
+        console.log(err);
+        e.target.style.backgroundColor = "#333333";
+        e.target.disabled = false;
+    }
 }
 
 /**
@@ -400,14 +363,18 @@ function validateMatrix(matrixA, matrixB) {
 }
 
 function validateList(list) {
+    console.log(list);
     try {
+        if (list.length > 100) {
+            throw new Error("List is too long, this is a slow algorithm.");
+        }
         for (let i = 0; i < list.length; i++) {
             if (isNaN(list[i])) {
                 throw new Error("File is corrupt.");
             }
         }
     } catch (err) {
-        alert(err + "Please try again");
+        alert(err + " Please try again");
         return false;
     }
     return true;
@@ -417,11 +384,11 @@ function doneUploading() {
     mainDiv.innerHTML = content.CreateJob;
     let alert = document.createElement("div");
     let alertClose = document.createElement("button");
-    
+
     alertClose.classList.add("alertclosebtn");
     document.querySelector(".alert").style.display = "flex";
     setTimeout(() => {
-    document.querySelector(".alert").style.opacity = "1";
+        document.querySelector(".alert").style.opacity = "1";
     }, 100);
     document.querySelector(".alert").append(alert);
     document.querySelector(".alert").append(alertClose);
@@ -435,17 +402,13 @@ function doneUploading() {
             document.querySelector(".alert").style.display = "none";
         }, 1000);
     }, 4000);
-
 }
 
 async function validateAndParse(file, jobType) {
-    const allowedFileFormat = [
-        "csv",
-        "json",
-    ]; //allows JSON and csv formats
+    const allowedFileFormat = ["csv", "json"]; //allows JSON and csv formats
     const maxFileSize = 50 * 1024 * 1024; // 50 MB
     const fileEnding = file.name.split(".").pop().toLowerCase();
-    
+
     if (!allowedFileFormat.includes(fileEnding)) {
         alert("Please choose a valid file format(csv or json)");
         return;
@@ -456,9 +419,42 @@ async function validateAndParse(file, jobType) {
         return;
     }
 
-    let result = await parseCsvToJson(
-        file,
-        jobType
-    );
+    let result = await parseCsvToJson(file, jobType);
     return result;
+}
+
+async function downloadJob(e) {
+    const response = await fetch("/buyer/download", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: e.target.id }),
+    });
+    let blob = await response.blob();
+    //creates tempoary URL
+    let fileURL = window.URL.createObjectURL(blob);
+
+    document.getElementById(
+        e.target.id
+    ).innerHTML = `<a href=${fileURL} download=${e.target.id}> Download</a>`;
+}
+
+async function deleteJob(e) {
+    try {
+        const response = await fetch("/buyer/delete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: e.target.id }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP post error! ${response.status}`);
+        }
+        const result = await response.text();
+        console.log(result);
+        generateTable();
+    } catch (err) {
+        console.error("Error: " + err);
+    }
 }

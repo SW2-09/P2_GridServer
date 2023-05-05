@@ -5,8 +5,11 @@ let result = [];
  result.push(A+B)*/
 
 let plus_str = `let result = [];
-for (let i = 0; i < 1000000; i++) {  
-    let x = Math.random() * 100;
+for (let i = 0; i < 1000000; i++) {
+    for (let j = 0; j < 1000; j++) {
+
+        let x = Math.random() * 100;
+    }
 }
 
 result.push(A+B);

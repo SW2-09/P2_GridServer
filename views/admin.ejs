@@ -1,32 +1,23 @@
-<html lang="en">
-    <link href="stylesheets/admin.css" rel="stylesheet" />
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
-    </head>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <body>
-        <header>
-            <div class="header-content">
-                <div><%=name %></div>
-                <a class="logoutButton" href="/buyer/logout">Logout</a>
-            </div>
-        </header>
-        <div class="content">
-            <button class="purgeButton" id="purge">DB Purge</button>
-            <select name="collection" class="collection" id="collection">
-                <option value="status">Status</option>
-                <option value="users">Users</option>
-                <option value="buyers">Buyers</option>
-                <option value="workers">workers</option>
-            </select>
-        </div>
-        <div id="mainDiv"></div>
-        
+<link href="stylesheets/admin.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    </body>
-    
-    <script src="javascripts/admin.js"></script>
-</html>
+<body>
+    <header>
+        <div class="header-content">
+            <div><%=name %></div>
+            <a class="logoutButton" href="/buyer/logout">Logout</a>
+        </div>
+    </header>
+    <div class="content">
+        <button class="purgeButton" id="purge">DB Purge</button>
+        <select name="collection" class="collection" id="collection">
+            <option value="status">Status</option>
+            <option value="users">Users</option>
+            <option value="buyers">Buyers</option>
+            <option value="workers">workers</option>
+        </select>
+    </div>
+    <div id="mainDiv"></div>
+</body>
+
+<script src="javascripts/admin.js"></script>

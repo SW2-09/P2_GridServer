@@ -63,7 +63,7 @@ app.use(
         name: "Gridserver",
         secret: "GridSecret",
         resave: false,
-        saveUninitialized: true,
+        saveUninitialized: false,
         store: store,
         cookie: { maxAge: 1000 * 60 * 60 * 24 * 7 }, // 1 week
     })
@@ -103,6 +103,7 @@ const serverdata = {
     serverstart: serverstart,
     connectedworkers: [],
 };
+
 app.listen(port, () =>
     console.log(`Server has been started on http://localhost:${port}`)
 );

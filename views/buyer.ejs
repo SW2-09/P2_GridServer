@@ -1,28 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Buyer page</title>
-        <link href="stylesheets/buyer.css" rel="stylesheet" type="text/css" />
-        <link rel="stylesheet" href="/stylesheets/navigationsbar.css" />
-    </head>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-    <body>
-        <header>
-            <div class="header-logo">
-                <label class="logo">GridFlix</label>
-            </div>
-            <div class="header-content">
-                <button id="nameButton"><%= name %></button>
-                <a href="/buyer/logout">Logout</a>
-            </div>
-        </header>
-        <div class="mainDiv" id="mainDiv"></div>
-    </body>
-    <script>
-        window.userName = "<%= name %>";
-    </script>
-    <script src="javascripts/createJob.js"></script>
-</html>
+<link href="stylesheets/buyer.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="/stylesheets/navigationsbar.css" />
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<body>
+    <header>
+        <div class="header-logo">
+            <label class="logo">GridFlix</label>
+        </div>
+        <div class="header-content">
+            <button id="nameButton"><%= name %></button>
+            <a href="/buyer/logout">Logout</a>
+        </div>
+    </header>
+    <div class="mainDiv" id="mainDiv"></div>
+</body>
+<script>
+    window.userName = "<%= name %>";
+</script>
+<script src="javascripts/createJob.js"></script>
