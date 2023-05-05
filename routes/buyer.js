@@ -140,7 +140,7 @@ buyerRouter.post("/delete", async (req, res) => {
 
         // Delete from jobQueue
         JobQueue.removeJob(id);
-        checkForPendingJobs(JobQueue);
+        checkForPendingJobs();
 
 
         // Delete from directory
