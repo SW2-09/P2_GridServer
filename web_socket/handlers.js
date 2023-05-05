@@ -20,8 +20,8 @@ let handlers = {
             ws.send(JSON.stringify(next_task));
         } else {
             //if there is no subtask to send
-            console.log("sending 0 to: " + workerId);
-            ws.send("0");
+            console.log("sending standby to: " + workerId);
+            ws.send("standby");
         }
     },
     messageHandler: function (ws) {
@@ -30,8 +30,18 @@ let handlers = {
         return (message) => {
             try {
                 let messageParse = JSON.parse(message);
-
-                if (messageParse["data"] === "ready for work") {
+                if (messageParse["data"] === "init") {
+                    console.log(
+                        "worker connected: " + messageParse["workerId"]
+                    );
+                    let workerdata = {
+                        workerId: messageParse["workerId"],
+                        workerSocket: ws,
+                    };
+                    serverdata.connectedworkers.push(workerdata);
+                    handlers.sendSubtask(ws, messageParse["workerId"]);
+                }
+                else if (messageParse["data"] === "ready for work") {
                     //if the worker is ready for work
                     //send_subtask(ws, JobQueue); //send a subtask to the worker
                     handlers.sendSubtask(ws, messageParse["workerId"]);
@@ -54,12 +64,12 @@ let handlers = {
                         return;
                     }
 
-                    console.log("----------------------------------------")
+                    console.log("----------------------------------------");
                     console.log("Solution recieved:");
                     serverdata.jobsComputed++;
                     console.log("jobID: " + messageParse["jobId"]);
                     console.log("taskID: " + messageParse["taskId"]);
-                    console.log("----------------------------------------")
+                    console.log("----------------------------------------");
 
                     //find the job in the queue
                     let currentSolution = messageParse["solution"];
@@ -96,8 +106,7 @@ let handlers = {
                         currentJob.numOfSolutions++;
                     }
                     currentJob.pendingList.removeTask(messageParse["taskId"]); //remove the task from the pending list
-                    // console.log("job solutions" + JobQueue.tail.solutions.length);
-                    // console.log(messageParse["solution"]);
+                   
                     handlers.sendSubtask(ws, messageParse["workerId"]);
                 }
             } finally {
@@ -116,7 +125,7 @@ let handlers = {
         console.log("New client connected");
         serverdata.connectedworkers.push(ws);
 
-        ws.send("0");
+        ws.send("init");
 
         ws.on("message", handlers.messageHandler(ws));
 
@@ -152,8 +161,10 @@ function findJob(jobId) {
     if (currentJob.jobId === jobId) {
         return currentJob;
     } else if (currentJob.previous !== null) {
-        while (currentJob.previous !== null &&
-            currentJob.previous.jobId != jobId) {
+        while (
+            currentJob.previous !== null &&
+            currentJob.previous.jobId != jobId
+        ) {
             currentJob = currentJob.previous;
         }
     }
