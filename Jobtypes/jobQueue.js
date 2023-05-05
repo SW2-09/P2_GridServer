@@ -241,7 +241,6 @@ if (JobQueue.size < JobQueue.maxSize){
     addJobsToQueServerstart(dirPending);
 } 
 
-
 //adding all the jobs in the pending jobs folder to the queue
 function addJobsToQueServerstart(dir) {    
         fs.readdirSync(dir).forEach((job) => {
@@ -249,7 +248,7 @@ function addJobsToQueServerstart(dir) {
         console.log("creating job: ");
         let jobtype = jobParsed.type;
         console.log(jobtype);
-        if (JobQueue.size < JobQueue.maxSize){
+        if (JobQueue.size < JobQueue.MaxSize){
             addJobToQue(jobtype, jobParsed);
         } 
     });
