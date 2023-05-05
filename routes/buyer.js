@@ -59,17 +59,27 @@ buyerRouter.post("/upload", async (req, res) => {
         const jobDescription = sanitize(req.body.jobDescription);
         let jobtype = req.body.jobType;
         let Jobdata;
+        let dataObject = {
+            jobTitle: jobTitle,
+            jobId: jobId,
+            jobDescription: jobDescription,
+            jobType: jobtype,
+            completed: false,
+            uploadFile: req.body.uploadFile,
+            uploadFile2: req.body.uploadFile2,
+
+        }
 
         switch (jobtype) {
             case "matrixMult": {
                 // in case the jobtype is matrix multiplication
-                Jobdata = createMatrixMultJob(req.body, name, JobQueue);
+                Jobdata = createMatrixMultJob(dataObject, name, JobQueue);
                 break;
             }
             case "plus": {
                 // in case the jobtype is plus
 
-                Jobdata = createPlusJob(req.body, name, JobQueue);
+                Jobdata = createPlusJob(dataObject, name, JobQueue);
 
                 break;
             }

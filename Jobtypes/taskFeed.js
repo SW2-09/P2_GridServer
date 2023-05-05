@@ -22,13 +22,14 @@ const subtaskTimeout = 30000; // 30 seconds
  * @param JobQueue - The queue of all jobs submitted by buyers
  * @param workerPack - The package of data to be sent to the worker
  */
-function subtaskFeeder(JobQueue) {
+function subtaskFeeder() {
 
     if (isJobQueueEmpty()) {//if the queue is empty
         return null;
     } 
     let currentJob = FirstJobInQueue(); //the current job is the first job in the queue
 
+    
     if (isSubtaskQueueEmpty(currentJob)) { //if there are no more subtasks in the subtask list
         console.log("No more subtasks to do. Checking pending list.");
         let failedSubtask = checkForFailedSubtask(currentJob.pendingList);
@@ -61,9 +62,11 @@ function subtaskFeeder(JobQueue) {
         console.log("No work to do. Waiting for new job.");
         return null;
     }
+    
     if (!isSubtaskQueueEmpty(currentJob)) { //if there are subtasks to do
         return assignNewSubtask(currentJob);
     }
+    
     return null; //if there are no more subtasks to do
 }
 
@@ -99,7 +102,7 @@ function checkForFailedSubtask(pending) {
  * @param { job class} job is the job that is done
  */
 async function jobDone(job) {
-    
+    console.log("starting jobDone")
     let finalResult;
 
     switch (job.jobType) {
@@ -126,8 +129,9 @@ async function jobDone(job) {
     let filename = path + job.jobId + ".json"; //creates a filename for the solution
 
     writeFile(filename, finalResult.final); //writes the solution to a file
-
-    deletePendingfile(job.jobId);
+    console.log("kig her")
+    console.log(job.jobId)
+    deletePendingfile(job.jobId); //deletes the pending file
 
     //Update the job.completed in mongoDB
     await Buyer.findOneAndUpdate(
@@ -312,7 +316,7 @@ function isThereFailedSubtasks(failedSubtask){
 }
 
 function isSubtaskQueueEmpty(job){
-    if(job.subtasklist.tail === null){
+    if(job.subtaskList.tail === null){
         return true;
     }
     else

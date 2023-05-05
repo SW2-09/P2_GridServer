@@ -14,7 +14,7 @@ import { serverdata } from "../server.js";
 let handlers = {
     subtaskFeeder: subtaskFeeder,
     sendSubtask: function send_subtask(ws, workerId) {
-        let next_task = handlers.subtaskFeeder(JobQueue);
+        let next_task = handlers.subtaskFeeder();
         if (next_task !== null) {
             //if there is a subtask to send
             ws.send(JSON.stringify(next_task));
@@ -42,6 +42,7 @@ let handlers = {
                     handlers.sendSubtask(ws, messageParse["workerId"]);
                 }
                 else if (messageParse["data"] === "ready for work") {
+                    console.log("her")
                     //if the worker is ready for work
                     //send_subtask(ws, JobQueue); //send a subtask to the worker
                     handlers.sendSubtask(ws, messageParse["workerId"]);
