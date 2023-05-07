@@ -16,10 +16,17 @@ function checkLoggedIn(req, res, next) {
 }
 function checkRole(roleToCheck) {
     return function (req, res, next) {
-        if (req.isAuthenticated() && req.user.role === roleToCheck) {
-            console.log(roleToCheck);
+        if (!req.isAuthenticated()) {
+            res.redirect("/");
+        }
+        else if (req.user.role === roleToCheck) {
             return next();
         }
-        res.status(401).send("Unauthorized");
+        else if(req.user.role === "buyer"){
+            res.redirect("/buyer");
+        } 
+        else if(req.user.role === "admin"){
+            res.redirect("/admin");
+        }
     };
 }

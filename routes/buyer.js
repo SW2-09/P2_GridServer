@@ -44,10 +44,6 @@ const pathPendingJobs = "./JobData/PendingJobs/";
 buyerRouter.use(fileUpload());
 
 buyerRouter.post("/upload", async (req, res) => {
-    if(req.user.role !== "buyer"){
-        res.send("You are not a buyer");
-        return;
-    }
     let dirPath = "";
     if(JobQueue.size >= JobQueue.MaxSize){
         dirPath = pathPendingJobs;
@@ -146,6 +142,11 @@ buyerRouter.post("/delete", async (req, res) => {
         const name = sanitize(req.user.name);
         const id = sanitize(req.body.id);
         //Delete from DB
+        const jobOwner = await Buyer.findOne({"jobs_array.jobId": id});
+        if(jobOwner.name !== name){
+            return res.status(401).json({message: "You are not the owner of this job"});
+        }
+
         await Buyer.findOneAndUpdate(
             { name: name }, //filter
             { $pull: { jobs_array: { jobId: id } } },

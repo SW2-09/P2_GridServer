@@ -32,7 +32,7 @@ router.get("/buyer", ensureAuthenticated, (req, res) => {
 });
 
 //admin page
-router.get("/admin", checkRole("admin"), (req, res) => {
+router.get("/admin", ensureAuthenticated, checkRole("admin"), (req, res) => {
     const name = sanitize(req.user.name);
     res.render("admin", { name: name });
 });
