@@ -76,9 +76,11 @@ app.use(
 app.use(passport.initialize()); //This is needed to initialize passport
 app.use(passport.session()); //This is needed to keep the user logged in
 
+
+import { checkRole } from "./config/authentication.js";
 //Buyer page routing
 import { buyerRouter } from "./routes/buyer.js";
-app.use("/buyer", buyerRouter);
+app.use("/buyer", checkRole("buyer"), buyerRouter);
 
 //Index page routing
 import { router } from "./routes/index.js";
@@ -86,7 +88,8 @@ app.use("/", router);
 
 //Admin page routing
 import { adminRouter } from "./routes/admin.js";
-app.use("/admin", adminRouter);
+
+app.use("/admin", checkRole("admin"), adminRouter);
 
 /* ** ROUTES **
 This is great practice to get into. This way we can have different nested routes in different files.

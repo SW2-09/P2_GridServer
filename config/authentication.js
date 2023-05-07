@@ -1,4 +1,4 @@
-export { ensureAuthenticated, checkLoggedIn };
+export { ensureAuthenticated, checkLoggedIn, checkRole };
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
@@ -13,4 +13,13 @@ function checkLoggedIn(req, res, next) {
         return res.redirect("/buyer");
     }
     next();
+}
+function checkRole(roleToCheck) {
+    return function (req, res, next) {
+        if (req.isAuthenticated() && req.user.role === roleToCheck) {
+            console.log(roleToCheck);
+            return next();
+        }
+        res.status(401).send("Unauthorized");
+    };
 }

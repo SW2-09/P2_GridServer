@@ -44,6 +44,10 @@ const pathPendingJobs = "./JobData/PendingJobs/";
 buyerRouter.use(fileUpload());
 
 buyerRouter.post("/upload", async (req, res) => {
+    if(req.user.role !== "buyer"){
+        res.send("You are not a buyer");
+        return;
+    }
     let dirPath = "";
     if(JobQueue.size >= JobQueue.MaxSize){
         dirPath = pathPendingJobs;

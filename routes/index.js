@@ -4,6 +4,7 @@ import express from "express";
 import {
     checkLoggedIn,
     ensureAuthenticated,
+    checkRole,
 } from "../config/authentication.js";
 import passport from "passport";
 import bcrypt from "bcryptjs";
@@ -31,7 +32,7 @@ router.get("/buyer", ensureAuthenticated, (req, res) => {
 });
 
 //admin page
-router.get("/admin", ensureAuthenticated, (req, res) => {
+router.get("/admin", checkRole("admin"), (req, res) => {
     const name = sanitize(req.user.name);
     res.render("admin", { name: name });
 });
