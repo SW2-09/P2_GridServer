@@ -42,7 +42,6 @@ let handlers = {
                     handlers.sendSubtask(ws, messageParse["workerId"]);
                 }
                 else if (messageParse["data"] === "ready for work") {
-                    console.log("her")
                     //if the worker is ready for work
                     //send_subtask(ws, JobQueue); //send a subtask to the worker
                     handlers.sendSubtask(ws, messageParse["workerId"]);
