@@ -39,14 +39,14 @@ function subtaskFeeder() {
             !isJobDone(currentJob)
         ) {
             // if no subtasks failed and the job is not done
-     currentJob = nextJobInQueue(currentJob);//update the current job to the next job in the queue
+     //currentJob = nextJobInQueue(currentJob);//update the current job to the next job in the queue
 
             if (onlyJobInQueue(currentJob)) {
                 // if the current job is the only job in the queue
                 return null; //there are no more jobs to do
             } else {
                 //if there are more jobs in the queue
-                currentJob = nextJobInQueue; //update the current job to the next job in the queue
+                currentJob = nextJobInQueue(currentJob); //update the current job to the next job in the queue
 
             }
         } else if (
@@ -112,14 +112,17 @@ function checkForFailedSubtask(pending) {
 async function jobDone(job) {
     console.log("starting jobDone");
     let finalResult;
+    let tempjob = job;
+    updateQueue(job.jobId); //Removes the concluded job from the jobqueue
 
-    switch (job.jobType) {
+
+    switch (tempjob.jobType) {
         case "matrixMult": {
-            finalResult = combineMatrixResult(job);
+            finalResult = combineMatrixResult(tempjob);
             break;
         }
         case "plus": {
-            finalResult = combinePlusResult(job);
+            finalResult = combinePlusResult(tempjob);
             break;
         }
         default:
@@ -136,21 +139,21 @@ async function jobDone(job) {
 
     createFolder(path); //creates a folder for the buyer
 
-    let filename = path + job.jobId + ".json"; //creates a filename for the solution
+    let filename = path + tempjob.jobId + ".json"; //creates a filename for the solution
 
     writeFile(filename, finalResult.final); //writes the solution to a file
     console.log("kig her");
-    console.log(job.jobId);
-    deletePendingfile(job.jobId); //deletes the pending file
+    console.log(tempjob.jobId);
+    deletePendingfile(tempjob.jobId); //deletes the pending file
 
     //Update the job.completed in mongoDB
     await Buyer.findOneAndUpdate(
-        { name: job.jobOwner }, //filter
+        { name: tempjob.jobOwner }, //filter
         { $set: { "jobs_array.$[element].completed": true } }, //Update
-        { arrayFilters: [{ "element.jobId": job.jobId }] } //Arrayfiler
+        { arrayFilters: [{ "element.jobId": tempjob.jobId }] } //Arrayfiler
     );
     console.log("job done and finished");
-    updateQueueAfterJobDone(); //update the queue after the job is done
+    
 }
 
 /**
@@ -296,8 +299,8 @@ function FirstJobInQueue() {
     return currentJob;
 }
 
-function updateQueueAfterJobDone() {
-    JobQueue.deQueue();
+function updateQueue(jobId) {
+    JobQueue.removeJob(jobId)
     console.log("JobQueue updated to size: " + JobQueue.size);
 
     if (!jobQueueFull()) {
