@@ -1,4 +1,4 @@
-export{randomMatrix, makeMatrixPair};
+export { randomMatrix, makeMatrixPair };
 
 import { spy, assert as assertSinon } from "sinon";
 import { addMatrixToQue } from "../../Jobtypes/matrix_multiplication/jobCreateMatrixMult.js";
@@ -30,6 +30,43 @@ describe("taskFeed.js", function () {
             done();
             assertSinon.calledOnce(spy_jobDone);
         });
+        /*
+        it("should call jobDone once when one job in queue", function (done) {
+            let matrixPair = makeMatrixPair(1000, 1000, 1000, 100);
+
+            addMatrixToQue(
+                "a",
+                "matrixMult",
+                "Donald Duck",
+                matrixPair[0],
+                matrixPair[1],
+                JobQueue
+            );
+
+            addMatrixToQue(
+                "b",
+                "matrixMult",
+                "Donald Duck",
+                matrixPair[0],
+                matrixPair[1],
+                JobQueue
+            );
+
+            console.log("hej");
+            console.log(JobQueue.size);
+
+            let iterations = JobQueue.tail.subtaskList.size+ JobQueue.head.subtaskList.size;
+
+            let spy_jobDone = spy(jobDone);
+
+            for (let i = 0; i < iterations; i++) {
+                subtaskFeeder();
+            }
+
+            done();
+            assertSinon.calledTwice(spy_jobDone);
+        });
+        */
     });
 });
 
