@@ -1,4 +1,4 @@
-export {createMatrixMultJob, addMatrixToQue};
+export { createMatrixMultJob, addMatrixToQue, divideMatrices };
 export { matrix_mult_str };
 
 let matrix_mult_str = `let AColumns = A[0].length;
@@ -27,7 +27,6 @@ let matrix_mult_str = `let AColumns = A[0].length;
     return matrix_AxB;
     `;
 
-
 /**
  * function to create a job of type matrix multiplication and enqueue it to the job queue
  * @param {object} jobData object holding the data used to create the job
@@ -54,8 +53,15 @@ function createMatrixMultJob(jobData, jobOwner, JobQueue) {
     };
 
     // adding the job to the job queue
-    if(JobQueue.size < JobQueue.MaxSize){
-    addMatrixToQue(Jobdata.jobId, Jobdata.type, jobOwner, matrix_A, matrix_B, JobQueue);
+    if (JobQueue.size < JobQueue.MaxSize) {
+        addMatrixToQue(
+            Jobdata.jobId,
+            Jobdata.type,
+            jobOwner,
+            matrix_A,
+            matrix_B,
+            JobQueue
+        );
     }
     console.log(JobQueue.size);
     console.log(JobQueue.head.numOfTasks);
@@ -70,7 +76,14 @@ function createMatrixMultJob(jobData, jobOwner, JobQueue) {
  * @param {matrix} matrix_A the matrix A
  * @param {matrix} matrix_B the matrix B
  */
-function addMatrixToQue(jobId, jobType, jobOwner, matrix_A, matrix_B, JobQueue) {
+function addMatrixToQue(
+    jobId,
+    jobType,
+    jobOwner,
+    matrix_A,
+    matrix_B,
+    JobQueue
+) {
     let ARows = matrix_A.rows;
     let A = matrix_A.entries;
 
