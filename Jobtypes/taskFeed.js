@@ -1,5 +1,5 @@
-export { subtaskFeeder, queueEmpty };
-export {checkForPendingJobs}
+export { subtaskFeeder, jobDone };
+export { checkForPendingJobs };
 
 import { JobQueue, addJobToQue } from "./jobQueue.js";
 import { Worker } from "../models/Workers.js";
@@ -9,9 +9,6 @@ import { Buyer } from "../models/Buyer.js";
 import { combineMatrixResult } from "./matrix_multiplication/combineMatrixMult.js";
 import { combinePlusResult } from "./plus/combinePlus.js";
 import fs from "fs";
-
-//token for signifying that the queue is empty
-let queueEmpty = "empty";
 
 const subtaskTimeout = 30000; // 30 seconds
 
@@ -23,53 +20,64 @@ const subtaskTimeout = 30000; // 30 seconds
  * @param workerPack - The package of data to be sent to the worker
  */
 function subtaskFeeder() {
-
-    if (isJobQueueEmpty()) {//if the queue is empty
+    if (isJobQueueEmpty()) {
+        //if the queue is empty
         return null;
-    } 
+    }
     let currentJob = FirstJobInQueue(); //the current job is the first job in the queue
 
-    
-    if (isSubtaskQueueEmpty(currentJob)) { //if there are no more subtasks in the subtask list
+    if (isSubtaskQueueEmpty(currentJob)) {
+        //if there are no more subtasks in the subtask list
         console.log("No more subtasks to do. Checking pending list.");
         let failedSubtask = checkForFailedSubtask(currentJob.pendingList);
 
-        if (isThereFailedSubtasks(failedSubtask)) { //if there are failed subtasks
+        if (isThereFailedSubtasks(failedSubtask)) {
+            //if there are failed subtasks
             return assignFailedSubtask(currentJob, failedSubtask); //assign the failed subtask to a worker
-        } 
-        else if(!isThereFailedSubtasks(failedSubtask) && !isJobDone(currentJob)){ 
+        } else if (
+            !isThereFailedSubtasks(failedSubtask) &&
+            !isJobDone(currentJob)
+        ) {
             // if no subtasks failed and the job is not done
-            if (onlyJobInQueue(currentJob)) { // if the current job is the only job in the queue
-                 return null; //there are no more jobs to do
+     currentJob = nextJobInQueue(currentJob);//update the current job to the next job in the queue
+
+            if (onlyJobInQueue(currentJob)) {
+                // if the current job is the only job in the queue
+                return null; //there are no more jobs to do
+            } else {
+                //if there are more jobs in the queue
+                currentJob = nextJobInQueue; //update the current job to the next job in the queue
+
             }
-            else{ //if there are more jobs in the queue
-                currentJob = nextJobInQueue(currentJob);//update the current job to the next job in the queue
-            }
-        }
-        else if (!isThereFailedSubtasks(failedSubtask) && isJobDone(currentJob)) { 
+        } else if (
+            !isThereFailedSubtasks(failedSubtask) &&
+            isJobDone(currentJob)
+        ) {
             //if no subtasks failed and the job is done
             jobDone(currentJob); //send the solutions to the buyer and remove the job from the queue
             // and update the job queue
             currentJob = FirstJobInQueue(); //update currentJob to the next job in the queue
 
-            if (isJobQueueEmpty()) { //if the queue is empty
+            if (isJobQueueEmpty()) {
+                //if the queue is empty
                 return null; //there are no more jobs to do
             }
-        }  
+        }
     }
 
-    if (isJobQueueEmpty()) { //no more jobs in the queue
+    if (isJobQueueEmpty()) {
+        //no more jobs in the queue
         console.log("No work to do. Waiting for new job.");
         return null;
     }
-    
-    if (!isSubtaskQueueEmpty(currentJob)) { //if there are subtasks to do
+
+    if (!isSubtaskQueueEmpty(currentJob)) {
+        //if there are subtasks to do
         return assignNewSubtask(currentJob);
     }
-    
+
     return null; //if there are no more subtasks to do
 }
-
 
 /**
  * Function looking through the pending list of a job and checking if any of the tasks are outdated.
@@ -102,25 +110,27 @@ function checkForFailedSubtask(pending) {
  * @param { job class} job is the job that is done
  */
 async function jobDone(job) {
-    console.log("starting jobDone")
+    console.log("starting jobDone");
     let finalResult;
 
     switch (job.jobType) {
-        case "matrixMult":{
+        case "matrixMult": {
             finalResult = combineMatrixResult(job);
             break;
         }
-        case "plus":{
+        case "plus": {
             finalResult = combinePlusResult(job);
             break;
         }
         default:
-            console.log("job type not found - how can an unknown jobType be done?")
+            console.log(
+                "job type not found - how can an unknown jobType be done?"
+            );
             break;
     }
 
     countWork(finalResult.workerArr);
-    
+
     //path for file
     let path = "./JobData/Solutions/" + job.jobOwner + "/";
 
@@ -129,8 +139,8 @@ async function jobDone(job) {
     let filename = path + job.jobId + ".json"; //creates a filename for the solution
 
     writeFile(filename, finalResult.final); //writes the solution to a file
-    console.log("kig her")
-    console.log(job.jobId)
+    console.log("kig her");
+    console.log(job.jobId);
     deletePendingfile(job.jobId); //deletes the pending file
 
     //Update the job.completed in mongoDB
@@ -205,7 +215,7 @@ function checkForPendingJobs() {
     }
 }
 
-function assignNewSubtask(currentJob){
+function assignNewSubtask(currentJob) {
     let workerPack = {
         //create a package to send to the worker
         jobId: currentJob.jobId,
@@ -234,96 +244,88 @@ function assignNewSubtask(currentJob){
     return workerPack;
 }
 
-function assignFailedSubtask(currentJob, failedSubtask){
+function assignFailedSubtask(currentJob, failedSubtask) {
     console.log("Job not done yet!");
 
-            let workerPack = {
-                //create a package to send to the worker
-                jobId: currentJob.jobId,
-                jobType: currentJob.jobType,
-                alg: currentJob.alg,
-                taskId: failedSubtask.taskId,
-                commonData: currentJob.commonData,
-                data: failedSubtask.data,
-            };
-            //set the send time of the subtask to know when the task is outdated
-            //failedJob.sendTime = Date.now();
+    let workerPack = {
+        //create a package to send to the worker
+        jobId: currentJob.jobId,
+        jobType: currentJob.jobType,
+        alg: currentJob.alg,
+        taskId: failedSubtask.taskId,
+        commonData: currentJob.commonData,
+        data: failedSubtask.data,
+    };
+    //set the send time of the subtask to know when the task is outdated
+    //failedJob.sendTime = Date.now();
 
-            console.log(
-                "sending job: " +
-                    workerPack.jobId +
-                    " task: " +
-                    workerPack.taskId +
-                    " to worker \n"
-            );
-            return workerPack;
+    console.log(
+        "sending job: " +
+            workerPack.jobId +
+            " task: " +
+            workerPack.taskId +
+            " to worker \n"
+    );
+    return workerPack;
 }
 
-function isJobQueueEmpty(){
+function isJobQueueEmpty() {
     if (JobQueue.tail === null) {
         return true;
-    }
-    else
-        return false;
+    } else return false;
 }
 
-function isJobDone(job){
-    if((job.subtaskList.tail === null && job.pendingList.tail === null) && 
-        (job.numOfTasks === job.numOfSolutions)){
+function isJobDone(job) {
+    if (
+        job.subtaskList.tail === null &&
+        job.pendingList.tail === null &&
+        job.numOfTasks === job.numOfSolutions
+    ) {
         return true;
-    }
-    else
-        return false;
+    } else return false;
 }
 
-function jobQueueFull(){
-    if(JobQueue.size === JobQueue.MaxSize){
+function jobQueueFull() {
+    if (JobQueue.size === JobQueue.MaxSize) {
         return true;
-    }
-    else
-        return false;
+    } else return false;
 }
 
-function FirstJobInQueue(){
+function FirstJobInQueue() {
     let currentJob = JobQueue.tail;
     return currentJob;
 }
 
-function updateQueueAfterJobDone(){
+function updateQueueAfterJobDone() {
     JobQueue.deQueue();
     console.log("JobQueue updated to size: " + JobQueue.size);
 
-    if (!jobQueueFull()) { //if the queue is not full check for pending jobs
+    if (!jobQueueFull()) {
+        //if the queue is not full check for pending jobs
         console.log("JobQueue is no longer full checking for pending jobs");
         checkForPendingJobs(JobQueue); //add pending jobs to the queue
     }
 }
 
-function onlyJobInQueue(job){
-    if(job.previous === null && job.next === null){
+function onlyJobInQueue(job) {
+    if (job.previous === null && job.next === null) {
         return true;
-    }
-    else
-        return false;
+    } else return false;
 }
 
-function isThereFailedSubtasks(failedSubtask){
-    if(failedSubtask === null){
+function isThereFailedSubtasks(failedSubtask) {
+    if (failedSubtask === null) {
         return false;
-    }
-    else
-        return true;
+    } else return true;
 }
 
-function isSubtaskQueueEmpty(job){
-    if(job.subtaskList.tail === null){
+function isSubtaskQueueEmpty(job) {
+    if (job.subtaskList.tail === null) {
         return true;
-    }
-    else
-        return false;
+    } else return false;
 }
 
-function nextJobInQueue(job){
+function nextJobInQueue(job) {
     let nextJob = job.previous;
     return nextJob;
 }
