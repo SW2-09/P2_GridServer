@@ -49,12 +49,13 @@ function checkPassport(passport) {
 
     //Taken from passport website
     passport.serializeUser((buyer, done) => {
-        done(null, buyer.id);
+        done(null, {id: buyer.id, role: buyer.role});
     });
 
-    passport.deserializeUser(async (id, done) => {
+    passport.deserializeUser(async (sessionObject, done) => {
         try {
-            const buyer = await Buyer.findById(id);
+            const buyer = await Buyer.findById(sessionObject.id);
+            buyer.role = sessionObject.role;
             done(null, buyer);
         } catch (err) {
             done(err);

@@ -39,12 +39,15 @@ function subtaskFeeder() {
             !isJobDone(currentJob)
         ) {
             // if no subtasks failed and the job is not done
+     currentJob = nextJobInQueue(currentJob);//update the current job to the next job in the queue
+
             if (onlyJobInQueue(currentJob)) {
                 // if the current job is the only job in the queue
                 return null; //there are no more jobs to do
             } else {
                 //if there are more jobs in the queue
                 currentJob = nextJobInQueue; //update the current job to the next job in the queue
+
             }
         } else if (
             !isThereFailedSubtasks(failedSubtask) &&

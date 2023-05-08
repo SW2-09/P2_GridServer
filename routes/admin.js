@@ -88,3 +88,12 @@ adminRouter.get("/sessiondata", async (req, res) => {
     res.json({ serverdata });
     
 });
+
+adminRouter.get("/logout", (req, res) => {
+    req.logout((err) => {
+        if (err) {
+            return next(err);
+        }
+        res.redirect("/");
+    });
+});
