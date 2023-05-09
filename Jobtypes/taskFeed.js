@@ -65,12 +65,6 @@ function subtaskFeeder() {
         }
     }
 
-    if (isJobQueueEmpty()) {
-        //no more jobs in the queue
-        console.log("No work to do. Waiting for new job.");
-        return null;
-    }
-
     if (!isSubtaskQueueEmpty(currentJob)) {
         //if there are subtasks to do
         return assignNewSubtask(currentJob);
