@@ -5,24 +5,26 @@ import crypto from "crypto";
 describe("createJob.js", () => {
     describe("validateMatrix", () => {
         it("Should validate the uploaded matrix (client specific)", () => {
-            let corruptMatrix = testMatrix;
+            let testMatrix = randomMatrix(100, 100, 100);
+            let corruptMatrix = insertCharInMatrix(testMatrix, 100, 100, 500);
 
-            corruptMatrix[50][50] = "A";
             assert.isTrue(validateMatrix(corruptMatrix, corruptMatrix));
         });
     });
 });
 
-let testMatrix = randomMatrix(100, 100, 100);
 
-function insertCharInMatrix( matrix, rows, columns,index) {
-    let row = rows * Math.random();
-    let coloumn = columns * Math.random();
 
+function insertCharInMatrix(matrix, rows, columns, index) {
+    let row = Math.floor(rows * Math.random());
+    let coloumn = Math.floor(columns * Math.random());
+    console.log(row,coloumn);
+
+    console.log("hehj");
+    console.log(matrix[row][coloumn]);
     matrix[row][coloumn] = characters[index];
 
     return matrix;
-
 }
 
 let characters = "";
@@ -59,8 +61,9 @@ function validateMatrix(matrixA, matrixB) {
             }
         }
     } catch (err) {
-        alert(err + " Please choose valid matricies.");
+        console.log(err + " Please choose valid matricies.");
         return false;
     }
     return true;
 }
+
