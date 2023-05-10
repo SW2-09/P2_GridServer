@@ -1,5 +1,4 @@
 import { combineMatrixResult } from "../../../Jobtypes/matrix_multiplication/combineMatrixMult.js";
-import { makeMatrixPair } from "../../helper_functions.js";
 import { assert } from "chai";
 
 describe("combineMatrixMult.js", function () {

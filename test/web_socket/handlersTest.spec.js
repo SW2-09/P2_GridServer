@@ -1,6 +1,5 @@
 import { spy, assert as assertSinon } from "sinon";
 import { WebSocket, WebSocketServer } from "ws";
-import { subtaskFeeder } from "../../Jobtypes/taskFeed.js";
 import { JobQueue } from "../../Jobtypes/jobQueue.js";
 import { handlers } from "../../web_socket/handlers.js";
 

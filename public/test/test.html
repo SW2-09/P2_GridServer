@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <title>Mocha Tests</title>
 
-        <!-- Include Mocha CSS styles -->
+        <!-- Mocha CSS styles -->
         <link
             href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css"
             rel="stylesheet"
@@ -14,24 +14,21 @@
     <body>
         <div id="mocha"></div>
 
-        <!-- Add the Chai assertion library -->
-        <script src="http://chaijs.com/chai.js"></script>
-
-        <!-- Add the Mocha test library -->
+        <!-- Mocha test library -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/10.0.0/mocha.min.js"></script>
 
-        <script>
-            // Set chai.expect as a global variable
-            var expect = chai.expect;
+        <!-- Chai library -->
+        <script src="http://chaijs.com/chai.js"></script>
 
+        <script>
             // Setup Mocha to use the BDD interface
             mocha.setup("bdd");
         </script>
 
-        <!-- Import the sum function -->
+        <!--Files to be tested-->
         <script src="javascripts/createJob.js"></script>
 
-        <!-- Import the tests for the sum function -->
+        <!--Files with tests-->
         <script src="createJobTest.spec.js"></script>
 
         <script>

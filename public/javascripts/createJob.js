@@ -332,26 +332,47 @@ async function generateTable() {
  * @param {array} matrixA
  * @param {array} matrixB
  * @returns Boolean if succesfuly
- */
-function validateMatrix(matrixA, matrixB) {
+ */function validateMatrix(matrixA, matrixB) {
     try {
         //Check dimensions of matricies
         if (matrixA[0].length !== matrixB.length) {
             throw new Error("Matrix dimensions do not match.");
         }
+        let troubleChars = [
+            "\t",
+            "\n",
+            "\x0B",
+            "\f",
+            " ",
+            " ",
+            String.fromCharCode(160),
+            String.fromCharCode(13),
+        ];
+
         // Check MatrixA
         for (let rowA = 0; rowA < matrixA.length; rowA++) {
             for (let colA = 0; colA < matrixA[rowA].length; colA++) {
                 if (isNaN(matrixA[rowA][colA])) {
                     throw new Error("Matrix A is corrupted.");
                 }
+                for (let i = 0; i < troubleChars.length; i++) {
+                    if (matrixA[rowA][colA] === troubleChars[i]) {
+                        throw new Error("Matrix A is corrupted.");
+                    }
+                }
             }
         }
+
         // Check MatrixB
         for (let rowB = 0; rowB < matrixB.length; rowB++) {
             for (let colB = 0; colB < matrixB[rowB].length; colB++) {
                 if (isNaN(matrixB[rowB][colB])) {
                     throw new Error("Matrix B is corrupted.");
+                }
+                for (let i = 0; i < troubleChars.length; i++) {
+                    if (matrixB[rowB][colB] === troubleChars[i]) {
+                        throw new Error("Matrix B is corrupted.");
+                    }
                 }
             }
         }
@@ -361,6 +382,7 @@ function validateMatrix(matrixA, matrixB) {
     }
     return true;
 }
+
 
 function validateList(list) {
     console.log(list);
