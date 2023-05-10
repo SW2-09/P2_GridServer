@@ -10,7 +10,7 @@ import { combineMatrixResult } from "./matrix_multiplication/combineMatrixMult.j
 import { combinePlusResult } from "./plus/combinePlus.js";
 import fs from "fs";
 
-const subtaskTimeout = 30000; // 30 seconds
+const subtaskTimeout = 60000; // 60 seconds
 
 // && JobQueue.tail.numOfTasks === JobQueue.tail.numOfSolutions)
 
@@ -146,7 +146,11 @@ async function jobDone(job) {
         { $set: { "jobs_array.$[element].completed": true } }, //Update
         { arrayFilters: [{ "element.jobId": tempjob.jobId }] } //Arrayfiler
     );
+    let completiontime = ((Date.now() - tempjob.Starttime)/1000);
+    console.log("____________________")
     console.log("job done and finished");
+    console.log("Completion time: " + completiontime)
+    console.log("____________________")
     
 }
 
