@@ -303,7 +303,7 @@ async function generateTable() {
     document.querySelector(".JobTable").append(jobTable);
 
     let tableHeader =
-        "<th>Index</th> <th>Title</th> <th>Description</th> <th> Type</th> <th> Download solution </th>";
+        "<th>Index</th> <th>Title</th> <th>Description</th> <th> Type</th> <th> Download solution </th> <th> Delete job </th>";
 
     jobTable.insertRow(0).innerHTML = tableHeader;
 
