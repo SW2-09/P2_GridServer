@@ -1,40 +1,42 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Mocha Tests</title>
+    <head>
+        <meta charset="utf-8" />
+        <title>Mocha Tests</title>
 
-  <!-- Include Mocha CSS styles -->
-  <link href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet">
-</head>
+        <!-- Include Mocha CSS styles -->
+        <link
+            href="https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css"
+            rel="stylesheet"
+        />
+    </head>
 
-<body>
-  <div id="mocha"></div>
+    <body>
+        <div id="mocha"></div>
 
-  <!-- Add the Chai assertion library -->
-  <script src="http://chaijs.com/chai.js"></script>
+        <!-- Add the Chai assertion library -->
+        <script src="http://chaijs.com/chai.js"></script>
 
-  <!-- Add the Mocha test library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/10.0.0/mocha.min.js"></script>
+        <!-- Add the Mocha test library -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/10.0.0/mocha.min.js"></script>
 
-  <script>
-    // Set chai.expect as a global variable
-    var expect = chai.expect;
+        <script>
+            // Set chai.expect as a global variable
+            var expect = chai.expect;
 
-    // Setup Mocha to use the BDD interface
-    mocha.setup('bdd');
-  </script>
+            // Setup Mocha to use the BDD interface
+            mocha.setup("bdd");
+        </script>
 
-  <!-- Import the sum function -->
-  <script src="javascripts/createJob.js"></script>
+        <!-- Import the sum function -->
+        <script src="javascripts/createJob.js"></script>
 
-  <!-- Import the tests for the sum function -->
-  <script src="../test/public/javascripts/createJobTest.spec.js"></script>
+        <!-- Import the tests for the sum function -->
+        <script src="createJobTest.spec.js"></script>
 
-  <script>
-    // Run the tests with Mocha
-    mocha.run();
-  </script>
-
-</body>
+        <script>
+            // Run the tests with Mocha
+            mocha.run();
+        </script>
+    </body>
 </html>

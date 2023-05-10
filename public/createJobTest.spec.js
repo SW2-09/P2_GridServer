@@ -1,13 +1,11 @@
-import { randomMatrix } from "../../helper_functions.js";
-import { assert } from "chai";
-import crypto from "crypto";
+//import { randomMatrix } from "../test/helper_functions.js";
 
 describe("createJob.js", () => {
     describe("validateMatrix", () => {
-        it("Should validate the uploaded matrix (client specific)", () => {
+        it("Should return true if matrix is valid", () => {
             let testMatrix = randomMatrix(10, 10, 100);
 
-            assert.isTrue(validateMatrix(testMatrix, testMatrix));
+            chai.assert.isTrue(validateMatrix(testMatrix, testMatrix));
         });
         it("Should return false if matrix is invalid", () => {
             let corruptedMatrix;
@@ -16,14 +14,8 @@ describe("createJob.js", () => {
             let parses = [];
 
             for (let i = 0; i < 7425; i++) {
-                let testMatrix = randomMatrix(2, 2, 10);
-                insertCharInMatrix(testMatrix, 2, 2, i);
-
-                let troubleIndicies=[9,10,11,12,32,48,49,50,51,52,53,54,55,56,57,160,5760];
-                if(troubleIndicies.includes(i)){
-                    console.log(i, testMatrix);
-                }
-            
+                let testMatrix = randomMatrix(10, 10, 100);
+                corruptedMatrix = insertCharInMatrix(testMatrix, 10, 10, i);
 
                 if (validateMatrix(testMatrix, testMatrix)) {
                     count++;
@@ -31,15 +23,10 @@ describe("createJob.js", () => {
                 }
             }
             for (let i = 0; i < parses.length; i++) {
-                console.log(
-                    i,
-                    parses[i],
-                    characters[parses[i]],
-                    typeof characters[parses[i]]
-                );
+                console.log(characters[parses[i]]);
             }
 
-            assert.equal(count, countExpected);
+            chai.assert.equal(count, countExpected);
         });
     });
 });
@@ -47,15 +34,12 @@ describe("createJob.js", () => {
 function insertCharInMatrix(matrix, rows, columns, index) {
     let row = Math.floor(rows * Math.random());
     let coloumn = Math.floor(columns * Math.random());
+    console.log(row, coloumn);
 
-    matrix[row][coloumn] = characters[index];
+    console.log(matrix[row][coloumn]);
+    matrix[row][coloumn] = String.fromCharCode(index);
 
     return matrix;
-}
-
-let characters = "";
-for (let i = 0; i < 7425; i++) {
-    characters += String.fromCharCode(i);
 }
 
 function validateMatrix(matrixA, matrixB) {
@@ -64,22 +48,14 @@ function validateMatrix(matrixA, matrixB) {
         if (matrixA[0].length !== matrixB.length) {
             throw new Error("Matrix dimensions do not match.");
         }
-        let troubleChars = ['\t', '\n', '\x0B', '\f', ' ',];
-
         // Check MatrixA
         for (let rowA = 0; rowA < matrixA.length; rowA++) {
             for (let colA = 0; colA < matrixA[rowA].length; colA++) {
                 if (isNaN(matrixA[rowA][colA])) {
                     throw new Error("Matrix A is corrupted.");
                 }
-                for (let i = 0; i < troubleChars.length; i++) {
-                    if (matrixA[rowA][colA] === troubleChars[i]) {
-                        throw new Error("Matrix A is corrupted.");
-                    }
-                }
             }
         }
-
         // Check MatrixB
         for (let rowB = 0; rowB < matrixB.length; rowB++) {
             for (let colB = 0; colB < matrixB[rowB].length; colB++) {
@@ -89,8 +65,45 @@ function validateMatrix(matrixA, matrixB) {
             }
         }
     } catch (err) {
-        //alert(err + " Please choose valid matricies.");
+        console.log(err + " Please choose valid matricies.");
         return false;
     }
     return true;
 }
+
+function randomMatrix(columns, rows, range) {
+    let matrix = [];
+
+    for (let i = 0; i < rows; i++) {
+        matrix[i] = [];
+        for (let j = 0; j < columns; j++) {
+            let sign = Math.round(Math.random()) * 2 - 1;
+            matrix[i][j] =
+                (sign * Math.round(range * Math.random() * 100)) / 100;
+        }
+    }
+
+    return matrix;
+}
+
+function makeMatrixPair(n, m, l, range) {
+    let matrix_A = {
+        entries: randomMatrix(n, m, range),
+        columns: m,
+        rows: n,
+    };
+
+    let matrix_B = {
+        entries: randomMatrix(m, l, range),
+        columns: l,
+        rows: m,
+    };
+
+    return [matrix_A, matrix_B];
+}
+
+let characters = "";
+for (let i = 0; i < 7425; i++) {
+    characters += parseString.fromCharCode(i);
+}
+
