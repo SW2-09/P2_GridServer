@@ -108,7 +108,7 @@ router.post("/login", (req, res, next) => {
         passport.authenticate("local", {
             failureFlash: true,
             successRedirect: "/admin",
-            failureRedirect: "/login",
+            failureRedirect: "/",
         })(req, res, next);
     } else {
         passport.authenticate("local", {
