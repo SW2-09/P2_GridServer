@@ -1,11 +1,9 @@
-export { JobQueue };
+export { JobQueue , Job};
 import fs from "fs";
 
 import { createFolder } from "../utility.js";
 import { addMatrixToQue} from "./matrix_multiplication/jobCreateMatrixMult.js";
 import { addPlusToQue } from "./plus/jobCreatePlus.js";
-
-//import{ arr , matrix_A, matrix_B } from "./matrixSplit.js";
 
 class Job {
     //the job nodes of the job queue
