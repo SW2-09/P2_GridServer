@@ -31,8 +31,8 @@ describe("taskFeed.js", function () {
             assertSinon.calledOnce(spy_jobDone);
         });
         
-        //This test does not pass currently. 
-        it("should call jobDone once when one job in queue", function (done) {
+ 
+        it("should call jobDone twice when one job in queue", function (done) {
             let matrixPair = makeMatrixPair(1000, 1000, 1000, 100);
 
             addMatrixToQue(
