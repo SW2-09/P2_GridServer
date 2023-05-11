@@ -3,7 +3,7 @@ import { matrix_mult_str } from "../../../Jobtypes/matrix_multiplication/jobCrea
 
 let matrix_mult = new Function("A", "B", matrix_mult_str);
 
-describe("algorithms", function () {
+describe("jobCreateMatrixMult.js", function () {
     describe("matrix_mult", function () {
         it("matrix_mult should give matrix output of correct size (2x2 times 2X2)", function () {
             let result = matrix_mult(matrix_A, matrix_B);
