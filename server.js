@@ -91,6 +91,11 @@ import { adminRouter } from "./routes/admin.js";
 
 app.use("/admin", checkRole("admin"), adminRouter);
 
+
+//Test page routing
+import { testRouter } from "./routes/test.js";
+app.use("/test",testRouter);
+
 /* ** ROUTES **
 This is great practice to get into. This way we can have different nested routes in different files.
 1. Keeps the code clean and easy to read and to maintain.

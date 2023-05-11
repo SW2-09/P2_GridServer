@@ -30,6 +30,7 @@ class Job {
         this.solutions = [];
         this.numOfSolutions = 0;
         this.numOfTasks = 0;
+        this.Starttime = Date.now()
     }
 }
 
