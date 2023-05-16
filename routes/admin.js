@@ -26,11 +26,6 @@ adminRouter.post("/deleteone", (req, res) => {
         message:
             "Purged '" + req.body.collection + "' collection from database: ",  });});
 
-adminRouter.post("/updateone", (req, res) => {
-    updateone(req.body.collection, req.body.name);
-});
-
-
 
 async function deleteCollection(collection) {
     console.log("Deleting all '" + collection + "' from database");
@@ -73,16 +68,6 @@ async function deleteone(collection, name) {
     }
 }
 
-
-
-async function getItems(collection) {
-    const Items = await mongoose.connection.db
-        .collection(collection)
-        .find({})
-        .toArray();
-    return Items;
-}
-
 adminRouter.get("/sessiondata", async (req, res) => {
     console.log("Sending session data to client")
     res.json({ serverdata });
@@ -97,3 +82,48 @@ adminRouter.get("/logout", (req, res) => {
         res.redirect("/");
     });
 });
+
+adminRouter.post("/clearjobs", async (req, res) => {
+    console.log("Clearing jobs");
+    await getItemJobArray(req.body.collection, req.body.name);
+    res.json({ message: "Jobs cleared" });
+}
+);
+
+adminRouter.post("/resetWork", async (req, res) => {
+    console.log("Resetting work");
+    await resetWork();
+    res.json({ message: "Work reset" });
+} );
+
+
+
+async function getItems(collection) {
+    const Items = await mongoose.connection.db
+        .collection(collection)
+        .find({})
+        .toArray();
+    return Items;
+}
+
+async function getItemJobArray(collection, name) {
+    const Items = await mongoose.connection.db
+        .collection(collection)
+        .updateMany(
+            {name: name},
+            {$set: {jobs_array: []}})
+    return Items;
+}
+
+async function resetWork() {
+    await mongoose.connection.db
+        .collection("users")
+        .updateMany(
+            {},
+            {$set: {tasks_computed: 0}})
+    await mongoose.connection.db
+        .collection("workers")
+        .updateMany(
+            {},
+            {$set: {jobs_computed: 0}})
+}
