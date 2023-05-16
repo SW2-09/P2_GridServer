@@ -7,10 +7,10 @@ import { Strategy as localStrategy } from "passport-local";
 //Load Buyer model
 import { Buyer } from "../models/Buyer.js";
 
-//Taken from passport website
 /**
  * Sets up passport with local strategy for authentication
  * and configures serializing and deserializing of users.
+ * The function is inspired by documentation from passport website.
  *
  * @param {object} passport - The passport object for authentication.
  */
@@ -53,7 +53,6 @@ function checkPassport(passport) {
         )
     );
 
-    //Taken from passport website
     passport.serializeUser((buyer, done) => {
         done(null, { id: buyer.id, role: buyer.role });
     });
