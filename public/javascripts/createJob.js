@@ -141,10 +141,10 @@ mainDiv.addEventListener("change", (e) => {
 // ***************** //
 
 /**
+ * Takes a .csv file and parses the content of the file to JSON based on the job type.
  *
- * @param {file.csv} file .csv file to be passed as json
- * @param {string} jobType
- * @returns The file in json
+ * @param {File.csv} file - .csv file to be parsed.
+ * @param {string} jobType - The type of job to parse (either `matrixMult` or `plus`).
  */
 function parseCsvToJson(file, jobType) {
     return new Promise((resolve, reject) => {
@@ -187,6 +187,12 @@ function parseCsvToJson(file, jobType) {
     });
 }
 
+/**
+ * Javascript funcitonality for the create Job tab.
+ * Creates a onepage that can handle either `matrixMult` or `plus` jobs.
+ *
+ * @param {Event} e - The event object from the form.
+ */
 async function createJob(e) {
     const jobType = document.getElementById("jobType").value;
     const Uploadform = document.getElementById("uploadForm");
@@ -280,7 +286,9 @@ async function createJob(e) {
 }
 
 /**
- *@returns an object containing an array with information about the buyer's jobs and the buyers username
+ * Fetches a job for the current buyer from the server.
+ *
+ * @returns {object} object containing an array with information about the buyer's jobs and the buyers username
  * */
 async function getJobarrayFromDB() {
     const response = await fetch("/buyer/jobinfo", {
@@ -292,8 +300,11 @@ async function getJobarrayFromDB() {
 
     return await response.json();
 }
-// Generate JobList table for the buyer
 
+/**
+ *
+ * Generates a table of jobs for the buyer
+ */
 async function generateTable() {
     mainDiv.innerHTML = content.JobsOverview;
     let infoObject = await getJobarrayFromDB();
@@ -328,11 +339,14 @@ async function generateTable() {
 }
 
 /**
+ * Validates the requirements of the two matrices for multiplication.
+ * Checks for none-numbers and correct matrix dimensions. This function is designed to help the buyer, not to provide security.
  *
- * @param {array} matrixA
- * @param {array} matrixB
- * @returns Boolean if succesfuly
- */function validateMatrix(matrixA, matrixB) {
+ * @param {array} matrixA - First matrix to validate
+ * @param {array} matrixB - Second matrix to validate
+ * @returns {boolean} `true` if success, `false` otherwise.
+ */
+function validateMatrix(matrixA, matrixB) {
     try {
         //Check dimensions of matricies
         if (matrixA[0].length !== matrixB.length) {
@@ -383,7 +397,12 @@ async function generateTable() {
     return true;
 }
 
-
+/**
+ * Validates a list for length and content.
+ *
+ * @param {Array} list - The list to validate.
+ * @returns `true` if valid, false otherwise.
+ */
 function validateList(list) {
     console.log(list);
     try {
@@ -401,7 +420,9 @@ function validateList(list) {
     }
     return true;
 }
-
+/**
+ * Displays a notification to the buyer saying that the job was succesfully uploaded.
+ */
 function doneUploading() {
     mainDiv.innerHTML = content.CreateJob;
     let alert = document.createElement("div");
@@ -426,6 +447,14 @@ function doneUploading() {
     }, 4000);
 }
 
+/**
+ * Validates and parses a file based on the job type.
+ * The file must be either CSV or JSON and it's max size is 50 MB.
+ *
+ * @param {File} file - The file to validate and parse
+ * @param {string} jobType - Type of job to validtae for.
+ * @returns {promise} a promise that resolves to an array of parsed data.
+ */
 async function validateAndParse(file, jobType) {
     const allowedFileFormat = ["csv", "json"]; //allows JSON and csv formats
     const maxFileSize = 50 * 1024 * 1024; // 50 MB
@@ -445,6 +474,11 @@ async function validateAndParse(file, jobType) {
     return result;
 }
 
+/**
+ * Initiates the job download process.
+ *
+ * @param {Event} e - The event object from the download button click.
+ */
 async function downloadJob(e) {
     const response = await fetch("/buyer/download", {
         method: "POST",
@@ -462,6 +496,10 @@ async function downloadJob(e) {
     ).innerHTML = `<a href=${fileURL} download=${e.target.id}> Download</a>`;
 }
 
+/**
+ * Deletes a job by sending a fetch request to the server and updates the job table.
+ * @param {Event} e - the event object from the delete button click.
+ */
 async function deleteJob(e) {
     try {
         const response = await fetch("/buyer/delete", {

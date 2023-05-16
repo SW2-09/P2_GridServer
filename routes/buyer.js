@@ -16,8 +16,6 @@ import { Buyer } from "../models/Buyer.js";
 
 const buyerRouter = express.Router();
 
-
-
 /* ********************** *
  *    Logout handling     *
  * ********************** */
@@ -45,9 +43,9 @@ buyerRouter.use(fileUpload());
 
 buyerRouter.post("/upload", async (req, res) => {
     let dirPath = "";
-    if(JobQueue.size >= JobQueue.MaxSize){
+    if (JobQueue.size >= JobQueue.MaxSize) {
         dirPath = pathPendingJobs;
-    }else{
+    } else {
         dirPath = pathActiveJobs;
     }
 
@@ -67,8 +65,7 @@ buyerRouter.post("/upload", async (req, res) => {
             completed: false,
             uploadFile: req.body.uploadFile,
             uploadFile2: req.body.uploadFile2,
-
-        }
+        };
 
         switch (jobtype) {
             case "matrixMult": {
@@ -142,9 +139,11 @@ buyerRouter.post("/delete", async (req, res) => {
         const name = sanitize(req.user.name);
         const id = sanitize(req.body.id);
         //Delete from DB
-        const jobOwner = await Buyer.findOne({"jobs_array.jobId": id});
-        if(jobOwner.name !== name){
-            return res.status(401).json({message: "You are not the owner of this job"});
+        const jobOwner = await Buyer.findOne({ "jobs_array.jobId": id });
+        if (jobOwner.name !== name) {
+            return res
+                .status(401)
+                .json({ message: "You are not the owner of this job" });
         }
 
         await Buyer.findOneAndUpdate(
@@ -157,7 +156,6 @@ buyerRouter.post("/delete", async (req, res) => {
         JobQueue.removeJob(id);
         checkForPendingJobs();
 
-
         // Delete from directory
         let absolutePathSolutions = path.resolve(
             `JobData/Solutions/${name}/${id}.json`
@@ -165,32 +163,29 @@ buyerRouter.post("/delete", async (req, res) => {
         let absolutePathPending = path.resolve(
             `JobData/PendingJobs/${id}.json`
         );
-        if(!fs.existsSync(absolutePathPending)){
-            absolutePathPending = path.resolve(
-                `JobData/ActiveJobs/${id}.json`
-            )}; 
+        if (!fs.existsSync(absolutePathPending)) {
+            absolutePathPending = path.resolve(`JobData/ActiveJobs/${id}.json`);
+        }
 
-        if(fs.existsSync(absolutePathPending)){
-        fs.unlink(absolutePathPending, (err) => {
-            if (err) {
-                console.log("An attempt was made to delete a file");
-                console.log(err);
-            }
-        });
-    }
-        if(fs.existsSync(absolutePathSolutions)){
-        fs.unlink(absolutePathSolutions, (err) => {
-            if (err) {
-                console.log("An attempt was made to delete a file");
-                console.log(err);
-            }
-        });
-    }
-
+        if (fs.existsSync(absolutePathPending)) {
+            fs.unlink(absolutePathPending, (err) => {
+                if (err) {
+                    console.log("An attempt was made to delete a file");
+                    console.log(err);
+                }
+            });
+        }
+        if (fs.existsSync(absolutePathSolutions)) {
+            fs.unlink(absolutePathSolutions, (err) => {
+                if (err) {
+                    console.log("An attempt was made to delete a file");
+                    console.log(err);
+                }
+            });
+        }
 
         res.json({ message: "Job deleted" });
     } catch (err) {
         console.log(err);
     }
 });
-

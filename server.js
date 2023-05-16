@@ -20,7 +20,6 @@ import passport from "passport";
 import flash from "connect-flash";
 import status from "express-status-monitor";
 
-
 //const express = require("express");
 const app = express();
 
@@ -29,7 +28,6 @@ app.use(status());
 app.use(express.static("public")); // Middleware function that serves static files (e.g. css files) https://expressjs.com/en/starter/static-files.html
 app.use(express.urlencoded({ extended: true })); // Middleware function that parses the body of a request (e.g. form data)
 app.use(express.json({ limit: "100mb" })); // This allows us to parse json data
-
 
 //Passport config
 import { checkPassport } from "./config/passport.js";
@@ -76,7 +74,6 @@ app.use(
 app.use(passport.initialize()); //This is needed to initialize passport
 app.use(passport.session()); //This is needed to keep the user logged in
 
-
 import { checkRole } from "./config/authentication.js";
 //Buyer page routing
 import { buyerRouter } from "./routes/buyer.js";
@@ -91,17 +88,9 @@ import { adminRouter } from "./routes/admin.js";
 
 app.use("/admin", checkRole("admin"), adminRouter);
 
-
 //Test page routing
 import { testRouter } from "./routes/test.js";
-app.use("/test",testRouter);
-
-/* ** ROUTES **
-This is great practice to get into. This way we can have different nested routes in different files.
-1. Keeps the code clean and easy to read and to maintain.
-2. Each route can be in its own file.
-3. e.g. server.js -> routes/users.js -> routes/users/new.js
-*/
+app.use("/test", testRouter);
 
 const serverstart = Date.now();
 

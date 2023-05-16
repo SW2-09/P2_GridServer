@@ -24,14 +24,20 @@ adminRouter.post("/deleteone", (req, res) => {
     deleteone(req.body.collection, req.body.name);
     res.json({
         message:
-            "Purged '" + req.body.collection + "' collection from database: ",  });});
+            "Purged '" + req.body.collection + "' collection from database: ",
+    });
+});
 
 adminRouter.post("/updateone", (req, res) => {
     updateone(req.body.collection, req.body.name);
 });
 
-
-
+/**
+ * Deletes a specifiedd collection from the MongoDB database
+ *
+ * @param {string} collection - The name of the collection to be deleted
+ * @throws Will throw an error if the deletion fails.
+ */
 async function deleteCollection(collection) {
     console.log("Deleting all '" + collection + "' from database");
     await mongoose.connection.db.dropCollection(
@@ -46,35 +52,39 @@ async function deleteCollection(collection) {
     );
 }
 
+/**
+ * Uses MongoDB deleteOne to delete a specific target in the collection.
+ *
+ * @param {string} collection - The name of the collection to delete from.
+ * @param {string} name - If collection is `workers` the workerID should be specified.
+ * Else this refers to the name of the target to be deleted.
+ * @throws Logs an error if the deletion fails.
+ */
 async function deleteone(collection, name) {
     console.log("Deleting:" + name + " from " + collection);
     const collections = mongoose.connection.db.collection(collection);
 
-    if(collection === "workers") {
-        await collections.deleteOne(
-            {workerId: name},
-            function (err, result) {
-                if (err) {
-                    console.log(err);
-                }
-            }
-        );
-    } else {
-
-
-    await collections.deleteOne(
-        {name: name},
-        function (err, result) {
+    if (collection === "workers") {
+        await collections.deleteOne({ workerId: name }, function (err, result) {
             if (err) {
                 console.log(err);
             }
-        }
-    );
+        });
+    } else {
+        await collections.deleteOne({ name: name }, function (err, result) {
+            if (err) {
+                console.log(err);
+            }
+        });
     }
 }
 
-
-
+/**
+ * Gets all data from a collection in the MongoDB database.
+ *
+ * @param {string} collection - The name of the collection to retrieve data.
+ * @returns {array} array of items from the collection.
+ */
 async function getItems(collection) {
     const Items = await mongoose.connection.db
         .collection(collection)
@@ -84,9 +94,8 @@ async function getItems(collection) {
 }
 
 adminRouter.get("/sessiondata", async (req, res) => {
-    console.log("Sending session data to client")
+    console.log("Sending session data to client");
     res.json({ serverdata });
-    
 });
 
 adminRouter.get("/logout", (req, res) => {
