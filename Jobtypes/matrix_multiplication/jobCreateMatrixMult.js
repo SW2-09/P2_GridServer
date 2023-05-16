@@ -28,9 +28,13 @@ let matrix_mult_str = `let AColumns = A[0].length;
     `;
 
 /**
- * function to create a job of type matrix multiplication and enqueue it to the job queue
- * @param {object} jobData object holding the data used to create the job
- * @returns the object holding the data used to create the job
+ * Function to create a job of type matrix multiplication and enqueue it to the job queue.
+ *
+ * @param {object} jobData - Object holding the data used to create the job.
+ * @param {string} jobOwner - The owner of the job.
+ * @param {object} JobQueue - The job queue.
+ *
+ * @returns {object} The object holding the data used to create the job.
  */
 function createMatrixMultJob(jobData, jobOwner, JobQueue) {
     const Jobdata = {
@@ -70,11 +74,14 @@ function createMatrixMultJob(jobData, jobOwner, JobQueue) {
 }
 
 /**
- * function for adding the matrix multiplication job to the job queue
- * @param {string} jobId the id of the job
- * @param {string} jobType the type of the job
- * @param {matrix} matrix_A the matrix A
- * @param {matrix} matrix_B the matrix B
+ * Function for adding the matrix multiplication job to the job queue.
+ *
+ * @param {string} jobId - The ID of the job.
+ * @param {string} jobType - The type of the job.
+ * @param {string} jobOwner - The owner of the job.
+ * @param {matrix} matrix_A - The matrix A.
+ * @param {matrix} matrix_B - The matrix B.
+ * @param {object} JobQueue - The job queue.
  */
 function addMatrixToQue(
     jobId,
@@ -102,11 +109,14 @@ function addMatrixToQue(
 }
 
 /**
- * recursive function to divide the matrix A into smaller matrices to fit desired calculation sizes for subtasks
- * @param {matrix} A the matrix A
- * @param {matrix} B the matrix B
- * @param {number} ARows the number of rows in the matrix A
- * @returns the array which will hold the sliced matrices of matrix A
+ * Recursive function to divide the matrix A into smaller matrices to fit desired calculation sizes for subtasks.
+ *
+ * @param {matrix} A - The matrix A.
+ * @param {matrix} B - The matrix B.
+ * @param {number} ARows - The number of rows in the matrix A.
+ * @param {number} calcMax - The maximum calculation size.
+ *
+ * @returns {array} The array holding the sliced matrices of matrix A.
  */
 function divideMatrices(A, B, ARows, calcMax) {
     let arr = []; // the array which will hold the sliced matrices of matrix A

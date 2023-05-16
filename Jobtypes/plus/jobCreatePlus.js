@@ -1,4 +1,4 @@
-export {createPlusJob, addPlusToQue};
+export { createPlusJob, addPlusToQue };
 export { plus_str };
 /*
 let result = [];
@@ -16,9 +16,13 @@ result.push(A+B);
 return result;`;
 
 /**
- * function to create a job of type plus and enqueue it to the job queue
- * @param {object} jobData object holding the data for the job
- * @returns the object used to create the job
+ * function to create a job of type plus and enqueue it to the job queue.
+ *
+ * @param {Object} jobData - Object holding the data for the job.
+ * @param {Object} jobOwner - Owner of the job.
+ * @param {Object} JobQueue - The JobQueue.
+ *
+ * @returns {Object} The object holding the data used to create the job.
  */
 function createPlusJob(jobData, jobOwner, JobQueue) {
     const Jobdata = {
@@ -30,8 +34,14 @@ function createPlusJob(jobData, jobOwner, JobQueue) {
     };
 
     // adding the job to the job queue
-    if(JobQueue.size < JobQueue.MaxSize){
-    addPlusToQue(Jobdata.jobId, Jobdata.type, jobOwner, Jobdata.arr, JobQueue);
+    if (JobQueue.size < JobQueue.MaxSize) {
+        addPlusToQue(
+            Jobdata.jobId,
+            Jobdata.type,
+            jobOwner,
+            Jobdata.arr,
+            JobQueue
+        );
     }
     console.log(JobQueue.size);
     console.log(JobQueue.head.numOfTasks);
@@ -39,12 +49,15 @@ function createPlusJob(jobData, jobOwner, JobQueue) {
 }
 
 /**
- * function which will enqueue the plus job to the job queue
- * @param {string} jobId the id of the job
- * @param {string} jobType the type of the job
- * @param {array} entries the array which holds the numbers to be added
+ * Function which will enqueue the plus job to the job queue.
+ *
+ * @param {string} jobId - The id of the job.
+ * @param {string} jobType - The type of the job.
+ * @param {string} jobOwner - The owner of the job.
+ * @param {array} entries - The array which holds the numbers to be added.
+ * @param {object} jobQueue - The job queue.
  */
-function addPlusToQue(jobId, jobType, jobOwner, entries, JobQueue) {
+function addPlusToQue(jobId, jobType, jobOwner, entries, jobQueue) {
     let entriesCopy = [];
     for (let i = 0; i < entries.length; i++) {
         entriesCopy[i] = entries[i];
@@ -52,23 +65,23 @@ function addPlusToQue(jobId, jobType, jobOwner, entries, JobQueue) {
 
     let arr = dividePlus(entriesCopy);
     // enqueue the job to the job queue
-    JobQueue.enQueue(jobId, jobType, jobOwner, plus_str);
+    jobQueue.enQueue(jobId, jobType, jobOwner, plus_str);
 
     for (let index = 0; index < arr.length; index++) {
-        JobQueue.head.subtaskList.enQueue(
-            JobQueue.head.jobId,
+        jobQueue.head.subtaskList.enQueue(
+            jobQueue.head.jobId,
             index,
             arr[index]
         );
-        JobQueue.head.numOfTasks++;
+        jobQueue.head.numOfTasks++;
     }
 }
 
-
 /**
- * function to divide the array of entries into smaller arrays to fit desired calculation sizes for subtasks
- * @param {array} entries the array holding the entries to be added toghether
- * @returns new array of smaller subtasks
+ * Function to divide the array of entries into smaller arrays to fit desired calculation sizes for subtasks.
+ *
+ * @param {array} entries - The entries for the addition job.
+ * @returns {array} New array of smaller subtasks.
  */
 function dividePlus(entries) {
     let arr = []; // the array which will hold the smaller problems

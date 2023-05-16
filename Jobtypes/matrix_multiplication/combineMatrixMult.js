@@ -1,10 +1,15 @@
 export { combineMatrixResult };
 
-function combineMatrixResult (job){
+/**
+ * Combines the results from multiple workers into a single matrix.
+ * @param {Object} job - The job object containing the solutions from workers.
+ *
+ * @returns {Object} - An object containing the combined matrix result and information about the workers.
+ */
+function combineMatrixResult(job) {
     let Solution = [];
     let workerArr = [];
     let final = [];
-    
 
     job.solutions.forEach((element) => {
         //concatenates the solutions into one array to combine matrix
@@ -17,7 +22,6 @@ function combineMatrixResult (job){
             Solution[e.taskId] = e.solution;
         });
     });
-    
 
     Solution.forEach((e) => {
         e.forEach((i) => {
@@ -26,7 +30,7 @@ function combineMatrixResult (job){
     });
     let workCountAndSolution = {
         workerArr: workerArr,
-        final: final
-    }
+        final: final,
+    };
     return workCountAndSolution;
 }

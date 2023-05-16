@@ -14,18 +14,16 @@ function checkLoggedIn(req, res, next) {
     }
     next();
 }
+
 function checkRole(roleToCheck) {
     return function (req, res, next) {
         if (!req.isAuthenticated()) {
             res.redirect("/");
-        }
-        else if (req.user.role === roleToCheck) {
+        } else if (req.user.role === roleToCheck) {
             return next();
-        }
-        else if(req.user.role === "buyer"){
+        } else if (req.user.role === "buyer") {
             res.redirect("/buyer");
-        } 
-        else if(req.user.role === "admin"){
+        } else if (req.user.role === "admin") {
             res.redirect("/admin");
         }
     };

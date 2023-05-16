@@ -1,5 +1,11 @@
-export { combinePlusResult}
+export { combinePlusResult };
 
+/**
+ * Combines results from multiple workers
+ *
+ * @param {Object} job - The Job containing the results from the workers.
+ * @returns {Object} An object containing the results and information about the workers.
+ */
 function combinePlusResult(job) {
     let Solution = [];
     let workerArr = [];
@@ -9,16 +15,11 @@ function combinePlusResult(job) {
             workerId: element.workerId,
             computed: element.workerSolutions.length,
         });
-        for (
-            let index = 0;
-            index < element.workerSolutions.length;
-            index++
-        ) {
+        for (let index = 0; index < element.workerSolutions.length; index++) {
             Solution[element.workerSolutions[index].taskId] =
                 element.workerSolutions[index].solution[0];
         }
     });
-    
 
     final = 0;
     Solution.forEach((e) => {
@@ -26,7 +27,7 @@ function combinePlusResult(job) {
     });
     let workCountAndSolution = {
         workerArr: workerArr,
-        final: final
-    }
+        final: final,
+    };
     return workCountAndSolution;
 }
