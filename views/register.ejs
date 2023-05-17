@@ -16,6 +16,7 @@
                         name="name"
                         class="form-control"
                         placeholder="Enter Username"
+                        maxlength="20"
                         value="<%= typeof name != 'undefined' ? name : '' %>"
                     />
                 </div>
@@ -27,6 +28,8 @@
                         name="password"
                         class="form-control"
                         placeholder="Create Password"
+                        maxlength="20"
+                        minlength="8"
                         value="<%= typeof password != 'undefined' ? password : '' %>"
                     />
                 </div>
@@ -38,6 +41,8 @@
                         name="password2"
                         class="form-control"
                         placeholder="Confirm Password"
+                        maxlength="20"
+                        minlength="8"
                         value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
                     />
                 </div>

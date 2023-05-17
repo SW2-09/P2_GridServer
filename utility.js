@@ -41,14 +41,7 @@ export function writeFile(uploadPath, Jobdata) {
  * @returns {string} The sanitized string.
  */
 export function sanitize(str) {
-    str = str
-        .replace(/&/g, "")
-        .replace(/</g, "")
-        .replace(/>/g, "")
-        .replace(/"/g, "")
-        .replace(/'/g, "")
-        .replace(/`/g, "")
-        .replace(/\//g, "")
-        .replace(/ /g, "_");
-    return str.trim();
+    return str
+        .replace(/[^a-zA-Z0-9-_]/g, "")
+        .trim();
 }

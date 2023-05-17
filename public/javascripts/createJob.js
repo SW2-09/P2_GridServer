@@ -11,11 +11,11 @@ const content = {
     enctype="multipart/form-data" id="uploadForm" >
     
     <div>
-        <input class="form-control" type="text" name="jobTitle" id="jobTitle" placeholder="Job Title" required>
+        <input class="form-control" type="text" name="jobTitle" id="jobTitle" placeholder="Job Title" maxlength="30" required>
     </div>
 
     <div>
-        <input class="form-control" type="text" name="jobDescription" id="jobDescription" placeholder="Job Description" required>
+        <input class="form-control" type="text" name="jobDescription" id="jobDescription" placeholder="Job Description" maxlength="200" required>
     </div>
 
     <div id="typeChoice" class="form-control">
