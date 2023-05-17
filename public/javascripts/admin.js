@@ -1,4 +1,5 @@
 const purge = document.getElementById("purge");
+const resetwork = document.getElementById("resetWork");
 const lookup = document.getElementById("Lookup");
 const sessiondata = document.getElementById("sessiondata");
 const mainDiv = document.getElementById("mainDiv");
@@ -51,6 +52,30 @@ purge.addEventListener("click", async () => {
     }
 });
 
+resetwork.addEventListener("click", async () => {
+    clearInterval(chartinterval);
+    if (
+        confirm(
+            "Are you sure you want to reset all worker computations?"
+        ) === false
+    )
+        return;
+    try {
+        console.log("Resetting worker computations...");
+        const response = await fetch("/admin/resetwork", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        let responseJson = await response.json();
+        console.log(responseJson.message);
+    } catch (err) {
+        console.log(err);
+    }
+});
+
+
 collection.addEventListener("change", async () => {
     clearInterval(chartinterval);
     let collectionvalue = document.getElementById("collection").value;
@@ -68,7 +93,7 @@ mainDiv.addEventListener("click", async (e) => {
     let collectionvalue = document.getElementById("collection").value;
     if (e.target.className === "delete") {
         console.log("Delete user: " + e.target.value);
-        testd = await fetch("/admin/deleteone", {
+        await fetch("/admin/deleteone", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -80,6 +105,21 @@ mainDiv.addEventListener("click", async (e) => {
         });
         dblookup(collectionvalue);
     }
+    if (e.target.className === "clearJobs") {
+        console.log("Clear jobs");
+        await fetch("/admin/clearjobs", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json", 
+            },
+            body: JSON.stringify({
+                collection: collectionvalue,
+                name: e.target.value,
+            }),
+        });
+        dblookup(collectionvalue);
+    }
+
 });
 /**
  * Looks up a collection in the MongoDB database and generates a table for either `users`, `workers` or `buyers`.
@@ -154,38 +194,32 @@ async function generateTable(workerInfo, collectionvalue) {
             break;
         }
         case "buyers": {
-            let tableHeader = `<th>Buyer name</th><th>Jobs array</th><th>More info</th><th>Delete Buyer</th><th>Reset data</th>`;
+            let tableHeader =
+    `<th>Buyer name</th><th>Jobs array</th><th>Delete Buyer</th><th>Reset data</th>`;
 
-            jobTable.insertRow(0).innerHTML = tableHeader;
-            workerInfo.message.forEach((element, index) => {
-                let row = jobTable.insertRow(index + 1);
-                row.insertCell(0).innerHTML = element.name;
+    jobTable.insertRow(0).innerHTML = tableHeader;
+    workerInfo.message.forEach((element,index) => {
+        let row = jobTable.insertRow(index + 1);
+        row.insertCell(0).innerHTML = element.name;
 
-                let dropdownElement = document.createElement("select");
-                dropdownElement.className = "dropdownElement";
+        let dropdownElement = document.createElement("select");
+        dropdownElement.className = "dropdownElement";
 
-                element.jobs_array.forEach((job, index) => {
-                    let option = document.createElement("option");
-                    option.value = job.jobId;
-                    option.text = job.jobId;
-                    dropdownElement.add(option);
-                });
-                // Create a wrapper div
-                let wrapperDiv = document.createElement("div");
-                wrapperDiv.className = "selectWrapper";
-                wrapperDiv.appendChild(dropdownElement);
+        element.jobs_array.forEach((job, index) => {
+            let option = document.createElement("option");
+            option.value = job.jobId;
+            option.text = job.jobId;
+            dropdownElement.add(option);
+        });
+        // Create a wrapper div
+        let wrapperDiv = document.createElement("div");
+        wrapperDiv.className = "selectWrapper";
+        wrapperDiv.appendChild(dropdownElement);
 
-                row.insertCell(1).append(wrapperDiv);
-                row.insertCell(
-                    2
-                ).innerHTML = `<button class="moreInfo" id="moreInfo${index}">More info</button>`;
-                row.insertCell(
-                    3
-                ).innerHTML = `<button class="delete" id="delete${index}" value="${element.name}">Delete</button>`;
-                row.insertCell(
-                    4
-                ).innerHTML = `<button class="reset" id="reset${index}">Reset data</button>`;
-            });
+        row.insertCell(1).append(wrapperDiv);
+        row.insertCell(2).innerHTML = `<button class="delete" id="delete${index}" value="${element.name}">Delete</button>`;
+        row.insertCell(3).innerHTML = `<button class="clearJobs" id="clearJobs${index}" value="${element.name}">Clear jobs</button>`;
+    });
             break;
         }
     }
