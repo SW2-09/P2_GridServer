@@ -11,7 +11,6 @@ import bcrypt from "bcryptjs";
 import { Buyer } from "../models/Buyer.js";
 import { sanitize } from "../utility.js";
 
-
 const router = express.Router();
 
 //login page
@@ -41,7 +40,7 @@ router.post("/register", (req, res) => {
     const name = sanitize(req.body.name);
     const password = sanitize(req.body.password);
     const password2 = sanitize(req.body.password2);
-    
+
     let errors = [];
 
     if (!name || !password || !password2) {
