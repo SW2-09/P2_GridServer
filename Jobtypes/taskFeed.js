@@ -138,8 +138,7 @@ async function jobDone(job) {
     let filename = path + tempjob.jobId + ".json"; //creates a filename for the solution
 
     writeFile(filename, finalResult.final); //writes the solution to a file
-    console.log("kig her");
-    console.log(tempjob.jobId);
+    
     deletePendingfile(tempjob.jobId); //deletes the pending file
 
     //Update the job.completed in mongoDB
@@ -219,7 +218,7 @@ function checkForPendingJobs() {
     let jobParsed = JSON.parse(fs.readFileSync(path));
 
     let jobtype = jobParsed.type;
-    console.log(jobtype);
+    
     addJobToQue(jobtype, jobParsed);
 
     fs.renameSync(path, "./JobData/ActiveJobs/" + jobParsed.jobId + ".json");
