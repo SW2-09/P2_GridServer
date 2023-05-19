@@ -17,6 +17,7 @@
                         class="form-control"
                         placeholder="Enter Username"
                         maxlength="20"
+                        oninput="this.value = this.value.replace(/[^a-zA-Z0-9-_]/g, '')"
                         value="<%= typeof name != 'undefined' ? name : '' %>"
                     />
                 </div>

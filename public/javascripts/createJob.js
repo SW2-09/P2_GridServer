@@ -34,6 +34,7 @@ const content = {
 </div>
 </div>
 <div class=alert></div>
+<div class=alertuploading></div>
 `,
 
     JobsOverview: `
@@ -197,20 +198,29 @@ async function createJob(e) {
     const jobType = document.getElementById("jobType").value;
     const Uploadform = document.getElementById("uploadForm");
     const jobTitle = document.getElementById("jobTitle").value;
+    const jobTitleInput = document.getElementById("jobTitle");
     const jobDescription = document.getElementById("jobDescription").value;
+    jobTitleInput.setCustomValidity("");
 
     if (!Uploadform.checkValidity() || jobType === "none") {
         Uploadform.reportValidity();
-        e.target.disabled = false;
         return;
     }
+
+    let allowedchars = /^[a-zA-Z0-9-_]*$/;
+    if (!allowedchars.test(jobTitle)) {
+        jobTitleInput.setCustomValidity("Only letters, numbers, - and _ allowed");
+        await Uploadform.reportValidity();
+        return;
+    }
+
     try {
-        e.target.disabled = true;
+        buttonDisableStatusUpload(true);
         let formData;
         switch (jobType) {
             case "matrixMult": {
+                uploadingPleaseWait();
                 e.preventDefault();
-                e.target.style.backgroundColor = "grey";
                 const fileInput1 = document.getElementById("uploadFile");
                 const fileInput2 = document.getElementById("uploadFile2");
 
@@ -276,12 +286,12 @@ async function createJob(e) {
 
         const result = await response.text();
         console.log(result);
-        e.target.disabled = false;
+        buttonDisableStatusUpload(false);
         doneUploading();
     } catch (err) {
         console.log(err);
-        e.target.style.backgroundColor = "#333333";
-        e.target.disabled = false;
+        clearNotification();
+        buttonDisableStatusUpload(false);
     }
 }
 
@@ -420,6 +430,19 @@ function validateList(list) {
     }
     return true;
 }
+
+function uploadingPleaseWait() {
+    let alert = document.createElement("div");
+   
+    document.querySelector(".alertuploading").style.display = "flex";
+    setTimeout(() => {
+        document.querySelector(".alertuploading").style.opacity = "1";
+    }, 100);
+    document.querySelector(".alertuploading").append(alert);
+
+    alert.innerHTML = `Uploading job, please wait...`;
+}
+
 /**
  * Displays a notification to the buyer saying that the job was succesfully uploaded.
  */
@@ -517,4 +540,32 @@ async function deleteJob(e) {
     } catch (err) {
         console.error("Error: " + err);
     }
+}
+
+
+function buttonDisableStatusUpload(status){
+    let uploadButton = document.getElementById("submit");
+    let cancelButton = document.getElementById("goBack-btn");
+
+    if(status){
+    uploadButton.disabled = true;
+    cancelButton.disabled = true;
+    uploadButton.style.backgroundColor = "grey";
+    cancelButton.style.backgroundColor = "grey";
+
+    }else{
+    uploadButton.disabled = false;
+    cancelButton.disabled = false;
+    uploadButton.style.backgroundColor = "#333";
+    cancelButton.style.backgroundColor = "#333";
+    }
+}
+
+function clearNotification(){
+    let alert = document.querySelector(".alertuploading");
+    alert.style.opacity = "0";
+    setTimeout(() => {
+        alert.innerHTML = "";
+        alert.style.display = "none";
+    }, 1000);
 }
