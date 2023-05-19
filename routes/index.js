@@ -38,8 +38,8 @@ router.get("/admin", ensureAuthenticated, checkRole("admin"), (req, res) => {
 
 router.post("/register", (req, res) => {
     const name = sanitize(req.body.name);
-    const password = sanitize(req.body.password);
-    const password2 = sanitize(req.body.password2);
+    const password = req.body.password;
+    const password2 = req.body.password2;
 
     let errors = [];
 
