@@ -75,9 +75,7 @@ buyerRouter.post("/upload", async (req, res) => {
             }
             case "plus": {
                 // in case the jobtype is plus
-
                 Jobdata = createPlusJob(dataObject, name, JobQueue);
-
                 break;
             }
             default: {
