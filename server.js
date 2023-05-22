@@ -67,8 +67,6 @@ app.use(
     })
 );
 
-//Bodyparser
-//app.use(express.urlencoded({ extended: false }));
 
 //Passport middleware
 app.use(passport.initialize()); //This is needed to initialize passport
@@ -94,6 +92,7 @@ app.use("/test", testRouter);
 
 const serverstart = Date.now();
 
+//Data for server monitoring on admin page
 const serverdata = {
     failedjobs: 0,
     jobsComputed: 0,
@@ -102,7 +101,7 @@ const serverdata = {
 };
 
 app.listen(port, () =>
-    console.log(`Server has been started on http://localhost:${port}`)
+    console.log(`Server has been started on http://${host}:${port}`)
 );
 
 startWebsocketserver(host, webSocketPort);

@@ -109,14 +109,13 @@ let handlers = {
                    
                     handlers.sendSubtask(ws, messageParse["workerId"]);
                 }
-            } finally {
+            } 
+            catch (e) {
+                //if the message cannot be parsed to JSON
+                console.log(
+                    `Something went wrong with the recieved message: ${e.message}`
+                );
             }
-            // catch (e) {
-            //     //if the message cannot be parsed to JSON
-            //     console.log(
-            //         `Something went wrong with the recieved message: ${e.message}`
-            //     );
-            // }
         };
     },
     connectionHandler: function (ws) {
