@@ -5,6 +5,8 @@ import { createFolder } from "../utility.js";
 import { addMatrixToQue } from "./matrix_multiplication/jobCreateMatrixMult.js";
 import { addPlusToQue } from "./plus/jobCreatePlus.js";
 
+const calcMax = Math.pow(1500, 3); // Max size of subtasks
+
 /**
  * Constructor for a job object in the job-queue. Note that each job includes two linked list queues,
  * `subtaskList` and `pendingList` for subtasks.
@@ -72,7 +74,7 @@ class Queue_linked_list_job {
         this.tail = null;
         this.size = 0;
         this.MaxSize = 10;
-        this.calcMax = Math.pow(1500, 3); // Max size of calculation
+        this.calcMax = calcMax; // Max size of calculation
     }
 
     /**

@@ -332,8 +332,6 @@ async function loadSessionChart() {
                 worker_chart.update();
             }
         }, 5000);
-        //intervalOn = true;
-        //}
     } catch (err) {
         console.log(err);
     }
