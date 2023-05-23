@@ -9,8 +9,21 @@ import { assert} from "chai";
 
 describe("taskFeed.js", function () {
     describe("subtaskFeeder", function () {
+        
+    });
+});
+
+
+
+
+describe("taskFeed.js", function () {
+    describe("subtaskFeeder", function () {
+        beforeEach(function () {
+            while (!(JobQueue.tail == null)) {
+                JobQueue.deQueue();
+            }
+        });
         it("should call jobDone once when one job in queue", function (done) {
-  
             let matrixPair = makeMatrixPair(3000, 3000, 3000, 100);
 
             addMatrixToQue(
@@ -35,89 +48,69 @@ describe("taskFeed.js", function () {
                     JobQueue.tail.pendingList.deQueue();
                 }
             }
+            
+
+            assert.equal(JobQueue.tail.subtaskList.tail, null, "subtasklist should be null");
+            assert.equal(JobQueue.tail.pendingList.tail, null, "pendingList should be null");
 
             assert.equal(check, null, "check should be null");
             done();
             
         });
+
+        it("should call jobDone twice when one job in queue", function (done) {
+            let matrixPair = makeMatrixPair(3000, 3000, 3000, 100);
+
+            addMatrixToQue(
+                "a",
+                "matrixMult",
+                "Donald Duck",
+                matrixPair[0],
+                matrixPair[1],
+                JobQueue
+            );
+
+            addMatrixToQue(
+                "b",
+                "matrixMult",
+                "Donald Duck",
+                matrixPair[0],
+                matrixPair[1],
+                JobQueue
+            );
+
+            console.log(JobQueue.size);
+
+            let check;
+            let iterations = JobQueue.tail.subtaskList.size;
+            
+                for (let i = 0; i < iterations+1; i++) {
+                    check = subtaskFeeder(1);
+                    if(i < iterations){
+                        JobQueue.tail.numOfSolutions++;
+                        JobQueue.tail.pendingList.deQueue();
+                    }
+                }
+                
+                JobQueue.deQueue();
+
+                for (let i = 0; i < iterations+1; i++) {
+                    check = subtaskFeeder(1);
+                    if(i < iterations){
+                        JobQueue.tail.numOfSolutions++;
+                        JobQueue.tail.pendingList.deQueue();
+                    }
+                }
+                
+    
+                assert.equal(JobQueue.tail.subtaskList.tail, null, "subtasklist should be null");
+                assert.equal(JobQueue.tail.pendingList.tail, null, "pendingList should be null");
+    
+                assert.equal(check, null, "check should be null");
+                done();
+        });
     });
 });
-
-
-
-
-// describe("taskFeed.js", function () {
-//     describe("subtaskFeeder", function () {
-//         it("should call jobDone once when one job in queue", async function (done) {
-//             let matrixPair = makeMatrixPair(3000, 3000, 3000, 100);
-
-//             addMatrixToQue(
-//                 "a",
-//                 "matrixMult",
-//                 "Donald Duck",
-//                 matrixPair[0],
-//                 matrixPair[1],
-//                 JobQueue
-//             );
-
-//             let iterations = JobQueue.tail.subtaskList.size;
-
-//             let spy_jobDone = sinon.spy(jobDone);
-
-//             console.log(JobQueue.tail.numOfTasks);
-//             console.log(JobQueue.tail.numOfSolutions);
-
-//             for (let i = 0; i < iterations+1; i++) {
-//                 await subtaskFeeder();
-//                 if(i < iterations){
-//                 JobQueue.tail.numOfSolutions++;
-//                 }
-//                 console.log(JobQueue.tail.numOfSolutions);
-//                 JobQueue.tail.pendingList.deQueue();
-//             }
-
-//             assert(sinon.calledOnce(spy_jobDone));
-            
-//         });
-
-        // it("should call jobDone twice when one job in queue", function () {
-        //     let matrixPair = makeMatrixPair(3000, 3000, 3000, 100);
-
-        //     addMatrixToQue(
-        //         "a",
-        //         "matrixMult",
-        //         "Donald Duck",
-        //         matrixPair[0],
-        //         matrixPair[1],
-        //         JobQueue
-        //     );
-
-        //     addMatrixToQue(
-        //         "b",
-        //         "matrixMult",
-        //         "Donald Duck",
-        //         matrixPair[0],
-        //         matrixPair[1],
-        //         JobQueue
-        //     );
-
-        //     console.log(JobQueue.size);
-
-        //     let iterations =
-        //         JobQueue.tail.subtaskList.size + JobQueue.head.subtaskList.size;
-            
-            
-
-        //     let spy_jobDone = spy(jobDone);
-
-        //     for (let i = 0; i < iterations; i++) {
-        //           subtaskFeeder();
-        //     }
-        //     assertSinon.calledTwice(spy_jobDone);
-            
-        // });
-//     });
-// });
 
 
 function randomMatrix(columns, rows, range) {
@@ -150,4 +143,3 @@ function makeMatrixPair(n, m, l, range) {
 
     return [matrix_A, matrix_B];
 }
-
