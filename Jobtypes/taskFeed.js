@@ -88,7 +88,7 @@ function checkForFailedSubtask(pending) {
     let recent = true;
     while (recent && tail !== null) {
         if (Date.now() - tail.sendTime > subtaskTimeout) {
-            //if the task is outdated (30 seconds)
+            //if the task is outdated (60 seconds)
             serverdata.failedjobs++;
             tail.sendTime = Date.now();
             return tail; //if the task is outdated
