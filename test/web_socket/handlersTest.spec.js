@@ -40,17 +40,6 @@ describe("handlers.js", () => {
             done();
         });
     });
-    /*
-    describe("messageHandler", function () {
-        it("should call sendSubask if JobQueue.size>0", function (done) {
-            let spy_send = spy(handlers, "sendSubtask");
-            JobQueue.size = 1;
-            handlers.messageHandler(client);
-            assertSinon.calledOnce(spy_send);
-            done();
-        });
-    });
-    */
 
     describe("sendSubtask", () => {
         it("should call subtaskFeeder", (done) => {
