@@ -42,7 +42,7 @@ describe("taskFeed.js", function () {
 
 
             for (let i = 0; i < iterations+1; i++) {
-                check = subtaskFeeder(1);
+                check = subtaskFeeder();
                 if(i < iterations){
                     JobQueue.tail.numOfSolutions++;
                     JobQueue.tail.pendingList.deQueue();
@@ -50,9 +50,7 @@ describe("taskFeed.js", function () {
             }
             
 
-            assert.equal(JobQueue.tail.subtaskList.tail, null, "subtasklist should be null");
-            assert.equal(JobQueue.tail.pendingList.tail, null, "pendingList should be null");
-
+            assert.equal(JobQueue.tail, null, "JobQueue.tail should be null");
             assert.equal(check, null, "check should be null");
             done();
             
@@ -85,17 +83,15 @@ describe("taskFeed.js", function () {
             let iterations = JobQueue.tail.subtaskList.size;
             
                 for (let i = 0; i < iterations+1; i++) {
-                    check = subtaskFeeder(1);
+                    check = subtaskFeeder();
                     if(i < iterations){
                         JobQueue.tail.numOfSolutions++;
                         JobQueue.tail.pendingList.deQueue();
                     }
                 }
-                
-                JobQueue.deQueue();
 
                 for (let i = 0; i < iterations+1; i++) {
-                    check = subtaskFeeder(1);
+                    check = subtaskFeeder();
                     if(i < iterations){
                         JobQueue.tail.numOfSolutions++;
                         JobQueue.tail.pendingList.deQueue();
@@ -103,8 +99,7 @@ describe("taskFeed.js", function () {
                 }
                 
     
-                assert.equal(JobQueue.tail.subtaskList.tail, null, "subtasklist should be null");
-                assert.equal(JobQueue.tail.pendingList.tail, null, "pendingList should be null");
+                 assert.equal(JobQueue.tail, null, "JobQueue.tail should be null");
     
                 assert.equal(check, null, "check should be null");
                 done();

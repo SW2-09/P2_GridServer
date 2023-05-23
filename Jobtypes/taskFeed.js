@@ -20,7 +20,7 @@ const subtaskTimeout = 60000; // 60 seconds
  *
  * @returns {object|null} The subtask to be assiged to the worker, or `null` if the subtask-queue is empty.
  */
-function subtaskFeeder(optionalParam = 0) {
+function subtaskFeeder() {
     if (isJobQueueEmpty()) {
         //if the queue is empty
         return null;
@@ -39,16 +39,13 @@ function subtaskFeeder(optionalParam = 0) {
             !isThereFailedSubtasks(failedSubtask) &&
             !isJobDone(currentJob)
         ) {
-            console.log("no failed subtasks");
             // if no subtasks failed and the job is not done
             //currentJob = nextJobInQueue(currentJob);//update the current job to the next job in the queue
 
             if (onlyJobInQueue(currentJob)) {
-                console.log("22.");
                 // if the current job is the only job in the queue
                 return null; //there are no more jobs to do
             } else {
-                console.log("more jobs.");
                 //if there are more jobs in the queue
                 currentJob = nextJobInQueue(currentJob); //update the current job to the next job in the queue
             }
@@ -56,11 +53,9 @@ function subtaskFeeder(optionalParam = 0) {
             !isThereFailedSubtasks(failedSubtask) &&
             isJobDone(currentJob)
         ) {
-            console.log("success");
             //if no subtasks failed and the job is done
-            jobDone(currentJob, optionalParam); //send the solutions to the buyer and remove the job from the queue
+            jobDone(currentJob); //send the solutions to the buyer and remove the job from the queue
             // and update the job queue
-            console.log("job done");
             currentJob = FirstJobInQueue(); //update currentJob to the next job in the queue
 
             if (isJobQueueEmpty()) {
@@ -111,12 +106,9 @@ function checkForFailedSubtask(pending) {
  *
  * @param {Job} job - The job that is completed.
  */
-async function jobDone(job, optionalParam) {
+async function jobDone(job) {
     console.log("starting jobDone");
-    if(optionalParam === 1){
-        console.log("Testing case");
-        return 1;
-    }
+    
     let finalResult;
     let tempjob = job;
     updateQueue(job.jobId); //Removes the concluded job from the jobqueue
