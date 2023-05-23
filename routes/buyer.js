@@ -28,9 +28,6 @@ buyerRouter.get("/logout", (req, res) => {
     });
 });
 
-/* TODO LIST:
- * 1. Maybe upload should be async?
- */
 
 /* ********************** *
  *      File upload       *

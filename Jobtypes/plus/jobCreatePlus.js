@@ -24,13 +24,13 @@ return result;`;
  *
  * @returns {Object} The object holding the data used to create the job.
  */
-function createPlusJob(jobData, jobOwner, JobQueue) {
+function createPlusJob(jobInput, jobOwner, JobQueue) {
     const Jobdata = {
-        jobId: jobData.jobId,
+        jobId: jobInput.jobId,
         jobOwner: jobOwner,
-        Des: jobData.jobDescription,
-        type: jobData.jobType,
-        arr: jobData.uploadFile,
+        Des: jobInput.jobDescription,
+        type: jobInput.jobType,
+        arr: jobInput.uploadFile,
     };
 
     // adding the job to the job queue
@@ -63,15 +63,15 @@ function addPlusToQue(jobId, jobType, jobOwner, entries, jobQueue) {
         entriesCopy[i] = entries[i];
     }
 
-    let arr = dividePlus(entriesCopy);
+    let arrPlusPieces = dividePlus(entriesCopy);
     // enqueue the job to the job queue
     jobQueue.enQueue(jobId, jobType, jobOwner, plus_str);
 
-    for (let index = 0; index < arr.length; index++) {
+    for (let index = 0; index < arrPlusPieces.length; index++) {
         jobQueue.head.subtaskList.enQueue(
             jobQueue.head.jobId,
             index,
-            arr[index]
+            arrPlusPieces[index]
         );
         jobQueue.head.numOfTasks++;
     }

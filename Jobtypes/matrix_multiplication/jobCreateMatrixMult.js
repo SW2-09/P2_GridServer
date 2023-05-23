@@ -30,20 +30,20 @@ let matrix_mult_str = `let AColumns = A[0].length;
 /**
  * Function to create a job of type matrix multiplication and enqueue it to the job queue.
  *
- * @param {object} jobData - Object holding the data used to create the job.
+ * @param {object} jobInput - Object holding the data used to create the job.
  * @param {string} jobOwner - The owner of the job.
  * @param {object} JobQueue - The job queue.
  *
  * @returns {object} The object holding the data used to create the job.
  */
-function createMatrixMultJob(jobData, jobOwner, JobQueue) {
+function createMatrixMultJob(jobInput, jobOwner, JobQueue) {
     const Jobdata = {
-        jobId: jobData.jobId,
+        jobId: jobInput.jobId,
         jobOwner: jobOwner,
-        Des: jobData.jobDescription,
-        type: jobData.jobType,
-        arrA: jobData.uploadFile,
-        arrB: jobData.uploadFile2,
+        Des: jobInput.jobDescription,
+        type: jobInput.jobType,
+        arrA: jobInput.uploadFile,
+        arrB: jobInput.uploadFile2,
     };
     let matrix_A = {
         entries: Jobdata.arrA,
@@ -94,15 +94,15 @@ function addMatrixToQue(
     let ARows = matrix_A.rows;
     let A = matrix_A.entries;
 
-    let arr = divideMatrices(A, matrix_B, ARows, JobQueue.calcMax);
+    let arrMatrixPieces = divideMatrices(A, matrix_B, ARows, JobQueue.calcMax);
 
     // enqueue the job to the job queue
     JobQueue.enQueue(jobId, jobType, jobOwner, matrix_mult_str, matrix_B);
-    for (let index = 0; index < arr.length; index++) {
+    for (let index = 0; index < arrMatrixPieces.length; index++) {
         JobQueue.head.subtaskList.enQueue(
             JobQueue.head.jobId,
             index,
-            arr[index]
+            arrMatrixPieces[index]
         );
         JobQueue.head.numOfTasks++;
     }
