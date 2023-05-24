@@ -67,7 +67,6 @@ app.use(
     })
 );
 
-
 //Passport middleware
 app.use(passport.initialize()); //This is needed to initialize passport
 app.use(passport.session()); //This is needed to keep the user logged in
@@ -85,10 +84,6 @@ app.use("/", router);
 import { adminRouter } from "./routes/admin.js";
 
 app.use("/admin", checkRole("admin"), adminRouter);
-
-//Test page routing
-import { testRouter } from "./routes/test.js";
-app.use("/test", testRouter);
 
 const serverstart = Date.now();
 
