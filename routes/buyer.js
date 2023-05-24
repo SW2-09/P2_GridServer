@@ -149,7 +149,10 @@ buyerRouter.post("/delete", async (req, res) => {
 
         // Delete from jobQueue
         JobQueue.removeJob(id);
+
+        if (JobQueue.size < JobQueue.MaxSize) {
         checkForPendingJobs();
+        }
 
         // Delete from directory
         let absolutePathSolutions = path.resolve(
