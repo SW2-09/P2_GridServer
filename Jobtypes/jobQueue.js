@@ -5,7 +5,7 @@ import { createFolder } from "../utility.js";
 import { addMatrixToQue } from "./matrix_multiplication/jobCreateMatrixMult.js";
 import { addPlusToQue } from "./plus/jobCreatePlus.js";
 
-const calcMax = Math.pow(1500, 3); // Max size of subtasks
+const calcMax = Math.pow(2000, 3); // Max size of subtasks
 const queueMax = 4; // Max size of queue
 
 /**
