@@ -479,8 +479,8 @@ function doneUploading() {
  * @returns {promise} a promise that resolves to an array of parsed data.
  */
 async function validateAndParse(file, jobType) {
-    const allowedFileFormat = ["csv"]; //allows JSON and csv formats
-    const maxFileSize = 50 * 1024 * 1024; // 50 MB
+    const allowedFileFormat = ["csv"]; //allows csv formats
+    const maxFileSize = 40 * 1024 * 1024; // 40 MB
     const fileEnding = file.name.split(".").pop().toLowerCase();
 
     if (!allowedFileFormat.includes(fileEnding)) {
@@ -489,7 +489,7 @@ async function validateAndParse(file, jobType) {
     }
 
     if (file.size > maxFileSize) {
-        alert("Please choose a file smaller than 50 MB");
+        alert("Please choose a file smaller than 40 MB");
         return;
     }
 
