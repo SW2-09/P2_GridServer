@@ -4,12 +4,27 @@ import { spy, assert as assertSinon } from "sinon";
 import { addMatrixToQue } from "../../Jobtypes/matrix_multiplication/jobCreateMatrixMult.js";
 import { subtaskFeeder, jobDone } from "../../Jobtypes/taskFeed.js";
 import { JobQueue } from "../../Jobtypes/jobQueue.js";
+import { assert} from "chai";
 
-/*
+
 describe("taskFeed.js", function () {
     describe("subtaskFeeder", function () {
+        
+    });
+});
+
+
+
+
+describe("taskFeed.js", function () {
+    describe("subtaskFeeder", function () {
+        beforeEach(function () {
+            while (!(JobQueue.tail == null)) {
+                JobQueue.deQueue();
+            }
+        });
         it("should call jobDone once when one job in queue", function (done) {
-            let matrixPair = makeMatrixPair(1000, 1000, 1000, 100);
+            let matrixPair = makeMatrixPair(3000, 3000, 3000, 100);
 
             addMatrixToQue(
                 "a",
@@ -22,17 +37,27 @@ describe("taskFeed.js", function () {
 
             let iterations = JobQueue.tail.subtaskList.size;
 
-            let spy_jobDone = spy(jobDone);
+            let check;
 
-            for (let i = 0; i < iterations; i++) {
-                subtaskFeeder();
+
+
+            for (let i = 0; i < iterations+1; i++) {
+                check = subtaskFeeder();
+                if(i < iterations){
+                    JobQueue.tail.numOfSolutions++;
+                    JobQueue.tail.pendingList.deQueue();
+                }
             }
+            
+
+            assert.equal(JobQueue.tail, null, "JobQueue.tail should be null");
+            assert.equal(check, null, "check should be null");
             done();
-            assertSinon.calledOnce(spy_jobDone);
+            
         });
 
         it("should call jobDone twice when one job in queue", function (done) {
-            let matrixPair = makeMatrixPair(1000, 1000, 1000, 100);
+            let matrixPair = makeMatrixPair(3000, 3000, 3000, 100);
 
             addMatrixToQue(
                 "a",
@@ -54,20 +79,35 @@ describe("taskFeed.js", function () {
 
             console.log(JobQueue.size);
 
-            let iterations =
-                JobQueue.tail.subtaskList.size + JobQueue.head.subtaskList.size;
+            let check;
+            let iterations = JobQueue.tail.subtaskList.size;
+            
+                for (let i = 0; i < iterations+1; i++) {
+                    check = subtaskFeeder();
+                    if(i < iterations){
+                        JobQueue.tail.numOfSolutions++;
+                        JobQueue.tail.pendingList.deQueue();
+                    }
+                }
 
-            let spy_jobDone = spy(jobDone);
-
-            for (let i = 0; i < iterations; i++) {
-                  subtaskFeeder();
-            }
-            done();
-            assertSinon.calledTwice(spy_jobDone);
+                for (let i = 0; i < iterations+1; i++) {
+                    check = subtaskFeeder();
+                    if(i < iterations){
+                        JobQueue.tail.numOfSolutions++;
+                        JobQueue.tail.pendingList.deQueue();
+                    }
+                }
+                
+    
+                 assert.equal(JobQueue.tail, null, "JobQueue.tail should be null");
+    
+                assert.equal(check, null, "check should be null");
+                done();
         });
     });
 });
-*/
+
+
 function randomMatrix(columns, rows, range) {
     let matrix = [];
 
@@ -98,4 +138,3 @@ function makeMatrixPair(n, m, l, range) {
 
     return [matrix_A, matrix_B];
 }
-

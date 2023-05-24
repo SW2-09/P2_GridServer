@@ -108,6 +108,7 @@ function checkForFailedSubtask(pending) {
  */
 async function jobDone(job) {
     console.log("starting jobDone");
+    
     let finalResult;
     let tempjob = job;
     updateQueue(job.jobId); //Removes the concluded job from the jobqueue
