@@ -29,7 +29,9 @@ function subtaskFeeder() {
 
     if (isSubtaskQueueEmpty(currentJob)) {
         //if there are no more subtasks in the subtask list
+        console.log("----------------------------------------");
         console.log("No more subtasks to do. Checking pending list.");
+        console.log("----------------------------------------");
         let failedSubtask = checkForFailedSubtask(currentJob.pendingList);
 
         if (isThereFailedSubtasks(failedSubtask)) {
@@ -81,7 +83,6 @@ function subtaskFeeder() {
  */
 function checkForFailedSubtask(pending) {
     if (pending.tail === null) {
-        console.log("failedSubtask = null");
         return null; //if the list is empty
     }
     let tail = pending.tail;
@@ -95,7 +96,6 @@ function checkForFailedSubtask(pending) {
         }
         tail = tail.previous;
     }
-    console.log("failedSubtask = null");
     return null; //if there are no outdated tasks
 }
 
@@ -106,9 +106,7 @@ function checkForFailedSubtask(pending) {
  *
  * @param {Job} job - The job that is completed.
  */
-async function jobDone(job) {
-    console.log("starting jobDone");
-    
+async function jobDone(job) {    
     let finalResult;
     let tempjob = job;
     updateQueue(job.jobId); //Removes the concluded job from the jobqueue
@@ -149,10 +147,10 @@ async function jobDone(job) {
         { arrayFilters: [{ "element.jobId": tempjob.jobId }] } //Arrayfiler
     );
     let completiontime = (Date.now() - tempjob.Starttime) / 1000;
-    console.log("____________________");
+    console.log("----------------------------------------");
     console.log("job done and finished");
     console.log("Completion time: " + completiontime);
-    console.log("____________________");
+    console.log("----------------------------------------");
 }
 
 /**
@@ -161,7 +159,6 @@ async function jobDone(job) {
  * @param {Array} contributors - List of the workers that contributed to the job
  */
 function countWork(contributors) {
-    console.log("counting work");
     contributors.forEach((element) => {
         Worker.findOne({ workerId: element.workerId }).then((worker) => {
             if (worker) {
@@ -180,11 +177,7 @@ function countWork(contributors) {
                 newWorker.save();
             }
         });
-
-        // console.log(element.workerId);
-        // console.log(element.computed);
     });
-    console.log("done counting work");
 }
 
 /**
@@ -254,14 +247,15 @@ function assignNewSubtask(currentJob) {
     //add the matrixA to the job in the pending list
     currentJob.pendingList.head.sendTime = Date.now(); //set the send time of the subtask to know when the task is outdated
     currentJob.subtaskList.deQueue(); //remove the subtask from the subtask list
+    console.log("--------------------------------------->");
     console.log(
         "sending job: " +
             workerPack.jobId +
             " task: " +
             workerPack.taskId +
-            " to worker \n"
+            " to worker"
     );
-
+    console.log("--------------------------------------->");
     return workerPack;
 }
 
@@ -273,8 +267,6 @@ function assignNewSubtask(currentJob) {
  * @returns {object} The new worker-pack for the worker.
  */
 function assignFailedSubtask(currentJob, failedSubtask) {
-    console.log("Job not done yet!");
-
     let workerPack = {
         //create a package to send to the worker
         jobId: currentJob.jobId,
@@ -348,11 +340,16 @@ function FirstJobInQueue() {
  */
 function updateQueue(jobId) {
     JobQueue.removeJob(jobId);
+    console.log("----------------------------------------")
     console.log("JobQueue updated to size: " + JobQueue.size);
+    console.log("----------------------------------------")
+
 
     if (!jobQueueFull()) {
         //if the queue is not full check for pending jobs
+        console.log("----------------------------------------")
         console.log("JobQueue is no longer full checking for pending jobs");
+        console.log("----------------------------------------")
         checkForPendingJobs(JobQueue); //add pending jobs to the queue
     }
 }

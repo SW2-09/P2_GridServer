@@ -67,8 +67,12 @@ function createMatrixMultJob(jobInput, jobOwner, JobQueue) {
             JobQueue
         );
     }
-    console.log(JobQueue.size);
-    console.log(JobQueue.head.numOfTasks);
+    console.log("----------------------------------------");
+    console.log("Job added to queue");
+    console.log("Job was split into " + JobQueue.head.numOfTasks + " subtasks");
+    console.log("updated JobQueue size " + JobQueue.size);
+    console.log("----------------------------------------");
+
 
     return Jobdata;
 }
