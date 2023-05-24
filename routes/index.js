@@ -38,8 +38,8 @@ router.get("/admin", ensureAuthenticated, checkRole("admin"), (req, res) => {
 
 router.post("/register", (req, res) => {
     const name = sanitize(req.body.name);
-    const password = req.body.password;
-    const password2 = req.body.password2;
+    const password = sanitize(req.body.password);
+    const password2 = sanitize(req.body.password2);
 
     let errors = [];
 
@@ -102,7 +102,6 @@ router.post("/register", (req, res) => {
 //Login handle
 router.post("/login", (req, res, next) => {
     const name = sanitize(req.body.name);
-    console.log(req.body);
     if (name == "admin") {
         passport.authenticate("local", {
             failureFlash: true,
